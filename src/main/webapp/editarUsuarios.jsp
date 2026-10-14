@@ -56,7 +56,7 @@
             <select name="idRol" id="rol" class="form-select">
                 <% if (listaRoles != null) {
                     for (Roles r : listaRoles) {
-                        boolean seleccionado = (r.getIdRoles() == usr.getIdroles());
+                        boolean seleccionado = (r.getIdRoles() == usr.getIdroles().getIdRoles());
                 %>
                 <option value="<%= r.getIdRoles() %>" <%= seleccionado ? "selected" : "" %>>
                     <%= r.getNombreRoles() %>

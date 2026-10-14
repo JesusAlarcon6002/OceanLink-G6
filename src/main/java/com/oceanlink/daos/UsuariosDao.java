@@ -42,6 +42,8 @@ public class UsuariosDao {
                 roles.setNombreRoles(rs.getString("Rol"));
                 roles.setIdRoles(rs.getInt("idRoles"));
 
+                usr.setIdroles(roles);
+
                 listaUsuarios.add(usr);
             }
 
@@ -113,6 +115,8 @@ public class UsuariosDao {
                         Roles roles = new Roles();
                         roles.setIdRoles(rs.getInt("idRoles"));
                         roles.setNombreRoles(rs.getString("Rol"));
+
+                        usuarios.setIdroles(roles);
                     }
                 }
             }

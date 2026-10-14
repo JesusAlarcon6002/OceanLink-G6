@@ -52,7 +52,7 @@
             <select name="idRol" id="rol" class="form-select">
                 <% if (listaRoles != null) {
                     for (Roles r : listaRoles) { %>
-                <option value="<%= r.getIdRoles() %>"><%= r.getNombreRoles() %></option>
+                <option value="<%= r.getIdRoles() %>"><%= r.getNombreRoles()%></option>
                 <%     }
                 } %>
             </select>

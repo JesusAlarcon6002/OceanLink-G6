@@ -33,7 +33,7 @@
             <td><%=usr.getNombreCompleto()%></td>
             <td><%=usr.getTelefono()%></td>
             <td><%=usr.getCorreo()%></td>
-            <td><%=usr.getNombreRoles()%></td>
+            <td><%=usr.getIdroles().getNombreRoles()%></td>
             <td><%=usr.getEstado()%></td>
             <td><a href="<%=request.getContextPath()%>/UsuariosServlet?action=editar&id=<%=usr.getIdUsuario()%>">Editar</a></td>
             <td><a href="<%=request.getContextPath()%>/UsuariosServlet?action=borrar&id=<%=usr.getIdUsuario()%>">Borrar</a></td>
