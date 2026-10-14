@@ -16,7 +16,7 @@
 <body>
 <div class='container'>
     <h1 class='mb-3'>Crear un nuevo Segmento</h1>
-    <form method="POST" action="<%=request.getContextPath()%>/SegmentosServlet?action=formCrear">
+    <form method="POST" action="<%=request.getContextPath()%>/SegmentosServlet?action=crear">
         <div class="form-group">
             <label for="etiquetaSegmento">Segmento</label>
             <input type="text" class="form-control" id="etiquetaSegmento" name="etiquetaSegmento">

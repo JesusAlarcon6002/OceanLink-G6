@@ -37,6 +37,8 @@
             <td><%=sg.getCapacidadReservadaGbps()%></td>
             <td><%=sg.getCapacidadUtilizadaGbps()%></td>
             <td><%=sg.getEstado()%></td>
+            <td><a href="<%=request.getContextPath()%>/SegmentosServlet?action=editar&id=<%=sg.getIdSegmento()%>">Editar</a></td>
+            <td><a href="<%=request.getContextPath()%>/SegmentosServlet?action=borrar&id=<%=sg.getIdSegmento()%>">Borrar</a></td>
         </tr>
         <%  }  %>
     </table>

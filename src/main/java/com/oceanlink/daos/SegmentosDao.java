@@ -61,4 +61,100 @@ public class SegmentosDao {
         }
         return listaSegmentos;
     }
+
+    public void crearSegmentos(String etiqueta, String estacionOrigen, String estacionDestino, String capacidadTotal){
+        try{
+            String user = "root";
+            String pass = "12345678ABCD";
+            String url = "jdbc:mysql://localhost:3306/proyecto_siete";
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            try(Connection conn = DriverManager.getConnection(url,user,pass);){
+                String sql = "INSERT INTO segmentos (etiqueta_segmentos, id_estacion_origen, id_estacion_destino,capacidad_total_gbps) VALUES (?,?,?,?)";
+                try(PreparedStatement pstmt = conn.prepareStatement(sql)){
+                    pstmt.setString(1,etiqueta);
+                    pstmt.setString(2,estacionOrigen);
+                    pstmt.setString(3,estacionDestino);
+                    pstmt.setString(4,capacidadTotal);
+                    pstmt.executeUpdate();
+                }
+            }
+        } catch (ClassNotFoundException | SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public Segmentos obtenerSegmentos(int idSegmento) {
+        Segmentos sg = null;
+        try {
+            String user = "root";
+            String pass = "12345678ABCD";
+            String url = "jdbc:mysql://localhost:3306/proyecto_siete";
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            try (Connection conn = DriverManager.getConnection(url, user, pass);
+                 PreparedStatement pstmt = conn.prepareStatement("SELECT sg.id_segmentos AS 'etiqueta'," +
+                         " eo.id_landing_stations AS 'idEstacionOrigen'," +
+                         " eo.etiqueta_station AS 'estacionOrigen'," +
+                         " ed.id_landing_stations AS 'idEstacionDestino'," +
+                         " ed.etiqueta_station AS 'estacionDestino'," +
+                         " sg.capacidad_total_gbps AS 'capacidadTotal'" +
+                         " FROM segmentos sg" +
+                         " INNER JOIN" +
+                         " landing_stations eo ON eo.id_landing_stations = sg.id_estacion_origen " +
+                         " INNER JOIN " +
+                         " landing_stations ed ON ed.id_landing_stations = sg.id_estacion_destino" +
+                         " where id_segmentos = ?;");) {
+
+                pstmt.setInt(1, idSegmento);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        sg = new Segmentos();
+                        sg.setEtiquetaSegmento(rs.getString("etiqueta"));
+                        sg.setCapacidadUtilizadaGbps(rs.getDouble("capacidadTotal"));
+
+                        Landing_Stations eo = new Landing_Stations();
+                        eo.setId_landing_stations(rs.getInt("idEstacionOrigen"));
+                        eo.setEtiqueta_station(rs.getString("estacionOrigen"));
+
+                        sg.setIdEstacionOrigen(eo);
+
+                        Landing_Stations ed = new Landing_Stations();
+                        ed.setId_landing_stations(rs.getInt("idEstacionDestino"));
+                        ed.setEtiqueta_station(rs.getString("estacionDestino"));
+
+                        sg.setIdEstacionOrigen(ed);
+                    }
+                }
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return sg;
+    }
+
+    public void actualizarSegmentos(int idSegmento,String etiqueta, String estacionOrigen, String estacionDestino, String capacidadTotal) {
+        try {
+            String user = "root";
+            String pass = "12345678ABCD";
+            String url = "jdbc:mysql://127.0.0.1:3306/proyecto_siete";
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            try (Connection conn = DriverManager.getConnection(url, user, pass);) {
+                String sql = "UPDATE segmentos SET etiqueta_segmentos = ?, id_estacion_origen = ?, id_estacion_destino = ?, capacidad_total_gbps = ? "
+                        + "WHERE id_segmentos = ?";
+                try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                    pstmt.setString(1, etiqueta);
+                    pstmt.setString(2, estacionOrigen);
+                    pstmt.setString(3, estacionDestino);
+                    pstmt.setString(4, capacidadTotal);
+                    pstmt.setInt(5, idSegmento);
+                    pstmt.executeUpdate();
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }
