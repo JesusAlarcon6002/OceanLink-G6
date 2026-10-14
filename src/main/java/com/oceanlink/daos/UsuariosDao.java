@@ -1,4 +1,5 @@
 package com.oceanlink.daos;
+import com.oceanlink.beans.Roles;
 import com.oceanlink.beans.Usuarios;
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class UsuariosDao {
                     " CONCAT(usr.nombre,' ',usr.apellido) AS 'Nombre'," +
                     " usr.telefono AS 'Telefono'," +
                     " usr.correo AS 'Correo'," +
+                    " rl.id_roles AS 'idRoles'," +
                     " rl.nombres_rol AS 'Rol'," +
                     " usr.estado AS 'Estado'" +
                     " FROM usuarios usr" +
@@ -34,8 +36,11 @@ public class UsuariosDao {
                 usr.setNombreCompleto(rs.getString("Nombre"));
                 usr.setTelefono(rs.getString("Telefono"));
                 usr.setCorreo(rs.getString("Correo"));
-                usr.setNombreRoles(rs.getString("Rol"));
                 usr.setEstado(rs.getString("Estado"));
+
+                Roles roles = new Roles();
+                roles.setNombreRoles(rs.getString("Rol"));
+                roles.setIdRoles(rs.getInt("idRoles"));
 
                 listaUsuarios.add(usr);
             }
@@ -86,6 +91,7 @@ public class UsuariosDao {
                     " usr.apellido AS 'Apellido'," +
                     " usr.telefono AS 'Telefono'," +
                     " usr.correo AS 'Correo'," +
+                    " rl.id_roles AS 'idRoles'," +
                     " rl.nombres_rol AS 'Rol'," +
                     " usr.estado AS 'Estado'" +
                     " FROM usuarios usr" +
@@ -103,9 +109,10 @@ public class UsuariosDao {
                         usuarios.setApellido(rs.getString("Apellido"));
                         usuarios.setTelefono(rs.getString("Telefono"));
                         usuarios.setCorreo(rs.getString("Correo"));
-                        usuarios.setNombreRoles(rs.getString("Rol"));
                         usuarios.setEstado(rs.getString("Estado"));
-
+                        Roles roles = new Roles();
+                        roles.setIdRoles(rs.getInt("idRoles"));
+                        roles.setNombreRoles(rs.getString("Rol"));
                     }
                 }
             }

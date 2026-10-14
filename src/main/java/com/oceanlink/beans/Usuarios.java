@@ -8,12 +8,10 @@ public class Usuarios {
     private String correo;
     private String passwordHash;
     private String estado;
-    private int idRoles;
+    private Roles idRoles;
     private String etiquetaUsuario;
 
     private String nombreCompleto;
-
-    private String nombreRoles;
 
     public String getNombreCompleto() {
         return nombreCompleto;
@@ -31,20 +29,12 @@ public class Usuarios {
         this.estado = estado;
     }
 
-    public int getIdroles() {
+    public Roles getIdroles() {
         return idRoles;
     }
 
-    public void setIdroles(int idRoles) {
+    public void setIdroles(Roles idRoles) {
         this.idRoles= idRoles;
-    }
-
-    public String getNombreRoles() {
-        return nombreRoles;
-    }
-
-    public void setNombreRoles(String nombreRoles) {
-        this.nombreRoles = nombreRoles;
     }
 
     public int getIdUsuario() {
