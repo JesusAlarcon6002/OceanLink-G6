@@ -17,6 +17,7 @@
 <body>
 <div class='container'>
     <h1 class='mb-3'>Lista de Segmentos</h1>
+    <a class="btn btn-primary" href="<%=request.getContextPath()%>/SegmentosServlet?action=formCrear">Crear Segmentos</a>
     <table>
         <tr>
             <th>Etiqueta del segmento</th>

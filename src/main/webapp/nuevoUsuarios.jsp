@@ -17,6 +17,7 @@
 <div class='container'>
     <h1 class='mb-3'>Crear un nuevo usuario</h1>
     <form method="POST" action="<%=request.getContextPath()%>/UsuariosServlet?action=crear">
+
         <div class="form-group">
             <label for="etiqueta">Etiqueta</label>
             <input type="text" class="form-control" id="etiqueta" name="etiqueta">
