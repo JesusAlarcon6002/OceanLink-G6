@@ -3,15 +3,13 @@ package com.oceanlink.beans;
 public class Segmentos {
     private int idSegmento;
     private String etiquetaSegmento;
-    private int idEstacionOrigen;
-    private int idEstacionDestino;
+    private Landing_Stations idEstacionOrigen;
+    private Landing_Stations idEstacionDestino;
     private double capacidadTotalGbps;
     private double capacidadUtilizadaGbps;
     private double capacidadReservadaGbps;
     private String estado;
 
-    private String estacionOrigen;
-    private String estacionDestino;
 
     public int getIdSegmento() {
         return idSegmento;
@@ -29,19 +27,19 @@ public class Segmentos {
         this.etiquetaSegmento = etiquetaSegmento;
     }
 
-    public int getIdEstacionOrigen() {
+    public Landing_Stations getIdEstacionOrigen() {
         return idEstacionOrigen;
     }
 
-    public void setIdEstacionOrigen(int idEstacionOrigen) {
+    public void setIdEstacionOrigen(Landing_Stations idEstacionOrigen) {
         this.idEstacionOrigen = idEstacionOrigen;
     }
 
-    public int getIdEstacionDestino() {
+    public Landing_Stations getIdEstacionDestino() {
         return idEstacionDestino;
     }
 
-    public void setIdEstacionDestino(int idEstacionDestino) {
+    public void setIdEstacionDestino(Landing_Stations idEstacionDestino) {
         this.idEstacionDestino = idEstacionDestino;
     }
 
@@ -77,19 +75,4 @@ public class Segmentos {
         this.estado = estado;
     }
 
-    public String getEstacionOrigen() {
-        return estacionOrigen;
-    }
-
-    public void setEstacionOrigen(String estacionOrigen) {
-        this.estacionOrigen = estacionOrigen;
-    }
-
-    public String getEstacionDestino() {
-        return estacionDestino;
-    }
-
-    public void setEstacionDestino(String estacionDestino) {
-        this.estacionDestino = estacionDestino;
-    }
 }

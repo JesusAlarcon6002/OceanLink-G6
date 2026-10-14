@@ -30,8 +30,8 @@
         <% for (Segmentos sg : listaSegmentos) { %>
         <tr>
             <td><%=sg.getEtiquetaSegmento()%></td>
-            <td><%=sg.getEstacionOrigen()%></td>
-            <td><%=sg.getEstacionDestino()%></td>
+            <td><%=sg.getIdEstacionOrigen().getEtiqueta_station()%></td>
+            <td><%=sg.getIdEstacionDestino().getEtiqueta_station()%></td>
             <td><%=sg.getCapacidadTotalGbps()%></td>
             <td><%=sg.getCapacidadReservadaGbps()%></td>
             <td><%=sg.getCapacidadUtilizadaGbps()%></td>
