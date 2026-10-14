@@ -157,4 +157,22 @@ public class SegmentosDao {
             e.printStackTrace();
         }
     }
+    public void borrarSegmentos(int idSegmentos) {
+        try {
+            String user = "root";
+            String pass = "12345678ABCD";
+            String url = "jdbc:mysql://127.0.0.1:3306/proyecto_siete";
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            try (Connection conn = DriverManager.getConnection(url, user, pass)) {
+                String sql = "DELETE FROM segmentos WHERE id_segmentos = ?;";
+                try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                    pstmt.setInt(1, idSegmentos);
+                    pstmt.executeUpdate();
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }

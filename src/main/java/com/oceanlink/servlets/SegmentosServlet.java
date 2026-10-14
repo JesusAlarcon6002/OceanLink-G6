@@ -2,6 +2,7 @@ package com.oceanlink.servlets;
 
 import com.oceanlink.beans.Landing_Stations;
 import com.oceanlink.beans.Segmentos;
+import com.oceanlink.beans.Usuarios;
 import com.oceanlink.daos.Landing_StationsDao;
 import com.oceanlink.daos.SegmentosDao;
 import com.oceanlink.daos.UsuariosDao;
@@ -24,13 +25,13 @@ public class SegmentosServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         String action = request.getParameter("action")==null ? "lista":request.getParameter("action");
-        SegmentosDao SegmentosDao = new SegmentosDao();
+        SegmentosDao segmentosDao = new SegmentosDao();
         Landing_StationsDao landing_StationsDao = new Landing_StationsDao();
         RequestDispatcher view;
 
         switch (action){
             case "lista":
-                ArrayList<Segmentos> listaSegmentos = SegmentosDao.obtenerListaSegmentos();
+                ArrayList<Segmentos> listaSegmentos = segmentosDao.obtenerListaSegmentos();
                 request.setAttribute("listaSegmentos", listaSegmentos);
 
                 view = request.getRequestDispatcher("listaSegmentos.jsp");
@@ -40,6 +41,27 @@ public class SegmentosServlet extends HttpServlet {
                 request.setAttribute("listaLanding_Stations", landing_StationsDao.obtenerListaLanding_Stations());
                 view = request.getRequestDispatcher("nuevoSegmentos.jsp");
                 view.forward(request, response);
+                break;
+            case "editar":
+                String Strg = request.getParameter("id");
+                int idSegmento = Integer.parseInt(Strg);
+                Segmentos segmentos =segmentosDao.obtenerSegmentos(idSegmento);
+                if(segmentos==null){
+                    response.sendRedirect(request.getContextPath()+"/UsuariosServlet");
+                }else {
+                    request.setAttribute("segmentos",segmentos);
+                    request.setAttribute("listaLanding_Stations", landing_StationsDao.obtenerListaLanding_Stations());
+                    view = request.getRequestDispatcher("editarSegmentos.jsp");
+                    view.forward(request, response);
+                }
+                break;
+            case "borrar":
+                String idStr = request.getParameter("id");
+                idSegmento = Integer.parseInt(idStr);
+                if (segmentosDao.obtenerSegmentos(idSegmento) != null) {
+                    segmentosDao.borrarSegmentos(idSegmento);
+                }
+                response.sendRedirect(request.getContextPath() + "/SegmentosServlet");
                 break;
         }
 

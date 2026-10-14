@@ -22,7 +22,7 @@
 <div class='container mt-4'>
     <h1 class='mb-3'>Editar segmento</h1>
 
-    <form method="post" action="<%=request.getContextPath()%>/UsuariosServlet?action=crear">
+    <form method="post" action="<%=request.getContextPath()%>/SegmentosServlet?action=crear">
 
         <input type="hidden" name="id" value="<%=sg.getIdSegmento()%>">
 
@@ -58,7 +58,7 @@
             <input type="number" step="0.01" min="0" class="form-control" id="capacidadTotal" name="capacidadTotal">
         </div>
 
-        <a href="<%=request.getContextPath()%>/UsuariosServlet" class="btn btn-danger">Regresar</a>
+        <a href="<%=request.getContextPath()%>/SegmentosServlet" class="btn btn-danger">Regresar</a>
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     </form>
 </div>
