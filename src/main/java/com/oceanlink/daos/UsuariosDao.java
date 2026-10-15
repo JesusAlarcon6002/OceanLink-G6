@@ -126,7 +126,7 @@ public class UsuariosDao {
         return usuarios;
     }
 
-    public void actualizarUsuarios(int idUsuario, String etiqueta, String nombre, String apellido, String correo, String telefono, int rol) {
+    public void actualizarUsuarios(int idUsuario, String etiqueta, String nombre, String apellido, String correo, String telefono, int rol, String passwd) {
         try {
             String user = "root";
             String pass = "12345678ABCD";
@@ -134,7 +134,7 @@ public class UsuariosDao {
 
             Class.forName("com.mysql.cj.jdbc.Driver");
             try (Connection conn = DriverManager.getConnection(url, user, pass);) {
-                String sql = "UPDATE usuarios SET etiqueta_usuario = ?, nombre = ?, apellido = ?, correo = ?, telefono = ?, roles_idroles = ? "
+                String sql = "UPDATE usuarios SET etiqueta_usuario = ?, nombre = ?, apellido = ?, correo = ?, telefono = ?,password_hash = ?,roles_idroles = ? "
                         + "WHERE idusuarios = ?";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setString(1, etiqueta);
@@ -142,8 +142,9 @@ public class UsuariosDao {
                     pstmt.setString(3, apellido);
                     pstmt.setString(4, correo);
                     pstmt.setString(5, telefono);
-                    pstmt.setInt(6, rol);
-                    pstmt.setInt(7, idUsuario);
+                    pstmt.setString(6, passwd);
+                    pstmt.setInt(7, rol);
+                    pstmt.setInt(8, idUsuario);
                     pstmt.executeUpdate();
                 }
             }

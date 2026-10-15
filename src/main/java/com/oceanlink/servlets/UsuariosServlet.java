@@ -91,7 +91,7 @@ public class UsuariosServlet  extends HttpServlet {
                 if (usuario == null) {
                     usuariosDao.crearUsuarios(etiqueta, nombre, apellido, correo, passwd, telefono, String.valueOf(idRol));
                 } else {
-                    usuariosDao.actualizarUsuarios(idUsuario, etiqueta, nombre, apellido, correo, telefono, idRol);
+                    usuariosDao.actualizarUsuarios(idUsuario, etiqueta, nombre, apellido, correo, telefono, idRol,passwd);
                 }
                 response.sendRedirect(request.getContextPath() + "/UsuariosServlet");
                 break;

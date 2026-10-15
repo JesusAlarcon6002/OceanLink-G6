@@ -52,6 +52,11 @@
         </div>
 
         <div class="mb-3">
+            <label for="passwd" class="form-label">Nueva Contraseña</label>
+            <input type="password" class="form-control" id="passwd" name="passwd" value="<%=usr.getPasswordHash()%>">
+        </div>
+
+        <div class="mb-3">
             <label for="rol" class="form-label">Rol</label>
             <select name="idRol" id="rol" class="form-select">
                 <% if (listaRoles != null) {
