@@ -47,7 +47,7 @@ public class SegmentosServlet extends HttpServlet {
                 int idSegmento = Integer.parseInt(Strg);
                 Segmentos segmentos =segmentosDao.obtenerSegmentos(idSegmento);
                 if(segmentos==null){
-                    response.sendRedirect(request.getContextPath()+"/UsuariosServlet");
+                    response.sendRedirect(request.getContextPath()+"/EstacionesServlet");
                 }else {
                     request.setAttribute("segmentos",segmentos);
                     request.setAttribute("listaLanding_Stations", landing_StationsDao.obtenerListaLanding_Stations());

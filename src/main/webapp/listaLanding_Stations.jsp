@@ -17,6 +17,7 @@
 <body>
 <div class='container'>
     <h1 class='mb-3'>Lista de Landing Stations</h1>
+    <a class="btn btn-primary" href="<%=request.getContextPath()%>/EstacionesServlet?action=formCrear">Crear Landing Station</a>
     <table>
         <tr>
             <th>Etiqueta</th>
@@ -29,6 +30,8 @@
             <td><%=station.getEtiqueta_station()%></td>
             <td><%=station.getUbicacion()%></td>
             <td><%=station.getEstado()%></td>
+            <td><a href="<%=request.getContextPath()%>/EstacionesServlet?action=editar&id=<%=station.getId_landing_stations()%>">Editar</a></td>
+            <td><a href="<%=request.getContextPath()%>/EstacionesServlet?action=borrar&id=<%=station.getId_landing_stations()%>">Borrar</a></td>
 
         </tr>
         <%  }  %>
