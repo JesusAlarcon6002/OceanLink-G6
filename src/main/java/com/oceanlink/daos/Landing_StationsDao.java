@@ -68,15 +68,16 @@ public class Landing_StationsDao {
             try (Connection conn = DriverManager.getConnection(url, user, pass);
                  PreparedStatement pstmt = conn.prepareStatement("SELECT id_landing_stations AS 'id'," +
                          " etiqueta_station AS 'etiqueta'," +
-                         " ubicacion AS 'ubicacion'," +
-                         " where id_landing_stations = ?;");) {
+                         " ubicacion AS 'ubicacion'" +
+                         " FROM landing_stations" +
+                         " WHERE id_landing_stations = ?;");) {
 
                 pstmt.setInt(1, id_landing_stations);
                 try (ResultSet rs = pstmt.executeQuery()) {
                     if (rs.next()) {
                         ls = new Landing_Stations();
                         ls.setId_landing_stations(rs.getInt("id"));
-                        ls.setEtiqueta_station(rs.getString("etiqueta_station"));
+                        ls.setEtiqueta_station(rs.getString("etiqueta"));
                         ls.setUbicacion(rs.getString("ubicacion"));
                     }
                 }
@@ -95,7 +96,7 @@ public class Landing_StationsDao {
 
             Class.forName("com.mysql.cj.jdbc.Driver");
             try (Connection conn = DriverManager.getConnection(url, user, pass);) {
-                String sql = "UPDATE segmentos SET etiqueta_station = ?, ubicacion = ?"
+                String sql = "UPDATE landing_stations SET etiqueta_station = ?, ubicacion = ?"
                         + " WHERE id_landing_stations = ?";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setString(1, etiqueta);
@@ -117,7 +118,7 @@ public class Landing_StationsDao {
 
             Class.forName("com.mysql.cj.jdbc.Driver");
             try (Connection conn = DriverManager.getConnection(url, user, pass)) {
-                String sql = "DELETE FROM landing_stations WHERE id_station = ?;";
+                String sql = "DELETE FROM landing_stations WHERE id_landing_stations = ?;";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setInt(1, idLandingStations);
                     pstmt.executeUpdate();

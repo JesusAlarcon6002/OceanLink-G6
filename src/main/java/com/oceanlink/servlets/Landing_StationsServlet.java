@@ -37,7 +37,7 @@ public class Landing_StationsServlet  extends HttpServlet {
                 break;
             case "formCrear":
                 request.setAttribute("listaLanding_Stations", landing_StationsDao.obtenerListaLanding_Stations());
-                view = request.getRequestDispatcher("nuevoLandingStations.jsp");
+                view = request.getRequestDispatcher("nuevoLanding_Stations.jsp");
                 view.forward(request, response);
                 break;
             case "editar":
@@ -48,7 +48,7 @@ public class Landing_StationsServlet  extends HttpServlet {
                     response.sendRedirect(request.getContextPath()+"/EstacionesServlet");
                 }else {
                     request.setAttribute("landingStations",landing_stations);
-                    view = request.getRequestDispatcher("editarLandingStations.jsp");
+                    view = request.getRequestDispatcher("editarLanding_Stations.jsp");
                     view.forward(request, response);
                 }
                 break;
@@ -74,7 +74,7 @@ public class Landing_StationsServlet  extends HttpServlet {
             case "crear":
 
                 String idLandingStationStr = request.getParameter("id");
-                String etiqueta = request.getParameter("etiquetalandingStation");
+                String etiqueta = request.getParameter("etiquetaLandingStation");
                 String ubicacion = request.getParameter("ubicacion");
 
 
