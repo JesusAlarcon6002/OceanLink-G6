@@ -80,7 +80,7 @@ public class UsuariosServlet  extends HttpServlet {
                 String correo = request.getParameter("correo");
                 String passwd = request.getParameter("passwd");
                 String telefono = request.getParameter("telefono");
-
+                String estado = request.getParameter("estado");
                 String idRolStr = request.getParameter("idRol");
 
                 int idUsuario = (idUsuarioStr != null && !idUsuarioStr.isEmpty()) ? Integer.parseInt(idUsuarioStr) : 0;
@@ -91,7 +91,7 @@ public class UsuariosServlet  extends HttpServlet {
                 if (usuario == null) {
                     usuariosDao.crearUsuarios(etiqueta, nombre, apellido, correo, passwd, telefono, String.valueOf(idRol));
                 } else {
-                    usuariosDao.actualizarUsuarios(idUsuario, etiqueta, nombre, apellido, correo, telefono, idRol,passwd);
+                    usuariosDao.actualizarUsuarios(idUsuario, etiqueta, nombre, apellido, correo, telefono, idRol,passwd,estado);
                 }
                 response.sendRedirect(request.getContextPath() + "/UsuariosServlet");
                 break;

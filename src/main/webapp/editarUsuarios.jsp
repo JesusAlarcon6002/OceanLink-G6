@@ -71,6 +71,18 @@
             </select>
         </div>
 
+        <div class="mb-3">
+            <label for="estado" class="form-label">Estado</label>
+            <select name="estado" id="estado" class="form-select">
+                <option value="Activo" <%="Activo".equals(usr.getEstado()) ? "selected" : ""%>>
+                    Activo
+                </option>
+                <option value="Inactivo" <%="Inactivo".equals(usr.getEstado()) ? "selected" : ""%>>
+                    Inactivo
+                </option>
+            </select>
+        </div>
+
         <a href="<%=request.getContextPath()%>/UsuariosServlet" class="btn btn-danger">Regresar</a>
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     </form>
