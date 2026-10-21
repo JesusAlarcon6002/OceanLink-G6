@@ -28,7 +28,7 @@
 
         <div class="form-group">
             <label for="etiquetaSegmento">Segmento</label>
-            <input type="text" class="form-control" id="etiquetaSegmento" name="etiquetaSegmento">
+            <input type="text" class="form-control" id="etiquetaSegmento" name="etiquetaSegmento" value="<%=sg.getEtiquetaSegmento()%>">
         </div>
 
         <div class="form-group">
@@ -55,7 +55,28 @@
 
         <div class="form-group">
             <label for="capacidadTotal">Capacidad Total (Gbps)</label>
-            <input type="number" step="0.01" min="0" class="form-control" id="capacidadTotal" name="capacidadTotal">
+            <input type="number" step="0.01" min="0" class="form-control" id="capacidadTotal" name="capacidadTotal" value="<%= sg.getCapacidadTotalGbps() %>">
+        </div>
+
+        <div class="form-group">
+            <label for="estado">Estado</label>
+            <select class="form-control" id="estado" name="estado">
+                <option value="Operativo" <%="Operativo".equals(sg.getEstado()) ? "selected" : ""%>>
+                    Operativo
+                </option>
+
+                <option value="Degradado" <%="Degradado".equals(sg.getEstado()) ? "selected" : ""%>>
+                    Degradado
+                </option>
+
+                <option value="En mantenimiento" <%="En mantenimiento".equals(sg.getEstado()) ? "selected" : ""%>>
+                    En mantenimiento
+                </option>
+
+                <option value="Fuera de servicio" <%="Fuera de servicio".equals(sg.getEstado()) ? "selected" : ""%>>
+                    Fuera de servicio
+                </option>
+            </select>
         </div>
 
         <a href="<%=request.getContextPath()%>/SegmentosServlet" class="btn btn-danger">Regresar</a>

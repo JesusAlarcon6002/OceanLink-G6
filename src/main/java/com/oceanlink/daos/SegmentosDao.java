@@ -94,7 +94,8 @@ public class SegmentosDao {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             try (Connection conn = DriverManager.getConnection(url, user, pass);
-                 PreparedStatement pstmt = conn.prepareStatement("SELECT sg.id_segmentos AS 'etiqueta'," +
+                 PreparedStatement pstmt = conn.prepareStatement("SELECT id_segmentos AS 'id'," +
+                         " sg.etiqueta_segmentos AS 'etiqueta'," +
                          " eo.id_landing_stations AS 'idEstacionOrigen'," +
                          " eo.etiqueta_station AS 'estacionOrigen'," +
                          " ed.id_landing_stations AS 'idEstacionDestino'," +
@@ -111,8 +112,9 @@ public class SegmentosDao {
                 try (ResultSet rs = pstmt.executeQuery()) {
                     if (rs.next()) {
                         sg = new Segmentos();
+                        sg.setIdSegmento(rs.getInt("id"));
                         sg.setEtiquetaSegmento(rs.getString("etiqueta"));
-                        sg.setCapacidadUtilizadaGbps(rs.getDouble("capacidadTotal"));
+                        sg.setCapacidadTotalGbps(rs.getDouble("capacidadTotal"));
 
                         Landing_Stations eo = new Landing_Stations();
                         eo.setId_landing_stations(rs.getInt("idEstacionOrigen"));
@@ -134,7 +136,7 @@ public class SegmentosDao {
         return sg;
     }
 
-    public void actualizarSegmentos(int idSegmento,String etiqueta, String estacionOrigen, String estacionDestino, String capacidadTotal) {
+    public void actualizarSegmentos(int idSegmento,String etiqueta, String estacionOrigen, String estacionDestino, String capacidadTotal, String estado) {
         try {
             String user = "root";
             String pass = "12345678ABCD";
@@ -142,14 +144,15 @@ public class SegmentosDao {
 
             Class.forName("com.mysql.cj.jdbc.Driver");
             try (Connection conn = DriverManager.getConnection(url, user, pass);) {
-                String sql = "UPDATE segmentos SET etiqueta_segmentos = ?, id_estacion_origen = ?, id_estacion_destino = ?, capacidad_total_gbps = ? "
+                String sql = "UPDATE segmentos SET etiqueta_segmentos = ?, id_estacion_origen = ?, id_estacion_destino = ?, capacidad_total_gbps = ?, estado = ? "
                         + "WHERE id_segmentos = ?";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setString(1, etiqueta);
                     pstmt.setString(2, estacionOrigen);
                     pstmt.setString(3, estacionDestino);
                     pstmt.setString(4, capacidadTotal);
-                    pstmt.setInt(5, idSegmento);
+                    pstmt.setString(5, estado);
+                    pstmt.setInt(6, idSegmento);
                     pstmt.executeUpdate();
                 }
             }

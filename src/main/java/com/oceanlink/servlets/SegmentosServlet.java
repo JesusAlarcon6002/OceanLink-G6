@@ -47,7 +47,7 @@ public class SegmentosServlet extends HttpServlet {
                 int idSegmento = Integer.parseInt(Strg);
                 Segmentos segmentos =segmentosDao.obtenerSegmentos(idSegmento);
                 if(segmentos==null){
-                    response.sendRedirect(request.getContextPath()+"/EstacionesServlet");
+                    response.sendRedirect(request.getContextPath()+"/SegmentosServlet");
                 }else {
                     request.setAttribute("segmentos",segmentos);
                     request.setAttribute("listaLanding_Stations", landing_StationsDao.obtenerListaLanding_Stations());
@@ -85,6 +85,7 @@ public class SegmentosServlet extends HttpServlet {
                 String estacionOrigen = request.getParameter("estacionOrigen");
                 String estacionDestino = request.getParameter("estacionDestino");
                 String capacidadTotal =  request.getParameter("capacidadTotal");
+                String estado = request.getParameter("estado");
 
                 int idSegmento = (idSegmentoStr != null && !idSegmentoStr.isEmpty()) ? Integer.parseInt(idSegmentoStr) : 0;
 
@@ -93,7 +94,7 @@ public class SegmentosServlet extends HttpServlet {
                 if(segmento == null){
                     segmentosDao.crearSegmentos(etiqueta, estacionOrigen, estacionDestino,capacidadTotal);
                 } else {
-                    segmentosDao.actualizarSegmentos(idSegmento, etiqueta,estacionOrigen,estacionDestino,capacidadTotal);
+                    segmentosDao.actualizarSegmentos(idSegmento, etiqueta,estacionOrigen,estacionDestino,capacidadTotal,estado);
                 }
                 response.sendRedirect(request.getContextPath() + "/SegmentosServlet");
                 break;
