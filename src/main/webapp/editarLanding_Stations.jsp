@@ -27,15 +27,32 @@
 
         <div class="form-group">
             <label for="etiquetaLandingStation">Landing Station</label>
-            <input type="text" class="form-control" id="etiquetaLandingStation" name="etiquetaLandingStation">
+            <input type="text" class="form-control" id="etiquetaLandingStation" name="etiquetaLandingStation" value="<%=ls.getEtiqueta_station()%>">
         </div>
 
         <div class="form-group">
             <label for="ubicacion">Ubicación</label>
-            <input type="text" class="form-control" id="ubicacion" name="ubicacion">
+            <input type="text" class="form-control" id="ubicacion" name="ubicacion" value="<%=ls.getUbicacion()%>">
         </div>
 
-        <a href="<%=request.getContextPath()%>/EstacionServlet" class="btn btn-danger">Regresar</a>
+        <div class="form-group">
+            <label for="estado">Estado</label>
+            <select class="form-control" id="estado" name="estado">
+                <option value="Operativo" <%= "Operativo".equals(ls.getEstado()) ? "selected" : "" %>>
+                    Operativo
+                </option>
+
+                <option value="Fuera de servicio" <%= "Fuera de servicio".equals(ls.getEstado()) ? "selected" : "" %>>
+                    Fuera de servicio
+                </option>
+
+                <option value="En mantenimiento" <%="En mantenimiento".equals(ls.getEstado()) ? "selected" : "" %>>
+                    En mantenimiento
+                </option>
+            </select>
+        </div>
+
+        <a href="<%=request.getContextPath()%>/EstacionesServlet" class="btn btn-danger">Regresar</a>
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
     </form>
 </div>

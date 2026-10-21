@@ -68,7 +68,8 @@ public class Landing_StationsDao {
             try (Connection conn = DriverManager.getConnection(url, user, pass);
                  PreparedStatement pstmt = conn.prepareStatement("SELECT id_landing_stations AS 'id'," +
                          " etiqueta_station AS 'etiqueta'," +
-                         " ubicacion AS 'ubicacion'" +
+                         " ubicacion AS 'ubicacion'," +
+                         " estado AS 'Estado'" +
                          " FROM landing_stations" +
                          " WHERE id_landing_stations = ?;");) {
 
@@ -79,6 +80,7 @@ public class Landing_StationsDao {
                         ls.setId_landing_stations(rs.getInt("id"));
                         ls.setEtiqueta_station(rs.getString("etiqueta"));
                         ls.setUbicacion(rs.getString("ubicacion"));
+                        ls.setEstado(rs.getString("Estado"));
                     }
                 }
             }
@@ -88,7 +90,7 @@ public class Landing_StationsDao {
         return ls;
     }
 
-    public void actualizarLandingStations(int idLandingStation,String etiqueta, String ubicacion) {
+    public void actualizarLandingStations(int idLandingStation,String etiqueta, String ubicacion, String estado) {
         try {
             String user = "root";
             String pass = "12345678ABCD";
@@ -96,12 +98,13 @@ public class Landing_StationsDao {
 
             Class.forName("com.mysql.cj.jdbc.Driver");
             try (Connection conn = DriverManager.getConnection(url, user, pass);) {
-                String sql = "UPDATE landing_stations SET etiqueta_station = ?, ubicacion = ?"
+                String sql = "UPDATE landing_stations SET etiqueta_station = ?, ubicacion = ?, estado = ?"
                         + " WHERE id_landing_stations = ?";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setString(1, etiqueta);
                     pstmt.setString(2, ubicacion);
-                    pstmt.setInt(3, idLandingStation);
+                    pstmt.setString(3, estado);
+                    pstmt.setInt(4, idLandingStation);
                     pstmt.executeUpdate();
                 }
             }

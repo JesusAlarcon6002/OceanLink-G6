@@ -76,6 +76,7 @@ public class Landing_StationsServlet  extends HttpServlet {
                 String idLandingStationStr = request.getParameter("id");
                 String etiqueta = request.getParameter("etiquetaLandingStation");
                 String ubicacion = request.getParameter("ubicacion");
+                String estado =  request.getParameter("estado");
 
 
                 int idLandingStation = (idLandingStationStr != null && !idLandingStationStr.isEmpty()) ? Integer.parseInt(idLandingStationStr) : 0;
@@ -85,7 +86,7 @@ public class Landing_StationsServlet  extends HttpServlet {
                 if(landing_stations == null){
                     landing_StationsDao.crearLandingStations(etiqueta, ubicacion);
                 } else {
-                    landing_StationsDao.actualizarLandingStations(idLandingStation, etiqueta, ubicacion);
+                    landing_StationsDao.actualizarLandingStations(idLandingStation, etiqueta, ubicacion, estado);
                 }
                 response.sendRedirect(request.getContextPath() + "/EstacionesServlet");
                 break;
