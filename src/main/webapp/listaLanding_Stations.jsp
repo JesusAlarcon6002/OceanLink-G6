@@ -1,44 +1,68 @@
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.oceanlink.beans.Landing_Stations" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.oceanlink.util.Html" %>
 <%
+    // Lo manda Landing_StationsServlet (/EstacionesServlet, action=lista)
     ArrayList<Landing_Stations> listaLanding_Stations = (ArrayList<Landing_Stations>) request.getAttribute("listaLanding_Stations");
+    if (listaLanding_Stations == null) {
+        listaLanding_Stations = new ArrayList<>();
+    }
+    String ctx = request.getContextPath();
 %>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-          rel="stylesheet" crossorigin="anonymous">
-    <title>Lista de Landing Stations</title>
-</head>
-<body>
-<div class='container'>
-    <h1 class='mb-3'>Lista de Landing Stations</h1>
-    <a class="btn btn-primary" href="<%=request.getContextPath()%>/EstacionesServlet?action=formCrear">Crear Landing Station</a>
-    <table>
-        <tr>
-            <th>Etiqueta</th>
-            <th>Ubicación</th>
-            <th>Estado</th>
+<jsp:include page="/WEB-INF/includes/inicio.jsp">
+    <jsp:param name="titulo" value="Landing Stations"/>
+    <jsp:param name="encabezado" value="LANDING STATIONS"/>
+    <jsp:param name="subtitulo" value="Estaciones de amarre de los cables submarinos"/>
+    <jsp:param name="rol" value="admin"/>
+    <jsp:param name="activo" value="stations"/>
+</jsp:include>
 
-        </tr>
-        <% for (Landing_Stations station : listaLanding_Stations) { %>
-        <tr>
-            <td><%=station.getEtiqueta_station()%></td>
-            <td><%=station.getUbicacion()%></td>
-            <td><%=station.getEstado()%></td>
-            <td><a href="<%=request.getContextPath()%>/EstacionesServlet?action=editar&id=<%=station.getId_landing_stations()%>">Editar</a></td>
-            <td><a href="<%=request.getContextPath()%>/EstacionesServlet?action=borrar&id=<%=station.getId_landing_stations()%>">Borrar</a></td>
+        <div class="form-panel-dark" style="min-height:auto;">
+          <div class="panel-toolbar">
+            <input class="search-input" type="text" id="buscar" placeholder="Buscar estaciones...">
+            <select class="filter-select" id="filtro">
+              <option value="">Filtrar por estado...</option>
+              <option value="estado:Operativo">Operativo</option>
+              <option value="estado:En mantenimiento">En mantenimiento</option>
+              <option value="estado:Fuera de servicio">Fuera de servicio</option>
+            </select>
+            <a class="btn-register-toolbar" href="<%=ctx%>/EstacionesServlet?action=formCrear" style="text-decoration:none;">REGISTRAR ESTACIONES</a>
+          </div>
 
-        </tr>
-        <%  }  %>
-    </table>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
-</body>
-</html>
+          <div class="dark-table-wrap">
+            <table>
+              <thead>
+                <tr><th>NOMBRE</th><th>UBICACIÓN</th><th>ESTADO</th><th>ACCIONES</th></tr>
+              </thead>
+              <tbody id="tabla-datos">
+                <% if (listaLanding_Stations.isEmpty()) { %>
+                <tr class="fila-vacia"><td colspan="4">Aún no hay estaciones registradas.</td></tr>
+                <% }
+                   for (Landing_Stations station : listaLanding_Stations) {
+                       String claseEstado = "badge-success";                       // Operativo
+                       if ("En mantenimiento".equals(station.getEstado())) claseEstado = "badge-warning";
+                       else if ("Fuera de servicio".equals(station.getEstado())) claseEstado = "badge-danger";
+                %>
+                <tr data-fila data-estado="<%=Html.esc(station.getEstado())%>">
+                  <td><%=Html.esc(station.getEtiqueta_station())%></td>
+                  <td><%=Html.esc(station.getUbicacion())%></td>
+                  <td><span class="badge <%=claseEstado%>"><%=Html.esc(station.getEstado())%></span></td>
+                  <td>
+                    <div class="acciones-fila">
+                      <a class="btn-edit-white" href="<%=ctx%>/EstacionesServlet?action=editar&id=<%=station.getId_landing_stations()%>">Editar</a>
+                      <a class="btn-delete-red" href="<%=ctx%>/EstacionesServlet?action=borrar&id=<%=station.getId_landing_stations()%>"
+                         onclick="return confirm('¿Seguro que quieres eliminar esta estación?');">Borrar</a>
+                    </div>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-footer-note" id="nota-pie" data-unidad="estaciones">Mostrando <%=listaLanding_Stations.size()%> de <%=listaLanding_Stations.size()%> estaciones</p>
+        </div>
+
+<jsp:include page="/WEB-INF/includes/acciones-admin.jsp"/>
+<script src="<%=ctx%>/assets/js/filtros.js"></script>
+<jsp:include page="/WEB-INF/includes/fin.jsp"/>

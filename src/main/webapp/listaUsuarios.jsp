@@ -1,48 +1,78 @@
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.LinkedHashSet" %>
 <%@ page import="com.oceanlink.beans.Usuarios" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.oceanlink.util.Html" %>
 <%
+    // Lo manda UsuariosServlet (action=lista) con request.setAttribute("lista", ...)
     ArrayList<Usuarios> listaUsuarios = (ArrayList<Usuarios>) request.getAttribute("lista");
+    if (listaUsuarios == null) {
+        listaUsuarios = new ArrayList<>();
+    }
+    String ctx = request.getContextPath();
+
+    // Roles que existen en la lista, para armar el filtro
+    LinkedHashSet<String> roles = new LinkedHashSet<>();
+    for (Usuarios u : listaUsuarios) {
+        if (u.getIdroles() != null && u.getIdroles().getNombreRoles() != null) {
+            roles.add(u.getIdroles().getNombreRoles());
+        }
+    }
 %>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-          rel="stylesheet" crossorigin="anonymous">
-    <title>Lista de Usuarios</title>
-</head>
-<body>
-<div class='container'>
-    <h1 class='mb-3'>Lista de Usuarios</h1>
-    <a class="btn btn-primary" href="<%=request.getContextPath()%>/UsuariosServlet?action=formCrear">Crear usuario</a>
-    <table>
-        <tr>
-            <th>Etiqueta</th>
-            <th>Nombres</th>
-            <th>Telefono</th>
-            <th>Correos</th>
-            <th>Roles</th>
-            <th>Estado</th>
-        </tr>
-        <% for (Usuarios usr : listaUsuarios) { %>
-        <tr>
-            <td><%=usr.getEtiquetaUsuario()%></td>
-            <td><%=usr.getNombreCompleto()%></td>
-            <td><%=usr.getTelefono()%></td>
-            <td><%=usr.getCorreo()%></td>
-            <td><%=usr.getIdroles().getNombreRoles()%></td>
-            <td><%=usr.getEstado()%></td>
-            <td><a href="<%=request.getContextPath()%>/UsuariosServlet?action=editar&id=<%=usr.getIdUsuario()%>">Editar</a></td>
-            <td><a href="<%=request.getContextPath()%>/UsuariosServlet?action=borrar&id=<%=usr.getIdUsuario()%>">Borrar</a></td>
-        </tr>
-        <%  }  %>
-    </table>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
-</body>
-</html>
+<jsp:include page="/WEB-INF/includes/inicio.jsp">
+    <jsp:param name="titulo" value="Usuarios"/>
+    <jsp:param name="encabezado" value="GESTIÓN DE USUARIOS"/>
+    <jsp:param name="subtitulo" value="Lista de usuarios del sistema"/>
+    <jsp:param name="rol" value="admin"/>
+    <jsp:param name="activo" value="usuarios"/>
+</jsp:include>
+
+        <div class="form-panel-dark" style="min-height:auto;">
+          <div class="panel-toolbar">
+            <input class="search-input" type="text" id="buscar" placeholder="Buscar usuario, nombre o correo..." style="width:233px;">
+            <select class="filter-select" id="filtro">
+              <option value="">Filtrar por rol...</option>
+              <% for (String rol : roles) { %>
+              <option value="rol:<%=Html.esc(rol)%>"><%=Html.esc(rol)%></option>
+              <% } %>
+            </select>
+            <a class="btn-register-toolbar" href="<%=ctx%>/UsuariosServlet?action=formCrear" style="text-decoration:none;">REGISTRAR USUARIO</a>
+          </div>
+
+          <div class="dark-table-wrap">
+            <table>
+              <thead>
+                <tr><th>USUARIO</th><th>NOMBRE</th><th>CORREO</th><th>ROL</th><th>ESTADO</th><th>ACCIONES</th></tr>
+              </thead>
+              <tbody id="tabla-datos">
+                <% if (listaUsuarios.isEmpty()) { %>
+                <tr class="fila-vacia"><td colspan="6">Aún no hay usuarios registrados.</td></tr>
+                <% }
+                   for (Usuarios usr : listaUsuarios) {
+                       String nombreRol = usr.getIdroles() == null ? "" : usr.getIdroles().getNombreRoles();
+                       String claseEstado = "Activo".equals(usr.getEstado()) ? "badge-success" : "badge-neutral";
+                %>
+                <tr data-fila data-rol="<%=Html.esc(nombreRol)%>">
+                  <td><%=Html.esc(usr.getEtiquetaUsuario())%></td>
+                  <td><%=Html.esc(usr.getNombreCompleto())%></td>
+                  <td><%=Html.esc(usr.getCorreo())%></td>
+                  <td><%=Html.esc(nombreRol)%></td>
+                  <td><span class="badge <%=claseEstado%>"><%=Html.esc(usr.getEstado())%></span></td>
+                  <td>
+                    <div class="acciones-fila">
+                      <a class="btn-edit-white" href="<%=ctx%>/UsuariosServlet?action=editar&id=<%=usr.getIdUsuario()%>">Editar</a>
+                      <a class="btn-delete-red" href="<%=ctx%>/UsuariosServlet?action=borrar&id=<%=usr.getIdUsuario()%>"
+                         onclick="return confirm('¿Seguro que quieres eliminar este usuario?');">Borrar</a>
+                    </div>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-footer-note" id="nota-pie" data-unidad="usuarios">Mostrando <%=listaUsuarios.size()%> de <%=listaUsuarios.size()%> usuarios</p>
+        </div>
+
+<jsp:include page="/WEB-INF/includes/acciones-admin.jsp"/>
+<script src="<%=ctx%>/assets/js/filtros.js"></script>
+<jsp:include page="/WEB-INF/includes/fin.jsp"/>

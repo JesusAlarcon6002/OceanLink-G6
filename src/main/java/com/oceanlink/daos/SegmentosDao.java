@@ -88,7 +88,8 @@ public class SegmentosDao {
                          " eo.etiqueta_station AS 'estacionOrigen'," +
                          " ed.id_landing_stations AS 'idEstacionDestino'," +
                          " ed.etiqueta_station AS 'estacionDestino'," +
-                         " sg.capacidad_total_gbps AS 'capacidadTotal'" +
+                         " sg.capacidad_total_gbps AS 'capacidadTotal'," +
+                         " sg.estado AS 'estado'" +
                          " FROM segmentos sg" +
                          " INNER JOIN" +
                          " landing_stations eo ON eo.id_landing_stations = sg.id_estacion_origen " +
@@ -103,6 +104,7 @@ public class SegmentosDao {
                         sg.setIdSegmento(rs.getInt("id"));
                         sg.setEtiquetaSegmento(rs.getString("etiqueta"));
                         sg.setCapacidadTotalGbps(rs.getDouble("capacidadTotal"));
+                        sg.setEstado(rs.getString("estado"));
 
                         Landing_Stations eo = new Landing_Stations();
                         eo.setId_landing_stations(rs.getInt("idEstacionOrigen"));
@@ -114,7 +116,7 @@ public class SegmentosDao {
                         ed.setId_landing_stations(rs.getInt("idEstacionDestino"));
                         ed.setEtiqueta_station(rs.getString("estacionDestino"));
 
-                        sg.setIdEstacionOrigen(ed);
+                        sg.setIdEstacionDestino(ed);
                     }
                 }
             }
