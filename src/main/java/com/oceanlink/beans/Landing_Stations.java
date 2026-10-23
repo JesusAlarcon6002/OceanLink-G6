@@ -15,6 +15,17 @@ public class Landing_Stations {
 
     private String estado;
 
+    // cantidad de segmentos que salen o llegan a esta estación (cada segmento se cuenta una sola vez)
+    private int totalSegmentos;
+
+    public int getTotalSegmentos() {
+        return totalSegmentos;
+    }
+
+    public void setTotalSegmentos(int totalSegmentos) {
+        this.totalSegmentos = totalSegmentos;
+    }
+
     public int getId_landing_stations() {
         return id_landing_stations;
     }

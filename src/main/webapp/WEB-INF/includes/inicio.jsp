@@ -29,6 +29,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OceanLink · <%=Html.esc(titulo)%></title>
+<link rel="icon" type="image/png" href="<%=ctx%>/assets/img/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="<%=ctx%>/assets/css/base.css" rel="stylesheet">
 <link href="<%=ctx%>/assets/css/dashboard-admin.css" rel="stylesheet">

@@ -45,10 +45,19 @@
                   <td><span class="badge badge-success">Disponible</span></td>
                   <td><a class="btn-edit-white" href="<%=ctx%>/ClientesServlet">Abrir</a></td>
                 </tr>
+                <tr>
+                  <td>Incidencias</td>
+                  <td><span class="badge badge-success">Disponible</span></td>
+                  <td><a class="btn-edit-white" href="<%=ctx%>/IncidenciasServlet">Abrir</a></td>
+                </tr>
+                <tr>
+                  <td>Solicitudes de capacidad</td>
+                  <td><span class="badge badge-success">Disponible</span></td>
+                  <td><a class="btn-edit-white" href="<%=ctx%>/SolicitudesServlet">Abrir</a></td>
+                </tr>
               </tbody>
             </table>
           </div>
-          <p class="table-footer-note">Los demás módulos (incidencias, solicitudes de capacidad) se irán agregando.</p>
         </div>
 
 <jsp:include page="/WEB-INF/includes/fin.jsp"/>

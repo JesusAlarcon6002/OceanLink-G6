@@ -33,11 +33,11 @@
           <div class="dark-table-wrap">
             <table>
               <thead>
-                <tr><th>NOMBRE</th><th>UBICACIÓN</th><th>ESTADO</th><th>ACCIONES</th></tr>
+                <tr><th>NOMBRE</th><th>UBICACIÓN</th><th>SEGMENTOS</th><th>ESTADO</th><th>ACCIONES</th></tr>
               </thead>
               <tbody id="tabla-datos">
                 <% if (listaLanding_Stations.isEmpty()) { %>
-                <tr class="fila-vacia"><td colspan="4">Aún no hay estaciones registradas.</td></tr>
+                <tr class="fila-vacia"><td colspan="5">Aún no hay estaciones registradas.</td></tr>
                 <% }
                    for (Landing_Stations station : listaLanding_Stations) {
                        String claseEstado = "badge-success";                       // Operativo
@@ -47,6 +47,7 @@
                 <tr data-fila data-estado="<%=Html.esc(station.getEstado())%>">
                   <td><%=Html.esc(station.getEtiqueta_station())%></td>
                   <td><%=Html.esc(station.getUbicacion())%></td>
+                  <td><%=station.getTotalSegmentos()%></td>
                   <td><span class="badge <%=claseEstado%>"><%=Html.esc(station.getEstado())%></span></td>
                   <td>
                     <div class="acciones-fila">
