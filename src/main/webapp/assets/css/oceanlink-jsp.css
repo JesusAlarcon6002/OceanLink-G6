@@ -1,0 +1,62 @@
+/* ============================================
+   Estilos extra para las pantallas JSP.
+   La maqueta HTML solo tenía diseño "feliz": aquí van los estados
+   que ella no contemplaba (mensajes de éxito/error, botón borrar...).
+   Usa las mismas variables de color de base.css.
+   ============================================ */
+
+/* Mensajes arriba del panel */
+.msg {
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.msg-ok    { background: rgba(52, 211, 153, 0.12); border: 1px solid rgba(52, 211, 153, 0.45); color: #6ee7b7; }
+.msg-error { background: rgba(248, 113, 113, 0.12); border: 1px solid rgba(248, 113, 113, 0.5); color: #fca5a5; }
+.msg-error ul { margin: 4px 0 0 18px; padding: 0; }
+
+/* Botón "Borrar" de la tabla (mismo tamaño que .btn-edit-white, en rojo) */
+.btn-delete-red {
+  display: inline-block;
+  padding: 6px 14px;
+  border: 1px solid rgba(248, 113, 113, 0.55);
+  border-radius: 6px;
+  background: transparent;
+  color: #fca5a5;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn-delete-red:hover { background: rgba(248, 113, 113, 0.15); }
+
+.acciones-fila { display: flex; gap: 8px; align-items: center; }
+.acciones-fila form { margin: 0; }
+
+/* Textareas dentro de los formularios oscuros */
+.form-field textarea,
+.info-card-dark textarea {
+  width: 100%;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 13px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.fila-vacia td { text-align: center; opacity: 0.7; padding: 24px 0; }
+
+/* Que el panel de la tabla se pueda encoger (y su tabla haga scroll horizontal)
+   en vez de empujar fuera de pantalla el panel de "Acciones rápidas" */
+.middle-row > .form-panel-dark { min-width: 0; }
+
+/* Botones Editar/Borrar un poco más compactos cuando van juntos en la fila */
+.acciones-fila .btn-edit-white { padding: 4px 16px; min-width: 0; }
+.acciones-fila .btn-delete-red { padding: 4px 12px; font-size: 13px; font-weight: 500; border-radius: 4px; }
+
+/* Celdas un poco más angostas: así caben Editar + Borrar sin que la tabla haga scroll */
+.dark-table-wrap th,
+.dark-table-wrap td { padding-left: 8px; padding-right: 8px; }

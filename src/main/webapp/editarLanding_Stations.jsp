@@ -1,64 +1,54 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="com.oceanlink.beans.Segmentos" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ page import="com.oceanlink.beans.Landing_Stations" %>
-<%@ page import="java.util.ArrayList" %>
-
+<%@ page import="com.oceanlink.util.Html" %>
 <%
+    // Lo manda Landing_StationsServlet (/EstacionesServlet, action=editar)
     Landing_Stations ls = (Landing_Stations) request.getAttribute("landingStations");
+    String ctx = request.getContextPath();
 %>
+<jsp:include page="/WEB-INF/includes/inicio.jsp">
+    <jsp:param name="titulo" value="Editar estación"/>
+    <jsp:param name="encabezado" value="EDITAR ESTACIÓN"/>
+    <jsp:param name="subtitulo" value="Modifica los datos de la Landing Station"/>
+    <jsp:param name="rol" value="admin"/>
+    <jsp:param name="activo" value="stations"/>
+</jsp:include>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-          crossorigin="anonymous">
-    <title>Editar un Landing Station</title>
-</head>
-<body>
-<div class='container mt-4'>
-    <h1 class='mb-3'>Editar Landing Station</h1>
+        <form class="form-panel-dark" method="post" action="<%=ctx%>/EstacionesServlet?action=crear">
+          <input type="hidden" name="id" value="<%=ls.getId_landing_stations()%>">
 
-    <form method="post" action="<%=request.getContextPath()%>/EstacionesServlet?action=crear">
+          <div class="form-panel-header">
+            <span style="color:#fff;font-size:16px;font-weight:700;"><%=Html.esc(ls.getEtiqueta_station())%></span>
+          </div>
+          <p class="form-section-label">INFORMACIÓN GENERAL</p>
 
-        <input type="hidden" name="id" value="<%=ls.getId_landing_stations()%>">
+          <div class="form-body">
+            <div class="form-grid-2" style="grid-template-columns:1fr 1fr;">
+              <div class="form-field">
+                <label for="etiquetaLandingStation">NOMBRE *</label>
+                <input type="text" id="etiquetaLandingStation" name="etiquetaLandingStation"
+                       value="<%=Html.esc(ls.getEtiqueta_station())%>" required>
+              </div>
+              <div class="form-field">
+                <label for="ubicacion">UBICACIÓN *</label>
+                <input type="text" id="ubicacion" name="ubicacion" value="<%=Html.esc(ls.getUbicacion())%>" required>
+              </div>
+              <div class="form-field">
+                <label for="estado">ESTADO DE LA ESTACIÓN</label>
+                <select id="estado" name="estado">
+                  <option value="Operativo" <%= "Operativo".equals(ls.getEstado()) ? "selected" : "" %>>Operativo</option>
+                  <option value="En mantenimiento" <%= "En mantenimiento".equals(ls.getEstado()) ? "selected" : "" %>>En mantenimiento</option>
+                  <option value="Fuera de servicio" <%= "Fuera de servicio".equals(ls.getEstado()) ? "selected" : "" %>>Fuera de servicio</option>
+                </select>
+              </div>
+            </div>
+          </div>
 
-        <div class="form-group">
-            <label for="etiquetaLandingStation">Landing Station</label>
-            <input type="text" class="form-control" id="etiquetaLandingStation" name="etiquetaLandingStation" value="<%=ls.getEtiqueta_station()%>">
-        </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-form-save">GUARDAR CAMBIOS</button>
+            <a href="<%=ctx%>/EstacionesServlet" class="btn-form-cancel" style="text-decoration:none;display:inline-flex;align-items:center;">CANCELAR</a>
+          </div>
+        </form>
 
-        <div class="form-group">
-            <label for="ubicacion">Ubicación</label>
-            <input type="text" class="form-control" id="ubicacion" name="ubicacion" value="<%=ls.getUbicacion()%>">
-        </div>
-
-        <div class="form-group">
-            <label for="estado">Estado</label>
-            <select class="form-control" id="estado" name="estado">
-                <option value="Operativo" <%= "Operativo".equals(ls.getEstado()) ? "selected" : "" %>>
-                    Operativo
-                </option>
-
-                <option value="Fuera de servicio" <%= "Fuera de servicio".equals(ls.getEstado()) ? "selected" : "" %>>
-                    Fuera de servicio
-                </option>
-
-                <option value="En mantenimiento" <%="En mantenimiento".equals(ls.getEstado()) ? "selected" : "" %>>
-                    En mantenimiento
-                </option>
-            </select>
-        </div>
-
-        <a href="<%=request.getContextPath()%>/EstacionesServlet" class="btn btn-danger">Regresar</a>
-        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-    </form>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
-</body>
-</html>
+<jsp:include page="/WEB-INF/includes/acciones-admin.jsp"/>
+<jsp:include page="/WEB-INF/includes/fin.jsp"/>

@@ -118,7 +118,7 @@ public class UsuariosDao {
         try {
 
             try (Connection conn = ConexionBD.getConnection();) {
-                String sql = "UPDATE usuarios SET etiqueta_usuario = ?, nombre = ?, apellido = ?, correo = ?, telefono = ?,password_hash = ?,roles_idroles = ?, estado = ? "
+                String sql = "UPDATE usuarios SET etiqueta_usuario = ?, nombre = ?, apellido = ?, correo = ?, telefono = ?,password_hash = COALESCE(NULLIF(?, ''), password_hash),roles_idroles = ?, estado = ? "
                         + "WHERE idusuarios = ?";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setString(1, etiqueta);

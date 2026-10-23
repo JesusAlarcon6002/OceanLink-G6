@@ -1,60 +1,73 @@
-<%@ page import="com.oceanlink.beans.Landing_Stations" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="com.oceanlink.beans.Landing_Stations" %>
+<%@ page import="com.oceanlink.util.Html" %>
 <%
+    // Lo manda SegmentosServlet (action=formCrear)
     ArrayList<Landing_Stations> listaLanding_Stations = (ArrayList<Landing_Stations>) request.getAttribute("listaLanding_Stations");
+    String ctx = request.getContextPath();
 %>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-          rel="stylesheet" crossorigin="anonymous">
-    <title>Crear un nuevo Segmento</title>
-</head>
-<body>
-<div class='container'>
-    <h1 class='mb-3'>Crear un nuevo Segmento</h1>
-    <form method="POST" action="<%=request.getContextPath()%>/SegmentosServlet?action=crear">
-        <div class="form-group">
-            <label for="etiquetaSegmento">Segmento</label>
-            <input type="text" class="form-control" id="etiquetaSegmento" name="etiquetaSegmento">
-        </div>
+<jsp:include page="/WEB-INF/includes/inicio.jsp">
+    <jsp:param name="titulo" value="Registrar segmento"/>
+    <jsp:param name="encabezado" value="REGISTRAR SEGMENTO"/>
+    <jsp:param name="subtitulo" value="Registra un nuevo tramo de cable"/>
+    <jsp:param name="rol" value="admin"/>
+    <jsp:param name="activo" value="segmentos"/>
+</jsp:include>
 
-        <div class="form-group">
-            <label for="estacionOrigen">Estación Origen</label>
-            <select class="form-control" id="estacionOrigen" name="estacionOrigen">
-                <% if (listaLanding_Stations != null) {
-                    for (Landing_Stations ls : listaLanding_Stations) { %>
-                <option value="<%= ls.getId_landing_stations() %>"><%= ls.getEtiqueta_station()%></option>
-                <%     }
-                } %>
-            </select>
-        </div>
+        <form class="form-panel-dark" method="post" action="<%=ctx%>/SegmentosServlet?action=crear" id="form-segmento">
+          <div class="form-panel-header">
+            <span style="color:#fff;font-size:16px;font-weight:700;">NUEVO SEGMENTO</span>
+          </div>
+          <p class="form-section-label">INFORMACIÓN GENERAL</p>
 
-        <div class="form-group">
-            <label for="estacionDestino">Estación Destino</label>
-            <select class="form-control" id="estacionDestino" name="estacionDestino">
-                <% if (listaLanding_Stations != null) {
-                    for (Landing_Stations ls : listaLanding_Stations) { %>
-                <option value="<%= ls.getId_landing_stations() %>"><%= ls.getEtiqueta_station()%></option>
-                <%     }
-                } %>
-            </select>
-        </div>
+          <div class="form-body">
+            <div class="form-grid-2" style="grid-template-columns:1fr 1fr;">
+              <div class="form-field">
+                <label for="etiquetaSegmento">NOMBRE *</label>
+                <input type="text" id="etiquetaSegmento" name="etiquetaSegmento" placeholder="SEG-B16" required>
+              </div>
+              <div class="form-field">
+                <label for="capacidadTotal">CAPACIDAD TOTAL (GBPS) *</label>
+                <input type="number" id="capacidadTotal" name="capacidadTotal" step="0.01" min="0" placeholder="40" required>
+              </div>
+              <div class="form-field">
+                <label for="estacionOrigen">EST. ORIGEN *</label>
+                <select id="estacionOrigen" name="estacionOrigen" required>
+                  <% if (listaLanding_Stations != null) {
+                      for (Landing_Stations ls : listaLanding_Stations) { %>
+                  <option value="<%=ls.getId_landing_stations()%>"><%=Html.esc(ls.getEtiqueta_station())%></option>
+                  <%   }
+                     } %>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="estacionDestino">EST. DESTINO *</label>
+                <select id="estacionDestino" name="estacionDestino" required>
+                  <% if (listaLanding_Stations != null) {
+                      for (Landing_Stations ls : listaLanding_Stations) { %>
+                  <option value="<%=ls.getId_landing_stations()%>"><%=Html.esc(ls.getEtiqueta_station())%></option>
+                  <%   }
+                     } %>
+                </select>
+              </div>
+            </div>
+          </div>
 
-        <div class="form-group">
-            <label for="capacidadTotal">Capacidad Total (Gbps)</label>
-            <input type="number" step="0.01" min="0" class="form-control" id="capacidadTotal" name="capacidadTotal">
-        </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-form-save">REGISTRAR</button>
+            <a href="<%=ctx%>/SegmentosServlet" class="btn-form-cancel" style="text-decoration:none;display:inline-flex;align-items:center;">CANCELAR</a>
+          </div>
+        </form>
 
-        <a href="<%=request.getContextPath()%>/SegmentosServlet" class="btn btn-danger">Regresar</a>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
-</body>
-</html>
+<jsp:include page="/WEB-INF/includes/acciones-admin.jsp"/>
+<script>
+  // Un segmento no puede salir y llegar a la misma estación
+  document.getElementById('form-segmento').addEventListener('submit', function (e) {
+    if (document.getElementById('estacionOrigen').value === document.getElementById('estacionDestino').value) {
+      e.preventDefault();
+      alert('La estación de origen y la de destino deben ser distintas.');
+    }
+  });
+</script>
+<jsp:include page="/WEB-INF/includes/fin.jsp"/>

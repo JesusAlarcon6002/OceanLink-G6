@@ -1,0 +1,361 @@
+/* ============================================
+   Dashboard oscuro (VISTA-ADMIN)
+   ============================================ */
+.dark-dashboard {
+  position: relative;
+  flex: 1;
+  height: 100vh;
+  background: linear-gradient(180deg, #0a1628 0%, #0d1f38 100%);
+  overflow: hidden;
+}
+.dark-dashboard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 20%, rgba(56,189,248,0.10), transparent 45%),
+    radial-gradient(ellipse at 85% 60%, rgba(56,189,248,0.08), transparent 50%);
+}
+.dark-content {
+  position: relative;
+  height: 100%;
+  padding: 0 32px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+/* todo lo que va arriba del footer de resumen (header, stats, tablas/paneles)
+   vive en esta zona scrolleable, así el footer nunca se mueve ni depende
+   de cuánto midan las tablas de arriba */
+.dark-scroll-area {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 28px;
+}
+.dark-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.dark-header h1 { color: #fff; font-size: 26px; font-weight: 700; margin: 0 0 4px 0; }
+.dark-header p { color: #a0b8d8; font-size: 13px; margin: 0; }
+
+/* botones de campana y menú, arriba a la derecha en cada pantalla */
+.header-actions { display: flex; align-items: center; gap: 16px; flex-shrink: 0; padding-top: 2px; }
+.header-icon-btn {
+  background: none; border: none; color: #a0b8d8; cursor: pointer;
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  border-radius: 6px; padding: 0;
+}
+.header-icon-btn svg { width: 20px; height: 20px; }
+.header-icon-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+.stats-row-dark {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.stat-card-dark {
+  flex: 1;
+  min-width: 180px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 14px 18px;
+}
+.stat-card-dark .label { color: #7eaed4; font-size: 11px; font-weight: 500; margin: 0 0 4px 0; }
+.stat-card-dark .value { color: #fff; font-size: 30px; font-weight: 700; margin: 0; }
+.stat-card-dark .sub { color: #6b8fad; font-size: 11px; margin: 4px 0 0 0; }
+
+.middle-row { display: flex; gap: 16px; align-items: stretch; }
+
+.infra-panel {
+  flex: 1;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.infra-header { display: flex; justify-content: space-between; align-items: center; }
+.infra-header h2 { color: #fff; font-size: 13px; font-weight: 700; margin: 0; }
+.infra-header .ok-count { color: #4ade80; font-size: 12px; font-weight: 500; }
+
+.legend { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.legend-item { display: flex; gap: 5px; align-items: center; }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+.legend-item span { color: #a0b8d8; font-size: 10px; }
+
+.seg-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+.seg-badge {
+  border-radius: 8px;
+  padding: 10px 12px;
+  border: 1px solid;
+}
+.seg-badge .seg-name { color: #fff; font-size: 11px; font-weight: 700; margin: 0 0 4px 0; }
+.seg-badge .seg-status { font-size: 10px; margin: 0; }
+.seg-operativo { background: #1b3a2a; border-color: #4ade80; }
+.seg-operativo .seg-status { color: #4ade80; }
+.seg-degradado { background: #2a2a14; border-color: #facc15; }
+.seg-degradado .seg-status { color: #facc15; }
+.seg-fuera { background: #2a1414; border-color: #f87171; }
+.seg-fuera .seg-status { color: #f87171; }
+.seg-mantenimiento { background: #1b2a3a; border-color: #60a5fa; }
+.seg-mantenimiento .seg-status { color: #60a5fa; }
+
+.quick-actions {
+  width: 220px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.quick-actions h2 { color: #fff; font-size: 13px; font-weight: 700; margin: 0; }
+.qa-btn {
+  border-radius: 8px;
+  padding: 12px 14px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid;
+  cursor: pointer;
+  background: none;
+  width: 100%;
+}
+.qa-btn.primary { background: #1e3a5f; border-color: #38bdf8; color: #93c5fd; }
+/* En las pantallas Home el Figma conserva el borde azul tenue original */
+.is-home .qa-btn.primary { border-color: rgba(59,130,246,0.6); }
+.qa-btn.danger { background: #2a1a14; border-color: rgba(248,113,113,0.5); color: #fca5a5; }
+.qa-btn.success { background: #172a1f; border-color: rgba(74,222,128,0.4); color: #86efac; }
+
+.summary-row {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.summary-item { flex: 1; display: flex; gap: 14px; align-items: center; }
+.summary-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.summary-icon .icon { width: 20px; height: 20px; color: #fff; }
+.summary-icon.bg-blue { background: #1e3a5f; }
+.summary-icon.bg-green { background: #1b3a2a; }
+.summary-icon.bg-orange { background: #2a2014; }
+.summary-icon.bg-lightblue { background: #1b2a3a; }
+.summary-text .num { color: #fff; font-size: 24px; font-weight: 700; margin: 0; }
+.summary-text .lbl { color: #7eaed4; font-size: 11px; margin: 2px 0 0 0; }
+.summary-divider { width: 1px; height: 48px; background: rgba(255,255,255,0.1); }
+
+/* ============================================
+   Paneles oscuros reutilizables: tablas y formularios
+   ============================================ */
+.panel-toolbar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+/* FILTRO COMPONENTE (Figma 157:3515): pastilla #2c2c2c, 23px de alto, texto #e2e8f0 13px bold */
+.search-input, .filter-select {
+  background: #2c2c2c;
+  border: none;
+  color: #e2e8f0;
+  border-radius: 8px;
+  height: 23px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+}
+.search-input { width: 176px; }
+.filter-select { width: 170px; }
+.search-input::placeholder { color: #e2e8f0; opacity: 1; }
+.filter-select option, .filter-select optgroup { background: #1b2a3a; color: #e2e8f0; }
+
+.dark-table-wrap { width: 100%; overflow-x: auto; }
+.dark-table-wrap table { width: 100%; border-collapse: collapse; }
+.dark-table-wrap th {
+  text-align: center; color: #fff; font-size: 16px; font-weight: 700;
+  padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.5);
+  white-space: nowrap;
+}
+.dark-table-wrap td {
+  padding: 10px 14px; color: #fff; font-size: 14px; font-weight: 500; text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.3); white-space: nowrap;
+}
+.dark-table-wrap tr:last-child td { border-bottom: none; }
+/* (nombre histórico: en Figma ya no es blanco sino translúcido azul con borde blanco 50%) */
+.btn-edit-white {
+  background: rgba(30,58,95,0.45); color: #e2e8f0; border: 1px solid rgba(255,255,255,0.5); border-radius: 4px;
+  padding: 4px 28px; min-width: 66px; box-sizing: border-box; text-align: center;
+  font-size: 13px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block;
+}
+.table-footer-note { color: #fff; font-size: 12px; font-weight: 500; margin: 8px 0 0 0; }
+
+.form-panel-dark {
+  flex: 1;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 545px;
+}
+.form-panel-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.5); }
+.form-panel-header h3 { color: #fff; font-size: 18px; margin: 0; }
+.form-panel-header .date-label { color: #fff; font-size: 11px; font-weight: 600; }
+.form-status-badge {
+  background: #1e3a5f; border: 1px solid rgba(59,130,246,0.6); color: #93c5fd;
+  border-radius: 8px; padding: 10px 16px; font-size: 11px; font-weight: 700;
+  font-family: inherit; cursor: pointer;
+}
+.form-section-label { color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin: 0; }
+
+.form-body { display: flex; gap: 24px; flex-wrap: wrap; flex: 1; }
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-content: start; }
+.form-field label { display: block; color: #fff; font-size: 11px; font-weight: 700; margin-bottom: 8px; }
+/* Campos de formulario según Figma: fondo azul translúcido + borde blanco 50% + texto #e2e8f0 */
+.form-field input, .form-field select, .form-field textarea,
+.info-card-dark textarea {
+  width: 100%; padding: 9px 12px; box-sizing: border-box;
+  background: rgba(30,58,95,0.45); border: 1px solid rgba(255,255,255,0.5); color: #e2e8f0;
+  border-radius: 4px; font-size: 13px; font-family: inherit;
+}
+.form-field textarea, .info-card-dark textarea { border-radius: 8px; }
+.form-field input::placeholder, .form-field textarea::placeholder, .info-card-dark textarea::placeholder { color: #e2e8f0; opacity: 0.7; }
+.form-field select option { background: #1b2a3a; color: #e2e8f0; }
+.form-field input:focus, .form-field select:focus { outline: 2px solid var(--accent); }
+
+.info-card-dark {
+  width: 320px; flex-shrink: 0; background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; color: #fff;
+}
+.info-card-dark h4 { margin: 0 0 12px 0; font-size: 16px; }
+.info-card-dark p { margin: 0; font-size: 12px; color: #a0b8d8; line-height: 1.6; }
+
+.form-actions { display: flex; gap: 16px; margin-top: auto; }
+.btn-form-save {
+  background: #172a1f; border: 1px solid rgba(74,222,128,0.4); color: #86efac;
+  border-radius: 8px; padding: 12px 32px; font-weight: 600; font-size: 12px; cursor: pointer; font-family: inherit;
+}
+.btn-form-cancel {
+  background: #2a1a14; border: 1px solid rgba(248,113,113,0.5); color: #fca5a5;
+  border-radius: 8px; padding: 12px 32px; font-weight: 600; font-size: 12px; cursor: pointer; font-family: inherit;
+}
+
+/* Tabla de roles centrada (ROLES Y PERMISOS) */
+.roles-table-centered {
+  max-width: 700px; margin: 0 auto; width: 100%;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; padding: 10px;
+}
+.roles-table-centered table { width: 100%; border-collapse: collapse; }
+.roles-table-centered th { color: #fff; font-size: 12px; font-weight: 700; padding: 14px 20px; text-align: center; }
+.roles-table-centered td { padding: 14px 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); }
+.roles-table-centered td:first-child { color: #fff; font-size: 12px; font-weight: 700; }
+
+/* Lista de permisos (EDITAR ROLES) */
+.permisos-list-centered {
+  max-width: 700px; margin: 0 auto; width: 100%;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; padding: 20px;
+  display: flex; flex-direction: column; gap: 0;
+}
+.permiso-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.permiso-row:last-child { border-bottom: none; }
+.permiso-row span { color: #fff; font-size: 12px; font-weight: 700; }
+.toggle-switch { position: relative; width: 42px; height: 22px; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; cursor: pointer; inset: 0; background: rgba(255,255,255,0.2);
+  border-radius: 22px; transition: 0.2s;
+}
+.toggle-slider::before {
+  content: ""; position: absolute; height: 16px; width: 16px; left: 3px; bottom: 3px;
+  background: white; border-radius: 50%; transition: 0.2s;
+}
+.toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+/* Botón registrar dentro del toolbar de tabla */
+.btn-register-toolbar {
+  background: #1e3a5f; border: 1px solid rgba(59,130,246,0.6); color: #93c5fd;
+  border-radius: 8px; padding: 10px 22px; font-size: 12px; font-weight: 700;
+  cursor: pointer; font-family: inherit; text-decoration: none; white-space: nowrap;
+}
+
+/* ============================================
+   Capacity Planner: badges de nivel, stats con contador, info de solo lectura
+   ============================================ */
+.level-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #fff; }
+.level-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.level-normal { background: #4ade80; }
+.level-alto { background: #facc15; }
+.level-critico { background: #f87171; }
+
+.qa-stat-btn {
+  background: #1e3a5f; border: 1px solid rgba(59,130,246,0.6);
+  border-radius: 8px; padding: 12px 14px; width: 100%; text-align: left;
+}
+.qa-stat-btn .qa-stat-label { color: #93c5fd; font-size: 11px; font-weight: 600; margin: 0 0 4px 0; }
+.qa-stat-btn .qa-stat-value { color: #fff; font-size: 20px; font-weight: 700; margin: 0; }
+
+.link-more { color: #fff; font-size: 12px; text-decoration: underline; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
+
+.info-display-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 40px; max-width: 560px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(148,163,184,0.12); border-radius: 8px; padding: 20px 27px; }
+.info-display-item .info-label { color: #fff; font-size: 13px; font-weight: 700; margin: 0 0 4px 0; }
+.info-display-item .info-value { color: #e2e8f0; font-size: 15px; margin: 0; }
+
+.btn-approve {
+  background: #172a1f; border: 1px solid rgba(74,222,128,0.4); color: #86efac;
+  border-radius: 8px; padding: 12px 32px; font-weight: 600; font-size: 12px; cursor: pointer; font-family: inherit;
+}
+.btn-reject {
+  background: #2a1a14; border: 1px solid rgba(248,113,113,0.5); color: #fca5a5;
+  border-radius: 8px; padding: 12px 32px; font-weight: 600; font-size: 12px; cursor: pointer; font-family: inherit;
+}
+.btn-pending {
+  background: #1e3a5f; border: 1px solid rgba(59,130,246,0.6); color: #93c5fd;
+  border-radius: 8px; padding: 12px 32px; font-weight: 600; font-size: 12px; cursor: pointer; font-family: inherit;
+}
+
+
+/* ============================================
+   Home Network Operator: PANEL DE RED / RESUMEN y estado de la red
+   ============================================ */
+.dark-section-title { color: #fff; font-size: 24px; font-weight: 700; margin: 0; }
+.dark-section-sub { color: #fff; font-size: 20px; font-weight: 700; margin: 0; }
+.dark-divider { height: 1px; background: rgba(255,255,255,0.5); width: 100%; }
+.status-line {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 22px; padding: 0 10px; border-radius: 8px; border: 1px solid;
+  color: #7eaed4; font-size: 11px; font-weight: 500;
+}
+.status-line.normal { background: #1b3a2a; border-color: #3baa67; }
+.status-line.alto { background: #2a2a14; border-color: #927b14; }
+.status-line.critico { background: #2a1414; border-color: #a65b64; }
