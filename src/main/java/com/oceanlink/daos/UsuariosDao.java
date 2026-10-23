@@ -9,12 +9,8 @@ public class UsuariosDao {
         ArrayList<Usuarios> listaUsuarios = new ArrayList<>();
 
         try{
-            String user = "root";
-            String pass = "12345678ABCD"; /*DEPENDE DE LA CONTRASEÑA DE TU WORKBENCH*/
-            String url = "jdbc:mysql://localhost:3306/proyecto_siete";
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(url,user,pass);
+            Connection conn = ConexionBD.getConnection();
             Statement stmt = conn.createStatement();
 
             ResultSet rs = stmt.executeQuery("SELECT usr.idusuarios," +
@@ -55,12 +51,8 @@ public class UsuariosDao {
 
     public void crearUsuarios(String etiqueta, String nombre, String apellido, String correo, String passwd,String telefono,String rol){
         try{
-            String user = "root";
-            String pass = "12345678ABCD";
-            String url = "jdbc:mysql://localhost:3306/proyecto_siete";
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            try(Connection conn = DriverManager.getConnection(url,user,pass);){
+            try(Connection conn = ConexionBD.getConnection();){
                 String sql = "INSERT INTO usuarios (etiqueta_usuario, nombre, apellido,correo, password_hash,telefono,roles_idroles) VALUES (?,?,?,?,?,?,?)";
                 try(PreparedStatement pstmt = conn.prepareStatement(sql)){
                     pstmt.setString(1,etiqueta);
@@ -81,12 +73,8 @@ public class UsuariosDao {
     public Usuarios obtenerUsuarios(int idUsuario){
         Usuarios usuarios = null;
         try{
-            String user = "root";
-            String pass = "12345678ABCD";
-            String url = "jdbc:mysql://localhost:3306/proyecto_siete";
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            try(Connection conn = DriverManager.getConnection(url,user,pass);
+            try(Connection conn = ConexionBD.getConnection();
             PreparedStatement pstmt = conn.prepareStatement("SELECT usr.idusuarios," +
                     " usr.etiqueta_usuario AS 'Etiqueta'," +
                     " usr.nombre AS Nombre," +
@@ -128,12 +116,8 @@ public class UsuariosDao {
 
     public void actualizarUsuarios(int idUsuario, String etiqueta, String nombre, String apellido, String correo, String telefono, int rol, String passwd, String estado) {
         try {
-            String user = "root";
-            String pass = "12345678ABCD";
-            String url = "jdbc:mysql://127.0.0.1:3306/proyecto_siete";
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            try (Connection conn = DriverManager.getConnection(url, user, pass);) {
+            try (Connection conn = ConexionBD.getConnection();) {
                 String sql = "UPDATE usuarios SET etiqueta_usuario = ?, nombre = ?, apellido = ?, correo = ?, telefono = ?,password_hash = ?,roles_idroles = ?, estado = ? "
                         + "WHERE idusuarios = ?";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -156,12 +140,8 @@ public class UsuariosDao {
 
     public void borrarUsuarios(int idUsuario) {
         try {
-            String user = "root";
-            String pass = "12345678ABCD";
-            String url = "jdbc:mysql://127.0.0.1:3306/proyecto_siete";
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            try (Connection conn = DriverManager.getConnection(url, user, pass)) {
+            try (Connection conn = ConexionBD.getConnection()) {
                 String sql = "DELETE FROM usuarios WHERE idusuarios = ?";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setInt(1, idUsuario);
