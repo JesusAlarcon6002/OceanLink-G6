@@ -5,7 +5,7 @@ import com.oceanlink.beans.Mantenimientos;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class MantenimientosDao {
+public class MantenimientosDao extends DaoBase {
 
     // Mismo SELECT para la lista y para "obtener uno": trae el mantenimiento y,
     // si tiene, su infraestructura (un segmento o una estación).
@@ -22,7 +22,7 @@ public class MantenimientosDao {
     public ArrayList<Mantenimientos> obtenerListaMantenimientos() {
         ArrayList<Mantenimientos> lista = new ArrayList<>();
         String sql = SELECT_BASE + "ORDER BY m.fecha_programada DESC, m.id_mantenimientos DESC";
-        try (Connection conn = ConexionBD.getConnection();
+        try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
@@ -37,7 +37,7 @@ public class MantenimientosDao {
     public Mantenimientos obtenerMantenimientos(int idMantenimiento) {
         Mantenimientos m = null;
         String sql = SELECT_BASE + "WHERE m.id_mantenimientos = ?";
-        try (Connection conn = ConexionBD.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idMantenimiento);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -54,7 +54,7 @@ public class MantenimientosDao {
     /** true si ya existe otro mantenimiento con esa etiqueta (la columna es UNIQUE). */
     public boolean existeEtiqueta(String etiqueta, int idExcluir) {
         String sql = "SELECT COUNT(*) FROM mantenimientos WHERE etiqueta_mantenimientos = ? AND id_mantenimientos <> ?";
-        try (Connection conn = ConexionBD.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, etiqueta);
             pstmt.setInt(2, idExcluir);
@@ -74,7 +74,7 @@ public class MantenimientosDao {
     public boolean crearMantenimientos(Mantenimientos m) {
         String sql = "INSERT INTO mantenimientos (etiqueta_mantenimientos, tipo, descripcion, fecha_programada, " +
                 "duracion_estimada_horas, estado, fecha_finalizacion, resultado, actividades) VALUES (?,?,?,?,?,?,?,?,?)";
-        try (Connection conn = ConexionBD.getConnection()) {
+        try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
             try {
                 int nuevoId;
@@ -103,7 +103,7 @@ public class MantenimientosDao {
         String sql = "UPDATE mantenimientos SET etiqueta_mantenimientos = ?, tipo = ?, descripcion = ?, " +
                 "fecha_programada = ?, duracion_estimada_horas = ?, estado = ?, fecha_finalizacion = ?, " +
                 "resultado = ?, actividades = ? WHERE id_mantenimientos = ?";
-        try (Connection conn = ConexionBD.getConnection()) {
+        try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
             try {
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -127,7 +127,7 @@ public class MantenimientosDao {
     }
 
     public boolean borrarMantenimientos(int idMantenimiento) {
-        try (Connection conn = ConexionBD.getConnection()) {
+        try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
             try {
                 // primero la tabla hija (la FK es ON DELETE RESTRICT), luego el mantenimiento

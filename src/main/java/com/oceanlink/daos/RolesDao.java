@@ -5,12 +5,12 @@ import com.oceanlink.beans.Roles;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class RolesDao {
+public class RolesDao extends DaoBase {
     public ArrayList<Roles> obtenerListaRoles(){
         ArrayList<Roles> listaRoles = new ArrayList<>();
         try {
 
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = getConnection();
             Statement stmt = conn.createStatement();
 
             ResultSet rs = stmt.executeQuery("SELECT id_roles, nombres_rol FROM roles");

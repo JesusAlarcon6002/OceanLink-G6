@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ResumenDao {
+public class ResumenDao extends DaoBase {
 
     /** Cuenta stations y segmentos y suma la capacidad total en una sola consulta. */
     public Resumen obtenerResumen() {
@@ -15,7 +15,7 @@ public class ResumenDao {
         String sql = "SELECT (SELECT COUNT(*) FROM landing_stations) AS stations, " +
                 "(SELECT COUNT(*) FROM segmentos) AS segmentos, " +
                 "(SELECT COALESCE(SUM(capacidad_total_gbps), 0) FROM segmentos) AS capacidad";
-        try (Connection conn = ConexionBD.getConnection();
+        try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             if (rs.next()) {

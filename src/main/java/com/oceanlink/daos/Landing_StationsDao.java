@@ -6,12 +6,12 @@ import com.oceanlink.beans.Segmentos;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Landing_StationsDao {
+public class Landing_StationsDao extends DaoBase {
     public ArrayList<Landing_Stations> obtenerListaLanding_Stations() {
         ArrayList<Landing_Stations> listaLanding_Stations = new ArrayList<>();
         try {
 
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = getConnection();
             Statement stmt = conn.createStatement();
 
             ResultSet rs = stmt.executeQuery("SELECT id_landing_stations, etiqueta_station AS 'Etiqueta', ubicacion AS 'Ubicación', estado AS 'Estado' FROM landing_stations");
@@ -35,7 +35,7 @@ public class Landing_StationsDao {
     public void crearLandingStations(String etiqueta, String ubicacion){
         try{
 
-            try(Connection conn = ConexionBD.getConnection();){
+            try(Connection conn = getConnection();){
                 String sql = "INSERT INTO landing_stations (etiqueta_station, ubicacion) VALUES (?,?)";
                 try(PreparedStatement pstmt = conn.prepareStatement(sql)){
                     pstmt.setString(1,etiqueta);
@@ -53,7 +53,7 @@ public class Landing_StationsDao {
         try {
 
 
-            try (Connection conn = ConexionBD.getConnection();
+            try (Connection conn = getConnection();
                  PreparedStatement pstmt = conn.prepareStatement("SELECT id_landing_stations AS 'id'," +
                          " etiqueta_station AS 'etiqueta'," +
                          " ubicacion AS 'ubicacion'," +
@@ -81,7 +81,7 @@ public class Landing_StationsDao {
     public void actualizarLandingStations(int idLandingStation,String etiqueta, String ubicacion, String estado) {
         try {
 
-            try (Connection conn = ConexionBD.getConnection();) {
+            try (Connection conn = getConnection();) {
                 String sql = "UPDATE landing_stations SET etiqueta_station = ?, ubicacion = ?, estado = ?"
                         + " WHERE id_landing_stations = ?";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -100,7 +100,7 @@ public class Landing_StationsDao {
     public void borrarLandingStations(int idLandingStations) {
         try {
 
-            try (Connection conn = ConexionBD.getConnection()) {
+            try (Connection conn = getConnection()) {
                 String sql = "DELETE FROM landing_stations WHERE id_landing_stations = ?;";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setInt(1, idLandingStations);
