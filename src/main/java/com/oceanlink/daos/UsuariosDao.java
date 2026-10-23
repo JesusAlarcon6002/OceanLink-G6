@@ -4,13 +4,13 @@ import com.oceanlink.beans.Usuarios;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class UsuariosDao {
+public class UsuariosDao extends DaoBase {
     public ArrayList<Usuarios> obtenerListaUsuarios(){
         ArrayList<Usuarios> listaUsuarios = new ArrayList<>();
 
         try{
 
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = getConnection();
             Statement stmt = conn.createStatement();
 
             ResultSet rs = stmt.executeQuery("SELECT usr.idusuarios," +
@@ -52,7 +52,7 @@ public class UsuariosDao {
     public void crearUsuarios(String etiqueta, String nombre, String apellido, String correo, String passwd,String telefono,String rol){
         try{
 
-            try(Connection conn = ConexionBD.getConnection();){
+            try(Connection conn = getConnection();){
                 String sql = "INSERT INTO usuarios (etiqueta_usuario, nombre, apellido,correo, password_hash,telefono,roles_idroles) VALUES (?,?,?,?,?,?,?)";
                 try(PreparedStatement pstmt = conn.prepareStatement(sql)){
                     pstmt.setString(1,etiqueta);
@@ -74,7 +74,7 @@ public class UsuariosDao {
         Usuarios usuarios = null;
         try{
 
-            try(Connection conn = ConexionBD.getConnection();
+            try(Connection conn = getConnection();
             PreparedStatement pstmt = conn.prepareStatement("SELECT usr.idusuarios," +
                     " usr.etiqueta_usuario AS 'Etiqueta'," +
                     " usr.nombre AS Nombre," +
@@ -117,7 +117,7 @@ public class UsuariosDao {
     public void actualizarUsuarios(int idUsuario, String etiqueta, String nombre, String apellido, String correo, String telefono, int rol, String passwd, String estado) {
         try {
 
-            try (Connection conn = ConexionBD.getConnection();) {
+            try (Connection conn = getConnection();) {
                 String sql = "UPDATE usuarios SET etiqueta_usuario = ?, nombre = ?, apellido = ?, correo = ?, telefono = ?,password_hash = COALESCE(NULLIF(?, ''), password_hash),roles_idroles = ?, estado = ? "
                         + "WHERE idusuarios = ?";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -141,7 +141,7 @@ public class UsuariosDao {
     public void borrarUsuarios(int idUsuario) {
         try {
 
-            try (Connection conn = ConexionBD.getConnection()) {
+            try (Connection conn = getConnection()) {
                 String sql = "DELETE FROM usuarios WHERE idusuarios = ?";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setInt(1, idUsuario);

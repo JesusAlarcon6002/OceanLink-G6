@@ -6,12 +6,12 @@ import com.oceanlink.beans.Segmentos;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class SegmentosDao {
+public class SegmentosDao extends DaoBase {
     public ArrayList<Segmentos> obtenerListaSegmentos() {
         ArrayList<Segmentos> listaSegmentos = new ArrayList<>();
         try {
 
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = getConnection();
             Statement stmt = conn.createStatement();
 
             ResultSet rs = stmt.executeQuery("SELECT sg.id_segmentos," +
@@ -61,7 +61,7 @@ public class SegmentosDao {
     public void crearSegmentos(String etiqueta, String estacionOrigen, String estacionDestino, String capacidadTotal){
         try{
 
-            try(Connection conn = ConexionBD.getConnection();){
+            try(Connection conn = getConnection();){
                 String sql = "INSERT INTO segmentos (etiqueta_segmentos, id_estacion_origen, id_estacion_destino,capacidad_total_gbps) VALUES (?,?,?,?)";
                 try(PreparedStatement pstmt = conn.prepareStatement(sql)){
                     pstmt.setString(1,etiqueta);
@@ -81,7 +81,7 @@ public class SegmentosDao {
         try {
 
 
-            try (Connection conn = ConexionBD.getConnection();
+            try (Connection conn = getConnection();
                  PreparedStatement pstmt = conn.prepareStatement("SELECT id_segmentos AS 'id'," +
                          " sg.etiqueta_segmentos AS 'etiqueta'," +
                          " eo.id_landing_stations AS 'idEstacionOrigen'," +
@@ -129,7 +129,7 @@ public class SegmentosDao {
     public void actualizarSegmentos(int idSegmento,String etiqueta, String estacionOrigen, String estacionDestino, String capacidadTotal, String estado) {
         try {
 
-            try (Connection conn = ConexionBD.getConnection();) {
+            try (Connection conn = getConnection();) {
                 String sql = "UPDATE segmentos SET etiqueta_segmentos = ?, id_estacion_origen = ?, id_estacion_destino = ?, capacidad_total_gbps = ?, estado = ? "
                         + "WHERE id_segmentos = ?";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -149,7 +149,7 @@ public class SegmentosDao {
     public void borrarSegmentos(int idSegmentos) {
         try {
 
-            try (Connection conn = ConexionBD.getConnection()) {
+            try (Connection conn = getConnection()) {
                 String sql = "DELETE FROM segmentos WHERE id_segmentos = ?;";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setInt(1, idSegmentos);
