@@ -9,12 +9,16 @@ import java.util.ArrayList;
 public class Landing_StationsDao extends DaoBase {
     public ArrayList<Landing_Stations> obtenerListaLanding_Stations() {
         ArrayList<Landing_Stations> listaLanding_Stations = new ArrayList<>();
-        try {
-
-            Connection conn = getConnection();
-            Statement stmt = conn.createStatement();
-
-            ResultSet rs = stmt.executeQuery("SELECT id_landing_stations, etiqueta_station AS 'Etiqueta', ubicacion AS 'Ubicación', estado AS 'Estado' FROM landing_stations");
+        // totalSegmentos: segmentos donde la estación es origen O destino.
+        // Se cuenta con una subconsulta sobre la tabla segmentos (una fila = un segmento),
+        // así un segmento nunca se cuenta dos veces aunque la estación aparezca en ambos extremos.
+        String sql = "SELECT ls.id_landing_stations, ls.etiqueta_station AS 'Etiqueta', ls.ubicacion AS 'Ubicación', ls.estado AS 'Estado', " +
+                "(SELECT COUNT(*) FROM segmentos sg " +
+                " WHERE sg.id_estacion_origen = ls.id_landing_stations OR sg.id_estacion_destino = ls.id_landing_stations) AS total_segmentos " +
+                "FROM landing_stations ls";
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 Landing_Stations station = new Landing_Stations();
@@ -23,6 +27,7 @@ public class Landing_StationsDao extends DaoBase {
                 station.setEtiqueta_station(rs.getString("Etiqueta"));
                 station.setUbicacion(rs.getString("Ubicación"));
                 station.setEstado(rs.getString("Estado"));
+                station.setTotalSegmentos(rs.getInt("total_segmentos"));
                 listaLanding_Stations.add(station);
             }
 
