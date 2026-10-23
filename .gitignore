@@ -36,4 +36,8 @@ build/
 .vscode/
 
 ### Mac OS ###
-.DS_Storeout/
+.DS_Store
+out/
+
+### Configuración local (contraseña de MySQL de cada quien) ###
+src/main/resources/db.properties

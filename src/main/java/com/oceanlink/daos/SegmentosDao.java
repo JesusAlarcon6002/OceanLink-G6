@@ -10,12 +10,8 @@ public class SegmentosDao {
     public ArrayList<Segmentos> obtenerListaSegmentos() {
         ArrayList<Segmentos> listaSegmentos = new ArrayList<>();
         try {
-            String user = "root";
-            String pass = "12345678ABCD"; /*DEPENDE DE LA CONTRASEÑA DE TU WORKBENCH*/
-            String url = "jdbc:mysql://localhost:3306/proyecto_siete";
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(url, user, pass);
+            Connection conn = ConexionBD.getConnection();
             Statement stmt = conn.createStatement();
 
             ResultSet rs = stmt.executeQuery("SELECT sg.id_segmentos," +
@@ -64,12 +60,8 @@ public class SegmentosDao {
 
     public void crearSegmentos(String etiqueta, String estacionOrigen, String estacionDestino, String capacidadTotal){
         try{
-            String user = "root";
-            String pass = "12345678ABCD";
-            String url = "jdbc:mysql://localhost:3306/proyecto_siete";
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            try(Connection conn = DriverManager.getConnection(url,user,pass);){
+            try(Connection conn = ConexionBD.getConnection();){
                 String sql = "INSERT INTO segmentos (etiqueta_segmentos, id_estacion_origen, id_estacion_destino,capacidad_total_gbps) VALUES (?,?,?,?)";
                 try(PreparedStatement pstmt = conn.prepareStatement(sql)){
                     pstmt.setString(1,etiqueta);
@@ -87,13 +79,9 @@ public class SegmentosDao {
     public Segmentos obtenerSegmentos(int idSegmento) {
         Segmentos sg = null;
         try {
-            String user = "root";
-            String pass = "12345678ABCD";
-            String url = "jdbc:mysql://localhost:3306/proyecto_siete";
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
 
-            try (Connection conn = DriverManager.getConnection(url, user, pass);
+            try (Connection conn = ConexionBD.getConnection();
                  PreparedStatement pstmt = conn.prepareStatement("SELECT id_segmentos AS 'id'," +
                          " sg.etiqueta_segmentos AS 'etiqueta'," +
                          " eo.id_landing_stations AS 'idEstacionOrigen'," +
@@ -138,12 +126,8 @@ public class SegmentosDao {
 
     public void actualizarSegmentos(int idSegmento,String etiqueta, String estacionOrigen, String estacionDestino, String capacidadTotal, String estado) {
         try {
-            String user = "root";
-            String pass = "12345678ABCD";
-            String url = "jdbc:mysql://127.0.0.1:3306/proyecto_siete";
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            try (Connection conn = DriverManager.getConnection(url, user, pass);) {
+            try (Connection conn = ConexionBD.getConnection();) {
                 String sql = "UPDATE segmentos SET etiqueta_segmentos = ?, id_estacion_origen = ?, id_estacion_destino = ?, capacidad_total_gbps = ?, estado = ? "
                         + "WHERE id_segmentos = ?";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -162,12 +146,8 @@ public class SegmentosDao {
     }
     public void borrarSegmentos(int idSegmentos) {
         try {
-            String user = "root";
-            String pass = "12345678ABCD";
-            String url = "jdbc:mysql://127.0.0.1:3306/proyecto_siete";
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            try (Connection conn = DriverManager.getConnection(url, user, pass)) {
+            try (Connection conn = ConexionBD.getConnection()) {
                 String sql = "DELETE FROM segmentos WHERE id_segmentos = ?;";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setInt(1, idSegmentos);

@@ -1,0 +1,5 @@
+# Copia este archivo como "db.properties" (en esta misma carpeta) y pon TU contraseña de MySQL.
+# db.properties está en .gitignore: no se sube a Git, así cada quien usa la suya.
+db.url=jdbc:mysql://localhost:3306/proyecto_siete
+db.user=root
+db.password=PON_AQUI_TU_CONTRASENA
