@@ -39,7 +39,7 @@ const ROLE_MENUS = {
     items: [
       { id: "inicio", icon: "home", label: "Inicio", href: "#" },
       { id: "capacidad", icon: "users", label: "Capacidad", href: "#" },
-      { id: "solicitudes", icon: "shield-check", label: "Solicitudes", href: "#" },
+      { id: "solicitudes", icon: "shield-check", label: "Solicitudes", href: "SolicitudesServlet" },
       { id: "clientes", icon: "globe", label: "Clientes", href: "ClientesServlet" },
       { id: "servicios", icon: "git-branch", label: "Servicios", href: "#" },
       { id: "rutas", icon: "git-branch", label: "Rutas", href: "#" },
@@ -64,7 +64,7 @@ const ROLE_MENUS = {
     roleLabel: "Network Operator",
     items: [
       { id: "inicio", icon: "home", label: "Inicio", href: "#" },
-      { id: "incidencias", icon: "shield-check", label: "Incidencias", href: "#" },
+      { id: "incidencias", icon: "shield-check", label: "Incidencias", href: "IncidenciasServlet" },
       { id: "historial-incidencias", icon: "globe", label: "Historial de incidencias", href: "#" },
       { id: "config", icon: "settings", label: "Configuración", href: "#" },
       { id: "perfil", icon: "user", label: "Perfil", href: "#" }
@@ -113,7 +113,7 @@ function renderSidebar(mountEl) {
     <div class="sidebar" id="oceanlink-sidebar">
       <div class="top-content">
         <div class="brand-lockup">
-          <div class="brand-logo"></div>
+          <img class="brand-logo" src="${ctx}/assets/img/logo-oceanlink.png" alt="Ocean Link">
           <div class="brand-text">
             <p class="brand-name">OCEAN LINK</p>
             <p class="brand-role">${menu.roleLabel}</p>
