@@ -117,6 +117,67 @@ FROM (
 ) AS n
 WHERE NOT EXISTS (SELECT 1 FROM solicitudes_capacidad s WHERE s.etiqueta_solicitud = n.e);
 
+-- ---------- RUTAS (+ sus segmentos en orden) ----------
+-- Requiere haber corrido antes db/cambios_esquema.sql. Los segmentos se recorren en ambos sentidos.
+INSERT INTO rutas (etiqueta_rutas, id_estacion_origen, id_estacion_destino, estado)
+SELECT n.e,
+       (SELECT id_landing_stations FROM landing_stations WHERE etiqueta_station = n.o),
+       (SELECT id_landing_stations FROM landing_stations WHERE etiqueta_station = n.d),
+       n.est
+FROM (
+  SELECT 'RUTA-001' AS e, 'LS-01 Lima' AS o, 'LS-04 Tacna' AS d, 'Activa' AS est
+  UNION ALL SELECT 'RUTA-002', 'LS-01 Lima', 'LS-05 Arica', 'Activa'
+  UNION ALL SELECT 'RUTA-003', 'LS-01 Lima', 'LS-02 Piura', 'Activa'
+  UNION ALL SELECT 'RUTA-004', 'LS-02 Piura', 'LS-06 Guayaquil', 'Activa'
+  UNION ALL SELECT 'RUTA-005', 'LS-01 Lima', 'LS-02 Piura', 'Inactiva'
+) AS n
+WHERE NOT EXISTS (SELECT 1 FROM rutas r WHERE r.etiqueta_rutas = n.e);
+
+INSERT INTO ruta_segmento (id_ruta, id_segmento, orden)
+SELECT r.idrutas, s.id_segmentos, x.orden
+FROM (
+  SELECT 'RUTA-001' AS ruta, 'SEG-B2' AS seg, 1 AS orden
+  UNION ALL SELECT 'RUTA-001', 'SEG-B3', 2
+  UNION ALL SELECT 'RUTA-002', 'SEG-B2', 1
+  UNION ALL SELECT 'RUTA-002', 'SEG-B3', 2
+  UNION ALL SELECT 'RUTA-002', 'SEG-B4', 3
+  UNION ALL SELECT 'RUTA-003', 'SEG-B1', 1
+  UNION ALL SELECT 'RUTA-004', 'SEG-B5', 1
+  UNION ALL SELECT 'RUTA-005', 'SEG-B1', 1
+) AS x
+JOIN rutas r ON r.etiqueta_rutas = x.ruta
+JOIN segmentos s ON s.etiqueta_segmentos = x.seg
+WHERE NOT EXISTS (SELECT 1 FROM ruta_segmento rs WHERE rs.id_ruta = r.idrutas AND rs.id_segmento = s.id_segmentos);
+
+-- ---------- SERVICIO DE EJEMPLO (SOL-005 Lima -> Arica por RUTA-002, ya activo) ----------
+-- Los valores de capacidad de los segmentos ya incluyen estos 25 Gbps (son datos de ejemplo).
+INSERT INTO servicios (etiqueta_servicio, id_cliente, id_ruta, capacidad_contratada_gbps, fecha_activacion, estado, fecha_expiracion, id_solicitud)
+SELECT 'SRV-001', sc.id_cliente, r.idrutas, 25.00, '2026-10-05', 'Activo', '2027-10-05', sc.idsolicitudes_capacidad
+FROM solicitudes_capacidad sc JOIN rutas r ON r.etiqueta_rutas = 'RUTA-002'
+WHERE sc.etiqueta_solicitud = 'SOL-005'
+  AND NOT EXISTS (SELECT 1 FROM servicios WHERE etiqueta_servicio = 'SRV-001');
+
+INSERT INTO solicitud_segmento (id_solicitud, id_segmento, capacidad_reservada_gbps)
+SELECT sc.idsolicitudes_capacidad, sg.id_segmentos, 25.00
+FROM solicitudes_capacidad sc JOIN segmentos sg ON sg.etiqueta_segmentos IN ('SEG-B2','SEG-B3','SEG-B4')
+WHERE sc.etiqueta_solicitud = 'SOL-005'
+  AND NOT EXISTS (SELECT 1 FROM solicitud_segmento x WHERE x.id_solicitud = sc.idsolicitudes_capacidad AND x.id_segmento = sg.id_segmentos);
+
+INSERT INTO historial_utilizacion (id_segmento, fecha_movimiento, capacidad_cambio_gbps, porcentaje_utilizacion, tipo_movimiento, capacidad_resultante_gbps, id_solicitud, id_servicio)
+SELECT sg.id_segmentos, h.f, h.cambio, h.pct, h.tipo, h.res, sc.idsolicitudes_capacidad,
+       CASE WHEN h.srv = 1 THEN (SELECT id_servicios FROM servicios WHERE etiqueta_servicio = 'SRV-001') ELSE NULL END
+FROM (
+  SELECT 'SEG-B2' AS seg, '2026-10-02 09:00:00' AS f,  25.00 AS cambio, 58.33 AS pct, 'Reserva de capacidad' AS tipo, 125.00 AS res, 0 AS srv
+  UNION ALL SELECT 'SEG-B3', '2026-10-02 09:00:00', 25.00, 47.50, 'Reserva de capacidad', 105.00, 0
+  UNION ALL SELECT 'SEG-B4', '2026-10-02 09:00:00', 25.00, 54.00, 'Reserva de capacidad', 115.00, 0
+  UNION ALL SELECT 'SEG-B2', '2026-10-05 10:00:00', 25.00, 58.33, 'Inicio de servicio', 125.00, 1
+  UNION ALL SELECT 'SEG-B3', '2026-10-05 10:00:00', 25.00, 47.50, 'Inicio de servicio', 105.00, 1
+  UNION ALL SELECT 'SEG-B4', '2026-10-05 10:00:00', 25.00, 54.00, 'Inicio de servicio', 115.00, 1
+) AS h
+JOIN segmentos sg ON sg.etiqueta_segmentos = h.seg
+JOIN solicitudes_capacidad sc ON sc.etiqueta_solicitud = 'SOL-005'
+WHERE NOT EXISTS (SELECT 1 FROM historial_utilizacion x WHERE x.id_solicitud = sc.idsolicitudes_capacidad);
+
 -- ---------- COMPROBACIÓN ----------
 SELECT 'roles' AS tabla, COUNT(*) AS filas FROM roles
 UNION ALL SELECT 'usuarios', COUNT(*) FROM usuarios
@@ -126,4 +187,8 @@ UNION ALL SELECT 'clientes', COUNT(*) FROM clientes
 UNION ALL SELECT 'mantenimientos', COUNT(*) FROM mantenimientos
 UNION ALL SELECT 'mant_infraestructura', COUNT(*) FROM mantenimiento_infraestructura
 UNION ALL SELECT 'incidencias', COUNT(*) FROM incidencias
-UNION ALL SELECT 'solicitudes_capacidad', COUNT(*) FROM solicitudes_capacidad;
+UNION ALL SELECT 'solicitudes_capacidad', COUNT(*) FROM solicitudes_capacidad
+UNION ALL SELECT 'servicios', COUNT(*) FROM servicios
+UNION ALL SELECT 'historial_utilizacion', COUNT(*) FROM historial_utilizacion
+UNION ALL SELECT 'rutas', COUNT(*) FROM rutas
+UNION ALL SELECT 'ruta_segmento', COUNT(*) FROM ruta_segmento;

@@ -60,3 +60,12 @@
 /* Celdas un poco más angostas: así caben Editar + Borrar sin que la tabla haga scroll */
 .dark-table-wrap th,
 .dark-table-wrap td { padding-left: 8px; padding-right: 8px; }
+
+/* ---- Rutas: filas de segmentos y botones pequeños ---- */
+.fila-seg { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+.fila-seg select { flex: 1; min-width: 0; }
+.btn-mini {
+  background: #1e3a5f; color: #93c5fd; border: 1px solid rgba(59,130,246,0.6); border-radius: 6px;
+  padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.btn-mini:hover { background: #274b7a; border-color: #38bdf8; }

@@ -36,6 +36,13 @@
   gap: 20px;
   padding-top: 28px;
 }
+/* barras de desplazamiento delgadas y oscuras (solo aparecen si el contenido no cabe) */
+.dark-dashboard * { scrollbar-width: thin; scrollbar-color: rgba(147,197,253,0.35) transparent; }
+.dark-dashboard *::-webkit-scrollbar { width: 8px; height: 8px; }
+.dark-dashboard *::-webkit-scrollbar-track { background: transparent; }
+.dark-dashboard *::-webkit-scrollbar-thumb { background: rgba(147,197,253,0.35); border-radius: 4px; }
+.dark-dashboard *::-webkit-scrollbar-thumb:hover { background: rgba(147,197,253,0.55); }
+
 .dark-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
 .dark-header h1 { color: #fff; font-size: 26px; font-weight: 700; margin: 0 0 4px 0; }
 .dark-header p { color: #a0b8d8; font-size: 13px; margin: 0; }

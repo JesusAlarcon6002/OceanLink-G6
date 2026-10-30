@@ -39,11 +39,17 @@ body {
    ============================================ */
 .app-shell {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  /* la página nunca hace scroll por sí sola: lo que no cabe se desplaza
+     dentro de .dark-scroll-area y el resumen de abajo siempre queda fijo */
+  overflow: hidden;
   align-items: stretch;
 }
 #sidebar-mount {
   display: flex;
+  /* al ocultar el menú el sidebar (margin-right negativo) quedaría fuera de la
+     pantalla y generaría scroll horizontal; aquí se recorta */
+  overflow: hidden;
   /* el sidebar vive a la derecha de la pantalla, junto al botón de
      menú del header (que también está a la derecha) */
   order: 2;
