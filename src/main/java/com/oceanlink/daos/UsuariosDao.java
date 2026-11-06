@@ -1,6 +1,7 @@
 package com.oceanlink.daos;
 import com.oceanlink.beans.Roles;
 import com.oceanlink.beans.Usuarios;
+import com.oceanlink.util.Seguridad;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -59,7 +60,7 @@ public class UsuariosDao extends DaoBase {
                     pstmt.setString(2,nombre);
                     pstmt.setString(3,apellido);
                     pstmt.setString(4,correo);
-                    pstmt.setString(5,passwd);
+                    pstmt.setString(5,Seguridad.hash(passwd)); // se guarda el hash, nunca la clave en texto plano
                     pstmt.setString(6,telefono);
                     pstmt.setString(7,rol);
                     pstmt.executeUpdate();
@@ -126,7 +127,7 @@ public class UsuariosDao extends DaoBase {
                     pstmt.setString(3, apellido);
                     pstmt.setString(4, correo);
                     pstmt.setString(5, telefono);
-                    pstmt.setString(6, passwd);
+                    pstmt.setString(6, Seguridad.hash(passwd)); // "" = no cambiar la clave (COALESCE/NULLIF)
                     pstmt.setInt(7, rol);
                     pstmt.setString(8, estado);
                     pstmt.setInt(9, idUsuario);

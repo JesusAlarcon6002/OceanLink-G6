@@ -25,7 +25,7 @@ const ROLE_MENUS = {
   admin: {
     roleLabel: "Network Admin",
     items: [
-      { id: "inicio", icon: "home", label: "Inicio", href: "index.jsp" },
+      { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
       { id: "usuarios", icon: "users", label: "Usuarios", href: "UsuariosServlet" },
       { id: "roles", icon: "shield-check", label: "Roles", href: "#" },
       { id: "stations", icon: "globe", label: "Stations", href: "EstacionesServlet" },
@@ -37,24 +37,31 @@ const ROLE_MENUS = {
   "capacity-planner": {
     roleLabel: "Capacity Planner",
     items: [
-      { id: "inicio", icon: "home", label: "Inicio", href: "#" },
+      { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
       { id: "capacidad", icon: "users", label: "Capacidad", href: "#" },
       { id: "solicitudes", icon: "shield-check", label: "Solicitudes", href: "SolicitudesServlet" },
       { id: "clientes", icon: "globe", label: "Clientes", href: "ClientesServlet" },
-      { id: "servicios", icon: "git-branch", label: "Servicios", href: "#" },
-      { id: "rutas", icon: "git-branch", label: "Rutas", href: "#" },
-      { id: "historial", icon: "git-branch", label: "Historial de utilización", href: "#" },
+      { id: "servicios", icon: "git-branch", label: "Servicios", href: "ServiciosServlet" },
+      { id: "rutas", icon: "git-branch", label: "Rutas", href: "RutasServlet" },
+      { id: "historial", icon: "git-branch", label: "Historial de utilización", href: "HistorialServlet" },
       { id: "config", icon: "settings", label: "Configuración", href: "#" },
       { id: "perfil", icon: "user", label: "Perfil", href: "#" }
     ]
   },
   supervisor: {
-    // ya tiene pantallas de contenido diseñadas en Figma (Home + Reportes)
+    // Supervisor = solo lectura: ve las listas de todos los módulos (menos Usuarios) sin botones de acción
     roleLabel: "Supervisor",
     items: [
-      { id: "inicio", icon: "home", label: "Inicio", href: "#" },
-      { id: "reportes", icon: "users", label: "Reportes", href: "#" },
-      { id: "config", icon: "settings", label: "Configuración", href: "#" },
+      { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
+      { id: "stations", icon: "globe", label: "Stations", href: "EstacionesServlet" },
+      { id: "segmentos", icon: "git-branch", label: "Segmentos", href: "SegmentosServlet" },
+      { id: "clientes", icon: "users", label: "Clientes", href: "ClientesServlet" },
+      { id: "solicitudes", icon: "shield-check", label: "Solicitudes", href: "SolicitudesServlet" },
+      { id: "rutas", icon: "git-branch", label: "Rutas", href: "RutasServlet" },
+      { id: "servicios", icon: "git-branch", label: "Servicios", href: "ServiciosServlet" },
+      { id: "historial", icon: "git-branch", label: "Historial de utilización", href: "HistorialServlet" },
+      { id: "incidencias", icon: "shield-check", label: "Incidencias", href: "IncidenciasServlet" },
+      { id: "historial-mant", icon: "users", label: "Mantenimientos", href: "MantenimientosServlet" },
       { id: "perfil", icon: "user", label: "Perfil", href: "#" }
     ]
   },
@@ -63,7 +70,7 @@ const ROLE_MENUS = {
     // "estado-red" se quitó del menú: ese contenido ya vive dentro del Home, no es una pantalla aparte
     roleLabel: "Network Operator",
     items: [
-      { id: "inicio", icon: "home", label: "Inicio", href: "#" },
+      { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
       { id: "incidencias", icon: "shield-check", label: "Incidencias", href: "IncidenciasServlet" },
       { id: "historial-incidencias", icon: "globe", label: "Historial de incidencias", href: "#" },
       { id: "config", icon: "settings", label: "Configuración", href: "#" },
@@ -73,7 +80,7 @@ const ROLE_MENUS = {
   "maintenance-coordinator": {
     roleLabel: "Maintenance Coord.",
     items: [
-      { id: "inicio", icon: "home", label: "Inicio", href: "index.jsp" },
+      { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
       { id: "historial-mant", icon: "users", label: "Historial de mantenimientos", href: "MantenimientosServlet" },
       { id: "config", icon: "settings", label: "Configuración", href: "#" },
       { id: "perfil", icon: "user", label: "Perfil", href: "#" }
@@ -90,6 +97,10 @@ function renderSidebar(mountEl) {
   // context path de la app (ej: /OceanLink), lo manda el JSP en data-ctx
   const ctx = mountEl.dataset.ctx || "";
   const menu = ROLE_MENUS[role];
+  // datos del usuario que inició sesión (los manda inicio.jsp desde la sesión)
+  const userName = mountEl.dataset.userName || "";
+  const userEmail = mountEl.dataset.userEmail || "";
+  const esc = t => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   // si mandan un rol que no existe, mejor avisar en consola y no romper nada
   if (!menu) {
@@ -125,15 +136,15 @@ function renderSidebar(mountEl) {
       </div>
       <div class="sidebar-bottom">
         <div class="sidebar-divider"></div>
-        <a class="nav-item logout" href="${ctx}/index.jsp">
+        <a class="nav-item logout" href="${ctx}/LogoutServlet">
           <span class="icon">${ICONS["log-out"]}</span>
           <span>Cerrar sesión</span>
         </a>
         <div class="user-profile-badge">
           <div class="user-avatar"></div>
           <div class="user-meta">
-            <p class="user-name">Soporte Técnico</p>
-            <p class="user-email">admin@oceanlink.net</p>
+            <p class="user-name">${esc(userName)}</p>
+            <p class="user-email">${esc(userEmail)}</p>
           </div>
         </div>
       </div>
@@ -157,4 +168,18 @@ document.addEventListener("DOMContentLoaded", () => {
       sidebarEl.classList.toggle("collapsed");
     });
   }
+});
+
+// Supervisor (solo lectura): quitamos la columna ACCIONES, que queda vacía
+document.addEventListener("DOMContentLoaded", () => {
+  if (!document.body.classList.contains("solo-lectura")) return;
+  document.querySelectorAll("table").forEach(t => {
+    const ths = Array.from(t.querySelectorAll("thead th"));
+    const idx = ths.findIndex(th => /^ACCIONES?$/i.test(th.textContent.trim()));
+    if (idx < 0) return;
+    t.querySelectorAll("tr").forEach(tr => {
+      const c = tr.children[idx];
+      if (c && tr.children.length === ths.length) c.style.display = "none";
+    });
+  });
 });

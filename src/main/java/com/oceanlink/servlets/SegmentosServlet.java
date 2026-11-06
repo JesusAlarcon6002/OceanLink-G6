@@ -56,11 +56,7 @@ public class SegmentosServlet extends HttpServlet {
                 }
                 break;
             case "borrar":
-                String idStr = request.getParameter("id");
-                idSegmento = Integer.parseInt(idStr);
-                if (segmentosDao.obtenerSegmentos(idSegmento) != null) {
-                    segmentosDao.borrarSegmentos(idSegmento);
-                }
+                // Borrar ya no se hace por GET (un enlace/URL no debe poder eliminar datos): solo por POST
                 response.sendRedirect(request.getContextPath() + "/SegmentosServlet");
                 break;
         }
@@ -78,6 +74,14 @@ public class SegmentosServlet extends HttpServlet {
         RequestDispatcher view;
 
         switch (action){
+            case "borrar": {
+                int idBorrar = Integer.parseInt(request.getParameter("id"));
+                if (segmentosDao.obtenerSegmentos(idBorrar) != null) {
+                    segmentosDao.borrarSegmentos(idBorrar);
+                }
+                response.sendRedirect(request.getContextPath() + "/SegmentosServlet");
+                break;
+            }
             case "crear":
 
                 String idSegmentoStr = request.getParameter("id");
