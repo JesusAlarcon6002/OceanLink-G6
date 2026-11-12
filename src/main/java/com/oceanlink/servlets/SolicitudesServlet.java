@@ -96,6 +96,22 @@ public class SolicitudesServlet extends HttpServlet {
 
         boolean esNueva = sol.getIdSolicitud() == 0;
 
+        // Si ya tiene capacidad reservada, los datos de la reserva y su estado se manejan desde "Capacidad"/Servicios
+        if (!esNueva && errores.isEmpty() && dao.tieneReservas(sol.getIdSolicitud())) {
+            Solicitudes original = dao.obtenerSolicitudes(sol.getIdSolicitud());
+            if (original != null) {
+                boolean cambioReserva = original.getEstacionOrigen().getId_landing_stations() != sol.getEstacionOrigen().getId_landing_stations()
+                        || original.getEstacionDestino().getId_landing_stations() != sol.getEstacionDestino().getId_landing_stations()
+                        || Math.abs(original.getCapacidadSolicitadaGbps() - sol.getCapacidadSolicitadaGbps()) > 1e-9;
+                if (cambioReserva) {
+                    errores.add("La solicitud tiene capacidad reservada: no se puede cambiar origen, destino ni capacidad. Libera la reserva primero (botón Capacidad).");
+                }
+                if (!original.getEstado().equals(sol.getEstado())) {
+                    errores.add("La solicitud tiene capacidad reservada: su estado lo manejan la reserva y los servicios. Usa el botón Capacidad o la pantalla de Servicios.");
+                }
+            }
+        }
+
         if (errores.isEmpty()) {
             boolean ok = esNueva ? dao.crearSolicitudes(sol) : dao.actualizarSolicitudes(sol);
             if (ok) {

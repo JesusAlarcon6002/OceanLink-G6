@@ -53,10 +53,10 @@
 
           <div class="dark-table-wrap">
             <table>
-              <thead><tr><th>ID</th><th>CLIENTE</th><th>RUTA</th><th>GBPS</th><th>FECHA</th><th>ESTADO</th><th>ACCIONES</th></tr></thead>
+              <thead><tr><th>ID</th><th>CLIENTE</th><th>RUTA</th><th>GBPS</th><th>ESTADO</th><th>ACCIONES</th></tr></thead>
               <tbody id="tabla-datos">
                 <% if (listaSolicitudes.isEmpty()) { %>
-                <tr class="fila-vacia"><td colspan="7">Aún no hay solicitudes registradas.</td></tr>
+                <tr class="fila-vacia"><td colspan="6">Aún no hay solicitudes registradas.</td></tr>
                 <% }
                    for (Solicitudes sol : listaSolicitudes) {
                        String est = sol.getEstado() == null ? "" : sol.getEstado();
@@ -71,11 +71,11 @@
                   <td><%=Html.esc(sol.getCliente().getNombre())%></td>
                   <td><%=Html.esc(sol.getEstacionOrigen().getEtiqueta_station())%> → <%=Html.esc(sol.getEstacionDestino().getEtiqueta_station())%></td>
                   <td><%=gbps.format(sol.getCapacidadSolicitadaGbps())%></td>
-                  <td><%=Html.esc(sol.getFechaSolicitudTexto())%></td>
                   <td><span class="badge <%=claseEstado%>"><%=Html.esc(est)%></span></td>
                   <td>
                     <div class="acciones-fila">
                       <a class="btn-edit-white" href="<%=ctx%>/SolicitudesServlet?action=editar&id=<%=sol.getIdSolicitud()%>">Editar</a>
+                      <a class="btn-edit-white" href="<%=ctx%>/ReservasServlet?solicitud=<%=sol.getIdSolicitud()%>">Capacidad</a>
                       <form method="post" action="<%=ctx%>/SolicitudesServlet?action=borrar"
                             onsubmit="return confirm('¿Seguro que quieres eliminar esta solicitud?');">
                         <input type="hidden" name="id" value="<%=sol.getIdSolicitud()%>">
