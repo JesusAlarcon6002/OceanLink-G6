@@ -53,11 +53,7 @@ public class UsuariosServlet  extends HttpServlet {
                 }
                 break;
             case "borrar":
-                String idStr = request.getParameter("id");
-                idUsuario = Integer.parseInt(idStr);
-                if (usuariosDao.obtenerUsuarios(idUsuario) != null) {
-                    usuariosDao.borrarUsuarios(idUsuario);
-                }
+                // Borrar ya no se hace por GET (un enlace/URL no debe poder eliminar datos): solo por POST
                 response.sendRedirect(request.getContextPath() + "/UsuariosServlet");
                 break;
         }
@@ -72,6 +68,14 @@ public class UsuariosServlet  extends HttpServlet {
         RequestDispatcher view;
 
         switch (action){
+            case "borrar": {
+                int idBorrar = Integer.parseInt(request.getParameter("id"));
+                if (usuariosDao.obtenerUsuarios(idBorrar) != null) {
+                    usuariosDao.borrarUsuarios(idBorrar);
+                }
+                response.sendRedirect(request.getContextPath() + "/UsuariosServlet");
+                break;
+            }
             case "crear":
                 String idUsuarioStr = request.getParameter("id");
                 String etiqueta = request.getParameter("etiqueta");

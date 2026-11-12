@@ -53,11 +53,7 @@ public class Landing_StationsServlet  extends HttpServlet {
                 }
                 break;
             case "borrar":
-                String idStr = request.getParameter("id");
-                idLandingStation = Integer.parseInt(idStr);
-                if (landing_StationsDao.obtenerLandingStations(idLandingStation) != null) {
-                    landing_StationsDao.borrarLandingStations(idLandingStation);
-                }
+                // Borrar ya no se hace por GET (un enlace/URL no debe poder eliminar datos): solo por POST
                 response.sendRedirect(request.getContextPath() + "/EstacionesServlet");
                 break;
         }
@@ -71,6 +67,14 @@ public class Landing_StationsServlet  extends HttpServlet {
         RequestDispatcher view;
 
         switch (action){
+            case "borrar": {
+                int idBorrar = Integer.parseInt(request.getParameter("id"));
+                if (landing_StationsDao.obtenerLandingStations(idBorrar) != null) {
+                    landing_StationsDao.borrarLandingStations(idBorrar);
+                }
+                response.sendRedirect(request.getContextPath() + "/EstacionesServlet");
+                break;
+            }
             case "crear":
 
                 String idLandingStationStr = request.getParameter("id");

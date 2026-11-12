@@ -52,8 +52,11 @@
                   <td>
                     <div class="acciones-fila">
                       <a class="btn-edit-white" href="<%=ctx%>/EstacionesServlet?action=editar&id=<%=station.getId_landing_stations()%>">Editar</a>
-                      <a class="btn-delete-red" href="<%=ctx%>/EstacionesServlet?action=borrar&id=<%=station.getId_landing_stations()%>"
-                         onclick="return confirm('¿Seguro que quieres eliminar esta estación?');">Borrar</a>
+                      <form method="post" action="<%=ctx%>/EstacionesServlet?action=borrar"
+                            onsubmit="return confirm('¿Seguro que quieres eliminar esta estación?');">
+                        <input type="hidden" name="id" value="<%=station.getId_landing_stations()%>">
+                        <button type="submit" class="btn-delete-red">Borrar</button>
+                      </form>
                     </div>
                   </td>
                 </tr>

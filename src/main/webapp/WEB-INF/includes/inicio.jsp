@@ -15,12 +15,19 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="com.oceanlink.util.Html" %>
+<%@ page import="com.oceanlink.beans.UsuarioSesion" %>
+<%@ page import="com.oceanlink.util.Rol" %>
 <%
     String ctx = request.getContextPath();
     String titulo = request.getParameter("titulo") == null ? "" : request.getParameter("titulo");
     String encabezado = request.getParameter("encabezado") == null ? "" : request.getParameter("encabezado");
     String subtitulo = request.getParameter("subtitulo") == null ? "" : request.getParameter("subtitulo");
-    String rol = request.getParameter("rol") == null ? "admin" : request.getParameter("rol");
+    // El menú lateral sale del ROL DE LA SESIÓN (el parámetro "rol" de cada JSP ya no manda).
+    UsuarioSesion usuarioSesion = (UsuarioSesion) session.getAttribute("usuario");
+    String rol = usuarioSesion == null ? "admin" : usuarioSesion.getRol().getClave();
+    String nombreUsuario = usuarioSesion == null ? "" : usuarioSesion.getNombreCompleto();
+    String correoUsuario = usuarioSesion == null ? "" : usuarioSesion.getCorreo();
+    boolean soloLectura = usuarioSesion != null && usuarioSesion.getRol() == Rol.SUPERVISOR;
     String activo = request.getParameter("activo") == null ? "" : request.getParameter("activo");
 %>
 <!DOCTYPE html>
@@ -35,10 +42,10 @@
 <link href="<%=ctx%>/assets/css/dashboard-admin.css" rel="stylesheet">
 <link href="<%=ctx%>/assets/css/oceanlink-jsp.css" rel="stylesheet">
 </head>
-<body>
+<body<%= soloLectura ? " class=\"solo-lectura\"" : "" %>>
 
 <div class="app-shell">
-  <div id="sidebar-mount" data-role="<%=Html.esc(rol)%>" data-active="<%=Html.esc(activo)%>" data-ctx="<%=ctx%>"></div>
+  <div id="sidebar-mount" data-role="<%=Html.esc(rol)%>" data-active="<%=Html.esc(activo)%>" data-ctx="<%=ctx%>" data-user-name="<%=Html.esc(nombreUsuario)%>" data-user-email="<%=Html.esc(correoUsuario)%>"></div>
 
   <div class="dark-dashboard">
     <div class="dark-content">

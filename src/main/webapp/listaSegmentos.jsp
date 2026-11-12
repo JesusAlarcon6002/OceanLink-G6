@@ -57,8 +57,11 @@
                   <td>
                     <div class="acciones-fila">
                       <a class="btn-edit-white" href="<%=ctx%>/SegmentosServlet?action=editar&id=<%=sg.getIdSegmento()%>">Editar</a>
-                      <a class="btn-delete-red" href="<%=ctx%>/SegmentosServlet?action=borrar&id=<%=sg.getIdSegmento()%>"
-                         onclick="return confirm('¿Seguro que quieres eliminar este segmento?');">Borrar</a>
+                      <form method="post" action="<%=ctx%>/SegmentosServlet?action=borrar"
+                            onsubmit="return confirm('¿Seguro que quieres eliminar este segmento?');">
+                        <input type="hidden" name="id" value="<%=sg.getIdSegmento()%>">
+                        <button type="submit" class="btn-delete-red">Borrar</button>
+                      </form>
                     </div>
                   </td>
                 </tr>

@@ -69,3 +69,38 @@
   padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
 }
 .btn-mini:hover { background: #274b7a; border-color: #38bdf8; }
+
+/* ===== Login / acceso denegado ===== */
+body.pagina-login { min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: auto; }
+.login-wrap { width: 100%; padding: 24px 16px; display: flex; justify-content: center; }
+.login-card { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 10px;
+  background: rgba(15, 23, 42, 0.92); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 12px; padding: 32px 28px; color: #e2e8f0; }
+.login-brand { text-align: center; margin-bottom: 8px; }
+.login-brand img { width: 64px; height: 64px; object-fit: contain; }
+.login-brand h1 { font-size: 20px; margin: 8px 0 4px; letter-spacing: .06em; color: #fff; }
+.login-brand p { font-size: 13px; margin: 0; color: #94a3b8; }
+.login-card label { font-size: 12px; font-weight: 600; color: #cbd5e1; margin-top: 6px; }
+.login-card input { background: #0b1220; border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 8px; color: #fff; padding: 10px 12px; font-size: 14px; }
+.login-card input:focus { outline: none; border-color: #3b82f6; }
+.login-btn { margin-top: 14px; background: #1e3a5f; color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.6);
+  border-radius: 8px; padding: 11px; font-weight: 700; letter-spacing: .05em; cursor: pointer; font-size: 14px; }
+.login-btn:hover { background: #254a78; }
+.login-aviso { font-size: 13px; border-radius: 8px; padding: 9px 12px; }
+.login-error { background: rgba(248, 113, 113, 0.12); border: 1px solid rgba(248, 113, 113, 0.5); color: #fca5a5; }
+.login-ok { background: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.4); color: #86efac; }
+
+/* ===== Modo solo lectura (rol Supervisor): se ocultan los botones de acción.
+   Ojo: esto es solo cosmético, el bloqueo real lo hace AuthFilter en el servidor. ===== */
+body.solo-lectura .btn-register-toolbar,
+body.solo-lectura .quick-actions,
+body.solo-lectura .acciones-fila { display: none !important; }
+
+/* Fondo del login / 403 */
+body.pagina-login { background: linear-gradient(180deg, #0a1628 0%, #0d1f38 100%); }
+
+/* Menús largos (ej. Supervisor): la lista de opciones hace scroll interno y el usuario/cerrar sesión siempre quedan visibles */
+.sidebar { overflow: hidden; }
+.sidebar .top-content { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.sidebar .nav-list { overflow-y: auto; min-height: 0; scrollbar-width: thin; scrollbar-color: #1e3a5f transparent; }
+.sidebar .sidebar-bottom { flex: 0 0 auto; }
+.sidebar .brand-lockup { flex: 0 0 auto; }

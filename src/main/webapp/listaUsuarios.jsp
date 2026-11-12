@@ -61,8 +61,11 @@
                   <td>
                     <div class="acciones-fila">
                       <a class="btn-edit-white" href="<%=ctx%>/UsuariosServlet?action=editar&id=<%=usr.getIdUsuario()%>">Editar</a>
-                      <a class="btn-delete-red" href="<%=ctx%>/UsuariosServlet?action=borrar&id=<%=usr.getIdUsuario()%>"
-                         onclick="return confirm('¿Seguro que quieres eliminar este usuario?');">Borrar</a>
+                      <form method="post" action="<%=ctx%>/UsuariosServlet?action=borrar"
+                            onsubmit="return confirm('¿Seguro que quieres eliminar este usuario?');">
+                        <input type="hidden" name="id" value="<%=usr.getIdUsuario()%>">
+                        <button type="submit" class="btn-delete-red">Borrar</button>
+                      </form>
                     </div>
                   </td>
                 </tr>
