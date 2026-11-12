@@ -55,6 +55,21 @@
                   <td><span class="badge badge-success">Disponible</span></td>
                   <td><a class="btn-edit-white" href="<%=ctx%>/SolicitudesServlet">Abrir</a></td>
                 </tr>
+                <tr>
+                  <td>Rutas</td>
+                  <td><span class="badge badge-success">Disponible</span></td>
+                  <td><a class="btn-edit-white" href="<%=ctx%>/RutasServlet">Abrir</a></td>
+                </tr>
+                <tr>
+                  <td>Servicios</td>
+                  <td><span class="badge badge-success">Disponible</span></td>
+                  <td><a class="btn-edit-white" href="<%=ctx%>/ServiciosServlet">Abrir</a></td>
+                </tr>
+                <tr>
+                  <td>Historial de utilización</td>
+                  <td><span class="badge badge-success">Disponible</span></td>
+                  <td><a class="btn-edit-white" href="<%=ctx%>/HistorialServlet">Abrir</a></td>
+                </tr>
               </tbody>
             </table>
           </div>

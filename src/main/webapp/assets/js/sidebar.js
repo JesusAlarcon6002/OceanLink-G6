@@ -41,9 +41,9 @@ const ROLE_MENUS = {
       { id: "capacidad", icon: "users", label: "Capacidad", href: "#" },
       { id: "solicitudes", icon: "shield-check", label: "Solicitudes", href: "SolicitudesServlet" },
       { id: "clientes", icon: "globe", label: "Clientes", href: "ClientesServlet" },
-      { id: "servicios", icon: "git-branch", label: "Servicios", href: "#" },
-      { id: "rutas", icon: "git-branch", label: "Rutas", href: "#" },
-      { id: "historial", icon: "git-branch", label: "Historial de utilización", href: "#" },
+      { id: "servicios", icon: "git-branch", label: "Servicios", href: "ServiciosServlet" },
+      { id: "rutas", icon: "git-branch", label: "Rutas", href: "RutasServlet" },
+      { id: "historial", icon: "git-branch", label: "Historial de utilización", href: "HistorialServlet" },
       { id: "config", icon: "settings", label: "Configuración", href: "#" },
       { id: "perfil", icon: "user", label: "Perfil", href: "#" }
     ]
