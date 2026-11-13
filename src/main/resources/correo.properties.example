@@ -1,0 +1,12 @@
+# Configuración del correo (SMTP). Dos formas de usarla:
+#  A) Variables de entorno en IntelliJ (Smart Tomcat > Environment variables): SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_FROM
+#  B) Copiar este archivo como "correo.properties" (misma carpeta) y completar los datos.
+#     correo.properties está en .gitignore: no se sube a Git.
+# Si no hay nada configurado, el sistema funciona igual pero NO envía correos.
+#
+# Para pruebas: crear cuenta gratis en https://mailtrap.io > Email Testing > Inboxes > SMTP Settings (Java).
+smtp.host=sandbox.smtp.mailtrap.io
+smtp.port=2525
+smtp.user=USUARIO_GENERADO_POR_MAILTRAP
+smtp.password=CONTRASENA_GENERADA_POR_MAILTRAP
+smtp.from=notificaciones@oceanlink.example

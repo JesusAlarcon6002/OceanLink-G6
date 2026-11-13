@@ -6,6 +6,7 @@ import com.oceanlink.beans.Solicitudes;
 import com.oceanlink.daos.ClientesDao;
 import com.oceanlink.daos.Landing_StationsDao;
 import com.oceanlink.daos.SolicitudesDao;
+import com.oceanlink.services.NotificadorCorreos;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -113,8 +114,14 @@ public class SolicitudesServlet extends HttpServlet {
         }
 
         if (errores.isEmpty()) {
+            // estado antes de guardar, para avisar por correo si cambia
+            Solicitudes antes = esNueva ? null : dao.obtenerSolicitudes(sol.getIdSolicitud());
+            String estadoAnterior = antes == null ? null : antes.getEstado();
             boolean ok = esNueva ? dao.crearSolicitudes(sol) : dao.actualizarSolicitudes(sol);
             if (ok) {
+                if (!esNueva) {
+                    NotificadorCorreos.solicitudCambioEstado(sol, estadoAnterior); // correo si cambió el estado
+                }
                 response.sendRedirect(request.getContextPath() + "/SolicitudesServlet?ok=" + (esNueva ? "creado" : "actualizado"));
                 return;
             }

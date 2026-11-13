@@ -5,6 +5,7 @@ import com.oceanlink.beans.Solicitudes;
 import com.oceanlink.daos.ReservasDao;
 import com.oceanlink.daos.RutasDao;
 import com.oceanlink.daos.SolicitudesDao;
+import com.oceanlink.services.NotificadorCorreos;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,6 +15,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Reservar / liberar capacidad de una solicitud. Pantalla: reservarCapacidad.jsp */
 @WebServlet(name = "ReservasServlet", value = "/ReservasServlet")
@@ -64,6 +67,14 @@ public class ReservasServlet extends HttpServlet {
                 return;
         }
         if (error == null) {
+            if ("reservar".equals(action)) {
+                // correo si algún segmento de la reserva quedó con utilización crítica (> 95 %)
+                List<Integer> ids = new ArrayList<>();
+                for (ReservasDao.Reserva r : dao.obtenerReservas(idSolicitud)) {
+                    ids.add(r.idSegmento);
+                }
+                NotificadorCorreos.alertaUtilizacionCritica(ids);
+            }
             response.sendRedirect(base + "&ok=" + ok);
         } else {
             response.sendRedirect(base + "&err=" + URLEncoder.encode(error, StandardCharsets.UTF_8));

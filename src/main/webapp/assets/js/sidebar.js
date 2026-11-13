@@ -30,6 +30,9 @@ const ROLE_MENUS = {
       { id: "roles", icon: "shield-check", label: "Roles", href: "#" },
       { id: "stations", icon: "globe", label: "Stations", href: "EstacionesServlet" },
       { id: "segmentos", icon: "git-branch", label: "Segmentos", href: "SegmentosServlet" },
+      { id: "dashboard", icon: "globe", label: "Dashboard", href: "DashboardServlet" },
+      { id: "reportes", icon: "shield-check", label: "Reportes", href: "ReportesServlet" },
+      { id: "correo", icon: "settings", label: "Prueba de correo", href: "CorreoServlet" },
       { id: "config", icon: "settings", label: "Configuración", href: "#" },
       { id: "perfil", icon: "user", label: "Perfil", href: "#" }
     ]
@@ -53,6 +56,8 @@ const ROLE_MENUS = {
     roleLabel: "Supervisor",
     items: [
       { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
+      { id: "dashboard", icon: "globe", label: "Dashboard", href: "DashboardServlet" },
+      { id: "reportes", icon: "shield-check", label: "Reportes", href: "ReportesServlet" },
       { id: "stations", icon: "globe", label: "Stations", href: "EstacionesServlet" },
       { id: "segmentos", icon: "git-branch", label: "Segmentos", href: "SegmentosServlet" },
       { id: "clientes", icon: "users", label: "Clientes", href: "ClientesServlet" },

@@ -4,6 +4,7 @@ import com.oceanlink.beans.Mantenimientos;
 import com.oceanlink.daos.Landing_StationsDao;
 import com.oceanlink.daos.MantenimientosDao;
 import com.oceanlink.daos.SegmentosDao;
+import com.oceanlink.services.NotificadorCorreos;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -97,6 +98,9 @@ public class MantenimientosServlet extends HttpServlet {
         if (errores.isEmpty()) {
             boolean ok = esNuevo ? dao.crearMantenimientos(m) : dao.actualizarMantenimientos(m);
             if (ok) {
+                if (esNuevo && "Programado".equals(m.getEstado())) {
+                    NotificadorCorreos.mantenimientoProgramado(m); // correo: mantenimiento programado
+                }
                 response.sendRedirect(request.getContextPath() + "/MantenimientosServlet?ok=" + (esNuevo ? "creado" : "actualizado"));
                 return;
             }

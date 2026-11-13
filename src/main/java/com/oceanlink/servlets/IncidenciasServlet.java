@@ -4,6 +4,7 @@ import com.oceanlink.beans.Incidencias;
 import com.oceanlink.daos.IncidenciasDao;
 import com.oceanlink.daos.Landing_StationsDao;
 import com.oceanlink.daos.SegmentosDao;
+import com.oceanlink.services.NotificadorCorreos;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -92,6 +93,9 @@ public class IncidenciasServlet extends HttpServlet {
         if (errores.isEmpty()) {
             boolean ok = esNueva ? dao.crearIncidencias(inc) : dao.actualizarIncidencias(inc);
             if (ok) {
+                if (esNueva) {
+                    NotificadorCorreos.incidenciaRegistrada(inc); // correo: incidencia registrada
+                }
                 response.sendRedirect(request.getContextPath() + "/IncidenciasServlet?ok=" + (esNueva ? "creado" : "actualizado"));
                 return;
             }

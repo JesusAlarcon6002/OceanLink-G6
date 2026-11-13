@@ -40,6 +40,11 @@ public final class Permisos {
         add("/ReservasServlet", "Reservas de capacidad", Rol.CAPACITY_PLANNER, true);
         add("/IncidenciasServlet", "Incidencias", Rol.NETWORK_OPERATOR, true);
         add("/MantenimientosServlet", "Mantenimientos", Rol.MAINTENANCE_COORDINATOR, true);
+        // Dashboard y reportes (solo consulta): Supervisor y Network Admin
+        addVarios("/DashboardServlet", "Dashboard de la red", Rol.SUPERVISOR, Rol.ADMIN);
+        addVarios("/ReportesServlet", "Reportes", Rol.SUPERVISOR, Rol.ADMIN);
+        // Prueba del correo SMTP: solo Network Admin
+        add("/CorreoServlet", "Prueba de correo", Rol.ADMIN, false);
     }
 
     private Permisos() {
@@ -47,6 +52,10 @@ public final class Permisos {
 
     private static void add(String ruta, String nombre, Rol duenio, boolean supervisorLee) {
         MODULOS.put(ruta, new Modulo(ruta, nombre, EnumSet.of(duenio), supervisorLee));
+    }
+
+    private static void addVarios(String ruta, String nombre, Rol primero, Rol... otros) {
+        MODULOS.put(ruta, new Modulo(ruta, nombre, EnumSet.of(primero, otros), false));
     }
 
     public static Modulo modulo(String ruta) {
