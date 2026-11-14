@@ -61,11 +61,13 @@
                   <td>
                     <div class="acciones-fila">
                       <a class="btn-edit-white" href="<%=ctx%>/UsuariosServlet?action=editar&id=<%=usr.getIdUsuario()%>">Editar</a>
+                      <% if (!"Inactivo".equals(usr.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/UsuariosServlet?action=borrar"
-                            onsubmit="return confirm('¿Seguro que quieres eliminar este usuario?');">
+                            data-confirmar="¿Seguro que quieres desactivar este usuario?" data-confirmar-btn="Desactivar" data-confirmar-titulo="Desactivar usuario">
                         <input type="hidden" name="id" value="<%=usr.getIdUsuario()%>">
                         <button type="submit" class="btn-delete-red">Borrar</button>
                       </form>
+                      <% } %>
                     </div>
                   </td>
                 </tr>

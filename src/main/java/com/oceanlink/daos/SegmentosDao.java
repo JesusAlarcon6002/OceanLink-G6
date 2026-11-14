@@ -146,11 +146,12 @@ public class SegmentosDao extends DaoBase {
             e.printStackTrace();
         }
     }
+    /** Borrado lógico: el segmento pasa a "Fuera de servicio". */
     public void borrarSegmentos(int idSegmentos) {
         try {
 
             try (Connection conn = getConnection()) {
-                String sql = "DELETE FROM segmentos WHERE id_segmentos = ?;";
+                String sql = "UPDATE segmentos SET estado = 'Fuera de servicio' WHERE id_segmentos = ?;";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setInt(1, idSegmentos);
                     pstmt.executeUpdate();

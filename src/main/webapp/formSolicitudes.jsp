@@ -90,9 +90,10 @@
                        placeholder="20" value="<%= cap > 0 ? String.valueOf(cap) : "" %>">
               </div>
               <div class="form-field">
-                <label for="fechaSolicitud">FECHA DE SOLICITUD *</label>
-                <input type="datetime-local" id="fechaSolicitud" name="fechaSolicitud" required
-                       value="<%=sol.getFechaSolicitudInput()%>">
+                <label for="fechaSolicitud">FECHA DE SOLICITUD</label>
+                <input type="text" id="fechaSolicitud" value="<%=Html.esc(sol.getFechaSolicitudCompleta())%>"
+                       readonly tabindex="-1" style="cursor:not-allowed;opacity:0.85;"
+                       title="La fecha de solicitud la asigna el sistema y no se puede cambiar">
               </div>
               <div class="form-field">
                 <label for="estado">ESTADO DE LA SOLICITUD</label>

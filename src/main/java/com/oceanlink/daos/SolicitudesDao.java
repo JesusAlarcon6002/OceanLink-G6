@@ -113,10 +113,11 @@ public class SolicitudesDao extends DaoBase {
         }
     }
 
+    /** Borrado lógico: la solicitud pasa a "Rechazada" (estado final; no hay un estado "inactivo" en la tabla). */
     public boolean borrarSolicitudes(int idSolicitud) {
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(
-                     "DELETE FROM solicitudes_capacidad WHERE idsolicitudes_capacidad = ?")) {
+                     "UPDATE solicitudes_capacidad SET estado = 'Rechazada' WHERE idsolicitudes_capacidad = ?")) {
             pstmt.setInt(1, idSolicitud);
             return pstmt.executeUpdate() > 0;
         } catch (ClassNotFoundException | SQLException e) {

@@ -16,7 +16,7 @@
     String mensajeOk = null;
     if ("creado".equals(ok)) mensajeOk = "Mantenimiento registrado correctamente.";
     else if ("actualizado".equals(ok)) mensajeOk = "Mantenimiento actualizado correctamente.";
-    else if ("borrado".equals(ok)) mensajeOk = "Mantenimiento eliminado.";
+    else if ("borrado".equals(ok)) mensajeOk = "Mantenimiento desactivado.";
 %>
 <jsp:include page="/WEB-INF/includes/inicio.jsp">
     <jsp:param name="titulo" value="Mantenimientos"/>
@@ -35,7 +35,7 @@
           <p class="msg msg-ok"><%=mensajeOk%></p>
           <% } %>
           <% if ("borrar".equals(err)) { %>
-          <p class="msg msg-error">No se pudo eliminar el mantenimiento.</p>
+          <p class="msg msg-error">No se pudo desactivar el mantenimiento.</p>
           <% } %>
 
           <div class="panel-toolbar">
@@ -78,11 +78,13 @@
                     <div class="acciones-fila">
                       <a class="btn-edit-white" href="<%=ctx%>/MantenimientosServlet?action=editar&id=<%=m.getIdMantenimiento()%>">Editar</a>
                       <%-- Borrar va por POST (no por link) para que un robot o un clic accidental no elimine datos --%>
+                      <% if (!"Finalizado".equals(m.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/MantenimientosServlet?action=borrar"
-                            onsubmit="return confirm('¿Seguro que quieres eliminar este mantenimiento?');">
+                            data-confirmar="¿Seguro que quieres desactivar este mantenimiento?" data-confirmar-btn="Desactivar" data-confirmar-titulo="Desactivar mantenimiento">
                         <input type="hidden" name="id" value="<%=m.getIdMantenimiento()%>">
                         <button type="submit" class="btn-delete-red">Borrar</button>
                       </form>
+                      <% } %>
                     </div>
                   </td>
                 </tr>

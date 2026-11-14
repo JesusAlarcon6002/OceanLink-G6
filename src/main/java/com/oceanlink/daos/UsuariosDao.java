@@ -139,11 +139,12 @@ public class UsuariosDao extends DaoBase {
         }
     }
 
+    /** Borrado lógico: el usuario pasa a "Inactivo" y ya no puede iniciar sesión. */
     public void borrarUsuarios(int idUsuario) {
         try {
 
             try (Connection conn = getConnection()) {
-                String sql = "DELETE FROM usuarios WHERE idusuarios = ?";
+                String sql = "UPDATE usuarios SET estado = 'Inactivo' WHERE idusuarios = ?";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setInt(1, idUsuario);
                     pstmt.executeUpdate();

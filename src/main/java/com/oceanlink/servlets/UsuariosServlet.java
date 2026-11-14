@@ -70,6 +70,12 @@ public class UsuariosServlet  extends HttpServlet {
         switch (action){
             case "borrar": {
                 int idBorrar = Integer.parseInt(request.getParameter("id"));
+                // un usuario no puede desactivarse a sí mismo: se quedaría sin acceso al sistema
+                com.oceanlink.beans.UsuarioSesion actual = (com.oceanlink.beans.UsuarioSesion) request.getSession().getAttribute("usuario");
+                if (actual != null && actual.getIdUsuario() == idBorrar) {
+                    response.sendRedirect(request.getContextPath() + "/UsuariosServlet");
+                    break;
+                }
                 if (usuariosDao.obtenerUsuarios(idBorrar) != null) {
                     usuariosDao.borrarUsuarios(idBorrar);
                 }

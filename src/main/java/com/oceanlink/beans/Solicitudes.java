@@ -53,6 +53,11 @@ public class Solicitudes {
     }
 
     /** Texto para la tabla, ej: 23/10/2026 */
+    /** Fecha y hora completas (dd/MM/yyyy HH:mm), para mostrarla en el formulario. */
+    public String getFechaSolicitudCompleta() {
+        return fechaSolicitud == null ? "" : fechaSolicitud.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+    }
+
     public String getFechaSolicitudTexto() {
         return fechaSolicitud == null ? "" : fechaSolicitud.format(PARA_TABLA);
     }

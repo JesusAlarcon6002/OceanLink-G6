@@ -257,7 +257,7 @@ public class ServiciosDao extends DaoBase {
 
     // ------------------------------------------------------------------ borrar
 
-    /** Solo se puede borrar un servicio Pendiente (todavía no movió capacidad). Después se Finaliza. */
+    /** Borrado lógico: solo un servicio Pendiente (todavía no movió capacidad) pasa a "Finalizado". Uno en uso se Finaliza desde el formulario. */
     public String borrarServicios(int idServicio) {
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
@@ -273,12 +273,12 @@ public class ServiciosDao extends DaoBase {
                         }
                         if (!"Pendiente".equals(rs.getString(1))) {
                             conn.rollback();
-                            return "Solo se puede eliminar un servicio Pendiente. Para uno en uso, cámbialo a Finalizado.";
+                            return "Solo se puede desactivar un servicio Pendiente. Para uno en uso, cámbialo a Finalizado.";
                         }
                         idSolicitud = rs.getInt(2);
                     }
                 }
-                try (PreparedStatement pstmt = conn.prepareStatement("DELETE FROM servicios WHERE id_servicios = ?")) {
+                try (PreparedStatement pstmt = conn.prepareStatement("UPDATE servicios SET estado = 'Finalizado' WHERE id_servicios = ?")) {
                     pstmt.setInt(1, idServicio);
                     pstmt.executeUpdate();
                 }
@@ -291,7 +291,7 @@ public class ServiciosDao extends DaoBase {
             }
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
-            return "No se pudo eliminar el servicio (¿tiene historial de utilización?).";
+            return "No se pudo desactivar el servicio.";
         }
     }
 

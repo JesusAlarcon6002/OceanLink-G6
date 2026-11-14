@@ -130,22 +130,14 @@ public class IncidenciasDao extends DaoBase {
         }
     }
 
+    /** Borrado lógico: la incidencia pasa a "Cerrada" (con fecha de restauración si no tenía) y conserva su infraestructura. */
     public boolean borrarIncidencias(int idIncidencia) {
-        try (Connection conn = getConnection()) {
-            conn.setAutoCommit(false);
-            try {
-                borrarInfraestructura(conn, idIncidencia);
-                try (PreparedStatement pstmt = conn.prepareStatement(
-                        "DELETE FROM incidencias WHERE id_incidencias = ?")) {
-                    pstmt.setInt(1, idIncidencia);
-                    pstmt.executeUpdate();
-                }
-                conn.commit();
-                return true;
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            }
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(
+                     "UPDATE incidencias SET estado = 'Cerrada', "
+                     + "fecha_restauracion = COALESCE(fecha_restauracion, NOW()) WHERE id_incidencias = ?")) {
+            pstmt.setInt(1, idIncidencia);
+            return pstmt.executeUpdate() > 0;
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             return false;

@@ -183,11 +183,12 @@ public class SolicitudesServlet extends HttpServlet {
             }
         }
 
-        LocalDateTime fecha = parsearFecha(request.getParameter("fechaSolicitud"));
-        sol.setFechaSolicitud(fecha);
-        if (fecha == null) {
-            errores.add("La fecha de solicitud es obligatoria y debe ser válida.");
-        }
+        // La fecha de solicitud NO se puede cambiar desde el formulario: al registrar es la de hoy
+        // y al editar se conserva la que ya tenía (cualquier valor enviado por el navegador se ignora).
+        Solicitudes existente = sol.getIdSolicitud() > 0 ? new SolicitudesDao().obtenerSolicitudes(sol.getIdSolicitud()) : null;
+        sol.setFechaSolicitud(existente != null && existente.getFechaSolicitud() != null
+                ? existente.getFechaSolicitud()
+                : LocalDateTime.now().withSecond(0).withNano(0));
 
         String estado = texto(request.getParameter("estado"));
         sol.setEstado(estado);

@@ -57,11 +57,13 @@
                   <td>
                     <div class="acciones-fila">
                       <a class="btn-edit-white" href="<%=ctx%>/SegmentosServlet?action=editar&id=<%=sg.getIdSegmento()%>">Editar</a>
+                      <% if (!"Fuera de servicio".equals(sg.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/SegmentosServlet?action=borrar"
-                            onsubmit="return confirm('¿Seguro que quieres eliminar este segmento?');">
+                            data-confirmar="¿Seguro que quieres desactivar este segmento?" data-confirmar-btn="Desactivar" data-confirmar-titulo="Desactivar segmento">
                         <input type="hidden" name="id" value="<%=sg.getIdSegmento()%>">
                         <button type="submit" class="btn-delete-red">Borrar</button>
                       </form>
+                      <% } %>
                     </div>
                   </td>
                 </tr>

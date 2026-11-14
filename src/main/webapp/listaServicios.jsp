@@ -17,7 +17,7 @@
     String mensajeOk = null;
     if ("creado".equals(ok)) mensajeOk = "Servicio creado correctamente.";
     else if ("actualizado".equals(ok)) mensajeOk = "Servicio actualizado correctamente.";
-    else if ("borrado".equals(ok)) mensajeOk = "Servicio eliminado. La capacidad sigue reservada en la solicitud.";
+    else if ("borrado".equals(ok)) mensajeOk = "Servicio desactivado. La capacidad sigue reservada en la solicitud.";
 %>
 <jsp:include page="/WEB-INF/includes/inicio.jsp">
     <jsp:param name="titulo" value="Servicios"/>
@@ -72,7 +72,7 @@
                       <a class="btn-edit-white" href="<%=ctx%>/ServiciosServlet?action=editar&id=<%=s.getIdServicio()%>">Editar</a>
                       <% if ("Pendiente".equals(est)) { %>
                       <form method="post" action="<%=ctx%>/ServiciosServlet?action=borrar"
-                            onsubmit="return confirm('¿Seguro que quieres eliminar este servicio?');">
+                            data-confirmar="¿Seguro que quieres desactivar este servicio?" data-confirmar-btn="Desactivar" data-confirmar-titulo="Desactivar servicio">
                         <input type="hidden" name="id" value="<%=s.getIdServicio()%>">
                         <button type="submit" class="btn-delete-red">Borrar</button>
                       </form>

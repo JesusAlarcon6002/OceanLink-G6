@@ -63,7 +63,18 @@
 
 /* ---- Rutas: filas de segmentos y botones pequeños ---- */
 .fila-seg { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
-.fila-seg select { flex: 1; min-width: 0; }
+.fila-seg select {
+  flex: 1; min-width: 0; padding: 8px 32px 8px 12px; box-sizing: border-box;
+  background-color: rgba(30, 58, 95, 0.45); color: #e2e8f0;
+  border: 1px solid rgba(147, 197, 253, 0.45); border-radius: 4px;
+  font-size: 13px; font-family: inherit; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%2393c5fd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat; background-position: right 12px center;
+}
+.fila-seg select:hover { border-color: #38bdf8; }
+.fila-seg select:focus { outline: 2px solid #38bdf8; outline-offset: 0; }
+.fila-seg select option { background: #1b2a3a; color: #e2e8f0; }
 .btn-mini {
   background: #1e3a5f; color: #93c5fd; border: 1px solid rgba(59,130,246,0.6); border-radius: 6px;
   padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
@@ -127,3 +138,25 @@ body.pagina-login { background: linear-gradient(180deg, #0a1628 0%, #0d1f38 100%
 .rep-filtros label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #c9d4e3; }
 .rep-filtros select, .rep-filtros input[type=date] { background: #0b1220; color: #fff; border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 6px; padding: 6px 8px; font-size: 13px; }
 .chart-grid > .chart-panel { min-height: auto; }
+
+/* ===== Ventana de confirmación (confirmar.js) ===== */
+.ol-modal-overlay { position: fixed; inset: 0; z-index: 9999; display: none; align-items: center; justify-content: center;
+  background: rgba(5, 12, 24, 0.72); backdrop-filter: blur(2px); padding: 16px; }
+.ol-modal-overlay.ol-abierto { display: flex; }
+.ol-modal { width: 100%; max-width: 420px; background: linear-gradient(180deg, #0f2038 0%, #0a1628 100%);
+  border: 1px solid rgba(147, 197, 253, 0.28); border-radius: 12px; padding: 26px 26px 22px; text-align: center;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55); font-family: inherit; }
+.ol-modal-icono { width: 44px; height: 44px; margin: 0 auto 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 700; color: #fca5a5; background: rgba(248, 113, 113, 0.12); border: 1px solid rgba(248, 113, 113, 0.5); }
+.ol-modal-titulo { margin: 0 0 8px; color: #fff; font-size: 16px; font-weight: 700; letter-spacing: 0.3px; }
+.ol-modal-texto { margin: 0 0 20px; color: #c9d4e3; font-size: 14px; line-height: 1.5; }
+.ol-modal-acciones { display: flex; gap: 12px; justify-content: center; }
+.ol-modal-acciones button { min-width: 120px; padding: 10px 20px; font-size: 12px; font-weight: 600; border-radius: 8px; cursor: pointer; font-family: inherit; }
+.ol-modal-ok { background: #3a1a1a; border: 1px solid rgba(248, 113, 113, 0.6); color: #fecaca; }
+.ol-modal-ok:hover { background: rgba(248, 113, 113, 0.25); }
+.ol-modal-cancelar:hover { background: rgba(147, 197, 253, 0.15); }
+.ol-modal-acciones button:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
+
+.ol-modal.ol-normal .ol-modal-icono { color: #93c5fd; background: rgba(59, 130, 246, 0.14); border-color: rgba(96, 165, 250, 0.55); }
+.ol-modal.ol-normal .ol-modal-ok { background: #172a1f; border-color: rgba(74, 222, 128, 0.45); color: #86efac; }
+.ol-modal.ol-normal .ol-modal-ok:hover { background: rgba(74, 222, 128, 0.18); }

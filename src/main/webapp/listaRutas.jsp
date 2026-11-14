@@ -17,7 +17,7 @@
     String mensajeOk = null;
     if ("creado".equals(ok)) mensajeOk = "Ruta registrada correctamente.";
     else if ("actualizado".equals(ok)) mensajeOk = "Ruta actualizada correctamente.";
-    else if ("borrado".equals(ok)) mensajeOk = "Ruta eliminada.";
+    else if ("borrado".equals(ok)) mensajeOk = "Ruta desactivada.";
 %>
 <jsp:include page="/WEB-INF/includes/inicio.jsp">
     <jsp:param name="titulo" value="Rutas"/>
@@ -32,9 +32,9 @@
           <p class="msg msg-ok"><%=mensajeOk%></p>
           <% } %>
           <% if ("borrar".equals(err)) { %>
-          <p class="msg msg-error">No se pudo eliminar la ruta.</p>
+          <p class="msg msg-error">No se pudo desactivar la ruta.</p>
           <% } else if ("servicios".equals(err)) { %>
-          <p class="msg msg-error">No se puede eliminar: la ruta tiene servicios asociados. Márcala como Inactiva para que no se use en nuevos servicios.</p>
+          <p class="msg msg-error">No se puede desactivar: la ruta tiene servicios asociados.</p>
           <% } %>
 
           <div class="panel-toolbar">
@@ -76,11 +76,13 @@
                   <td>
                     <div class="acciones-fila">
                       <a class="btn-edit-white" href="<%=ctx%>/RutasServlet?action=editar&id=<%=r.getIdRuta()%>">Editar</a>
+                      <% if (!"Inactiva".equals(r.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/RutasServlet?action=borrar"
-                            onsubmit="return confirm('¿Seguro que quieres eliminar esta ruta?');">
+                            data-confirmar="¿Seguro que quieres desactivar esta ruta?" data-confirmar-btn="Desactivar" data-confirmar-titulo="Desactivar ruta">
                         <input type="hidden" name="id" value="<%=r.getIdRuta()%>">
                         <button type="submit" class="btn-delete-red">Borrar</button>
                       </form>
+                      <% } %>
                     </div>
                   </td>
                 </tr>

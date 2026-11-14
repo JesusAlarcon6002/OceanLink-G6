@@ -102,11 +102,12 @@ public class Landing_StationsDao extends DaoBase {
         }
     }
 
+    /** Borrado lógico: la estación pasa a "Fuera de servicio". */
     public void borrarLandingStations(int idLandingStations) {
         try {
 
             try (Connection conn = getConnection()) {
-                String sql = "DELETE FROM landing_stations WHERE id_landing_stations = ?;";
+                String sql = "UPDATE landing_stations SET estado = 'Fuera de servicio' WHERE id_landing_stations = ?;";
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setInt(1, idLandingStations);
                     pstmt.executeUpdate();

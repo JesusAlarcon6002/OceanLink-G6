@@ -17,7 +17,7 @@
     String mensajeOk = null;
     if ("creado".equals(ok)) mensajeOk = "Solicitud registrada correctamente.";
     else if ("actualizado".equals(ok)) mensajeOk = "Solicitud actualizada correctamente.";
-    else if ("borrado".equals(ok)) mensajeOk = "Solicitud eliminada.";
+    else if ("borrado".equals(ok)) mensajeOk = "Solicitud desactivada.";
 %>
 <jsp:include page="/WEB-INF/includes/inicio.jsp">
     <jsp:param name="titulo" value="Solicitudes de capacidad"/>
@@ -32,9 +32,9 @@
           <p class="msg msg-ok"><%=mensajeOk%></p>
           <% } %>
           <% if ("borrar".equals(err)) { %>
-          <p class="msg msg-error">No se pudo eliminar la solicitud.</p>
+          <p class="msg msg-error">No se pudo desactivar la solicitud.</p>
           <% } else if ("reservas".equals(err)) { %>
-          <p class="msg msg-error">No se puede eliminar: la solicitud ya tiene capacidad reservada en segmentos. Cambia su estado a Rechazada si ya no se va a atender.</p>
+          <p class="msg msg-error">No se puede desactivar: la solicitud ya tiene capacidad reservada en segmentos. Libérala primero desde "Capacidad".</p>
           <% } %>
 
           <div class="panel-toolbar">
@@ -76,11 +76,13 @@
                     <div class="acciones-fila">
                       <a class="btn-edit-white" href="<%=ctx%>/SolicitudesServlet?action=editar&id=<%=sol.getIdSolicitud()%>">Editar</a>
                       <a class="btn-edit-white" href="<%=ctx%>/ReservasServlet?solicitud=<%=sol.getIdSolicitud()%>">Capacidad</a>
+                      <% if (!"Rechazada".equals(sol.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/SolicitudesServlet?action=borrar"
-                            onsubmit="return confirm('¿Seguro que quieres eliminar esta solicitud?');">
+                            data-confirmar="¿Seguro que quieres desactivar esta solicitud?" data-confirmar-btn="Desactivar" data-confirmar-titulo="Desactivar solicitud">
                         <input type="hidden" name="id" value="<%=sol.getIdSolicitud()%>">
                         <button type="submit" class="btn-delete-red">Borrar</button>
                       </form>
+                      <% } %>
                     </div>
                   </td>
                 </tr>

@@ -126,23 +126,14 @@ public class MantenimientosDao extends DaoBase {
         }
     }
 
+    /** Borrado lógico: el mantenimiento pasa a "Finalizado" (con fecha de finalización si no tenía). */
     public boolean borrarMantenimientos(int idMantenimiento) {
-        try (Connection conn = getConnection()) {
-            conn.setAutoCommit(false);
-            try {
-                // primero la tabla hija (la FK es ON DELETE RESTRICT), luego el mantenimiento
-                borrarInfraestructura(conn, idMantenimiento);
-                try (PreparedStatement pstmt = conn.prepareStatement(
-                        "DELETE FROM mantenimientos WHERE id_mantenimientos = ?")) {
-                    pstmt.setInt(1, idMantenimiento);
-                    pstmt.executeUpdate();
-                }
-                conn.commit();
-                return true;
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            }
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(
+                     "UPDATE mantenimientos SET estado = 'Finalizado', "
+                     + "fecha_finalizacion = COALESCE(fecha_finalizacion, NOW()) WHERE id_mantenimientos = ?")) {
+            pstmt.setInt(1, idMantenimiento);
+            return pstmt.executeUpdate() > 0;
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             return false;

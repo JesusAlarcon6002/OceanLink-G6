@@ -15,7 +15,7 @@
     String mensajeOk = null;
     if ("creado".equals(ok)) mensajeOk = "Incidencia registrada correctamente.";
     else if ("actualizado".equals(ok)) mensajeOk = "Incidencia actualizada correctamente.";
-    else if ("borrado".equals(ok)) mensajeOk = "Incidencia eliminada.";
+    else if ("borrado".equals(ok)) mensajeOk = "Incidencia desactivada.";
 %>
 <jsp:include page="/WEB-INF/includes/inicio.jsp">
     <jsp:param name="titulo" value="Incidencias"/>
@@ -34,7 +34,7 @@
           <p class="msg msg-ok"><%=mensajeOk%></p>
           <% } %>
           <% if ("borrar".equals(err)) { %>
-          <p class="msg msg-error">No se pudo eliminar la incidencia.</p>
+          <p class="msg msg-error">No se pudo desactivar la incidencia.</p>
           <% } %>
 
           <div class="panel-toolbar">
@@ -83,11 +83,13 @@
                   <td>
                     <div class="acciones-fila">
                       <a class="btn-edit-white" href="<%=ctx%>/IncidenciasServlet?action=editar&id=<%=inc.getIdIncidencia()%>">Editar</a>
+                      <% if (!"Cerrada".equals(inc.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/IncidenciasServlet?action=borrar"
-                            onsubmit="return confirm('¿Seguro que quieres eliminar esta incidencia?');">
+                            data-confirmar="¿Seguro que quieres desactivar esta incidencia?" data-confirmar-btn="Desactivar" data-confirmar-titulo="Desactivar incidencia">
                         <input type="hidden" name="id" value="<%=inc.getIdIncidencia()%>">
                         <button type="submit" class="btn-delete-red">Borrar</button>
                       </form>
+                      <% } %>
                     </div>
                   </td>
                 </tr>

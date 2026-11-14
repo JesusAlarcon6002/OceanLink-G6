@@ -37,5 +37,6 @@
 </div><%-- cierra .app-shell --%>
 
 <script src="<%=request.getContextPath()%>/assets/js/sidebar.js"></script>
+<script src="<%=request.getContextPath()%>/assets/js/confirmar.js"></script>
 </body>
 </html>
