@@ -17,12 +17,19 @@ public final class Permisos {
         public final String nombre;
         public final Set<Rol> duenios;
         public final boolean supervisorLee;
+        /** false = servicio de apoyo (ej. verificación de correo): se controla por rol pero no sale como tarjeta en el inicio. */
+        public final boolean visible;
 
         Modulo(String ruta, String nombre, Set<Rol> duenios, boolean supervisorLee) {
+            this(ruta, nombre, duenios, supervisorLee, true);
+        }
+
+        Modulo(String ruta, String nombre, Set<Rol> duenios, boolean supervisorLee, boolean visible) {
             this.ruta = ruta;
             this.nombre = nombre;
             this.duenios = duenios;
             this.supervisorLee = supervisorLee;
+            this.visible = visible;
         }
     }
 
@@ -43,8 +50,13 @@ public final class Permisos {
         // Dashboard y reportes (solo consulta): Supervisor y Network Admin
         addVarios("/DashboardServlet", "Dashboard de la red", Rol.SUPERVISOR, Rol.ADMIN);
         addVarios("/ReportesServlet", "Reportes", Rol.SUPERVISOR, Rol.ADMIN);
-        // Prueba del correo SMTP: solo Network Admin
-        add("/CorreoServlet", "Prueba de correo", Rol.ADMIN, false);
+        // Registro de los correos enviados por el sistema: solo Network Admin
+        add("/CorreoServlet", "Registro de correos", Rol.ADMIN, false);
+        // Comunicados escritos a mano para clientes y usuarios (por rol): solo Network Admin
+        add("/ComunicadosServlet", "Enviar comunicado", Rol.ADMIN, false);
+        // Verificación de correo (código de 6 dígitos) al registrar usuarios y clientes: no es una tarjeta del inicio
+        MODULOS.put("/VerificarCorreoServlet", new Modulo("/VerificarCorreoServlet", "Verificación de correo",
+                EnumSet.of(Rol.ADMIN, Rol.CAPACITY_PLANNER), false, false));
     }
 
     private Permisos() {
@@ -62,8 +74,13 @@ public final class Permisos {
         return MODULOS.get(ruta);
     }
 
+    /** Módulos que se muestran como tarjetas/menú (sin los servicios de apoyo). */
     public static Iterable<Modulo> todos() {
-        return MODULOS.values();
+        java.util.List<Modulo> visibles = new java.util.ArrayList<>();
+        for (Modulo m : MODULOS.values()) {
+            if (m.visible) visibles.add(m);
+        }
+        return visibles;
     }
 
     /** ¿Puede este rol hacer esta petición (método + action) sobre este Servlet? */

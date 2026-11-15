@@ -121,6 +121,8 @@ public class SolicitudesServlet extends HttpServlet {
             if (ok) {
                 if (!esNueva) {
                     NotificadorCorreos.solicitudCambioEstado(sol, estadoAnterior); // correo si cambió el estado
+                } else {
+                    NotificadorCorreos.solicitudRecibida(sol); // confirmación al cliente
                 }
                 response.sendRedirect(request.getContextPath() + "/SolicitudesServlet?ok=" + (esNueva ? "creado" : "actualizado"));
                 return;

@@ -53,7 +53,7 @@
               </div>
               <div class="form-field">
                 <label for="correo">CORREO</label>
-                <input type="email" id="correo" name="correo" maxlength="150"
+                <input type="email" id="correo" name="correo" maxlength="150" data-verificar-correo data-original="<%=Html.esc(editando ? new com.oceanlink.daos.ClientesDao().getClientes(c.getIdCliente()).getCorreo() : "")%>"
                        placeholder="contacto@empresaandina.com" value="<%=Html.esc(c.getCorreo())%>">
               </div>
               <div class="form-field">
@@ -78,4 +78,5 @@
         </form>
 
 <jsp:include page="/WEB-INF/includes/acciones-clientes.jsp"/>
+<script src="<%=ctx%>/assets/js/verificar-correo.js"></script>
 <jsp:include page="/WEB-INF/includes/fin.jsp"/>

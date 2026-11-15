@@ -3,6 +3,7 @@ package com.oceanlink.servlets;
 import com.oceanlink.beans.Clientes;
 import com.oceanlink.beans.Rutas;
 import com.oceanlink.beans.Servicios;
+import com.oceanlink.services.NotificadorCorreos;
 import com.oceanlink.beans.Solicitudes;
 import com.oceanlink.daos.ReservasDao;
 import com.oceanlink.daos.ServiciosDao;
@@ -156,6 +157,11 @@ public class ServiciosServlet extends HttpServlet {
         if (errores.isEmpty()) {
             String error = esNuevo ? dao.crearServicios(s, idSolicitud, estado) : dao.actualizarServicios(s);
             if (error == null) {
+                if (!esNuevo) {
+                    NotificadorCorreos.servicioCambioEstado(s, original.getEstado()); // correo al cliente si cambió el estado
+                } else {
+                    NotificadorCorreos.servicioRegistrado(s, sol); // correo al cliente: servicio creado a partir de su solicitud
+                }
                 response.sendRedirect(request.getContextPath() + "/ServiciosServlet?ok=" + (esNuevo ? "creado" : "actualizado"));
                 return;
             }

@@ -1,12 +1,23 @@
-# Configuración del correo (SMTP). Dos formas de usarla:
-#  A) Variables de entorno en IntelliJ (Smart Tomcat > Environment variables): SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_FROM
+# Configuración del correo REAL (SMTP). Dos formas de usarla:
+#  A) Variables de entorno en IntelliJ (Smart Tomcat > Environment variables):
+#     SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_FROM (opcional), SMTP_FROM_NAME (opcional)
 #  B) Copiar este archivo como "correo.properties" (misma carpeta) y completar los datos.
-#     correo.properties está en .gitignore: no se sube a Git.
-# Si no hay nada configurado, el sistema funciona igual pero NO envía correos.
+#     correo.properties está en .gitignore: no se sube a Git (tiene la contraseña).
+# Si no hay nada configurado, el sistema funciona igual pero NO envía correos
+# (y las altas de usuarios/clientes solo validan que el dominio del correo exista, sin código).
 #
-# Para pruebas: crear cuenta gratis en https://mailtrap.io > Email Testing > Inboxes > SMTP Settings (Java).
-smtp.host=sandbox.smtp.mailtrap.io
-smtp.port=2525
-smtp.user=USUARIO_GENERADO_POR_MAILTRAP
-smtp.password=CONTRASENA_GENERADA_POR_MAILTRAP
-smtp.from=notificaciones@oceanlink.example
+# Ejemplo con Gmail (cuenta del proyecto):
+#  1) Activar verificación en 2 pasos en la cuenta de Google.
+#  2) Crear una "contraseña de aplicación" en https://myaccount.google.com/apppasswords
+#  3) Poner esos 16 caracteres (sin espacios) en smtp.password. NO sirve la contraseña normal.
+smtp.host=smtp.gmail.com
+smtp.port=587
+smtp.user=oceanlink.proyecto@gmail.com
+smtp.password=CONTRASENA_DE_APLICACION_DE_16_CARACTERES
+smtp.from=oceanlink.proyecto@gmail.com
+smtp.from.name=OceanLink
+
+# MODO DEMOSTRACIÓN (opcional): si se define, TODOS los correos llegan a esta bandeja, con el asunto
+# "[DEMO para destinatario@real.com] ...". Útil para mostrarle al profe sin mandar correos a direcciones
+# de ejemplo de la base de datos. Quitar la línea para enviar a los destinatarios reales.
+#correo.redirigir=tu.correo@gmail.com

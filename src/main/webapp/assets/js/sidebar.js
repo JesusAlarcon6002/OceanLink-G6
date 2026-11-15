@@ -32,7 +32,8 @@ const ROLE_MENUS = {
       { id: "segmentos", icon: "git-branch", label: "Segmentos", href: "SegmentosServlet" },
       { id: "dashboard", icon: "globe", label: "Dashboard", href: "DashboardServlet" },
       { id: "reportes", icon: "shield-check", label: "Reportes", href: "ReportesServlet" },
-      { id: "correo", icon: "settings", label: "Prueba de correo", href: "CorreoServlet" },
+      { id: "comunicados", icon: "users", label: "Enviar comunicado", href: "ComunicadosServlet" },
+      { id: "correo", icon: "settings", label: "Registro de correos", href: "CorreoServlet" },
       { id: "config", icon: "settings", label: "Configuración", href: "#" },
       { id: "perfil", icon: "user", label: "Perfil", href: "#" }
     ]

@@ -89,12 +89,16 @@ public class IncidenciasServlet extends HttpServlet {
         }
 
         boolean esNueva = inc.getIdIncidencia() == 0;
+        Incidencias antes = esNueva ? null : dao.obtenerIncidencias(inc.getIdIncidencia());
+        String estadoAnterior = antes == null ? null : antes.getEstado();
 
         if (errores.isEmpty()) {
             boolean ok = esNueva ? dao.crearIncidencias(inc) : dao.actualizarIncidencias(inc);
             if (ok) {
                 if (esNueva) {
                     NotificadorCorreos.incidenciaRegistrada(inc); // correo: incidencia registrada
+                } else {
+                    NotificadorCorreos.incidenciaResuelta(inc, estadoAnterior); // correo a clientes: servicio restablecido
                 }
                 response.sendRedirect(request.getContextPath() + "/IncidenciasServlet?ok=" + (esNueva ? "creado" : "actualizado"));
                 return;

@@ -8,6 +8,12 @@
     Usuarios usr = (Usuarios) request.getAttribute("usuarios");
     ArrayList<Roles> listaRoles = (ArrayList<Roles>) request.getAttribute("listaRoles");
     String ctx = request.getContextPath();
+    ArrayList<String> errores = (ArrayList<String>) request.getAttribute("errores");
+    String correoGuardado = usr.getCorreo();
+    if (errores != null && usr.getIdUsuario() > 0) {   // con errores el bean trae lo escrito: el guardado está en la BD
+        Usuarios enBd = new com.oceanlink.daos.UsuariosDao().obtenerUsuarios(usr.getIdUsuario());
+        correoGuardado = enBd == null ? "" : enBd.getCorreo();
+    }
 %>
 <jsp:include page="/WEB-INF/includes/inicio.jsp">
     <jsp:param name="titulo" value="Editar usuario"/>
@@ -23,6 +29,15 @@
           <div class="form-panel-header">
             <span style="color:#fff;font-size:16px;font-weight:700;"><%=Html.esc(usr.getEtiquetaUsuario())%></span>
           </div>
+          <% if (errores != null && !errores.isEmpty()) { %>
+          <div class="msg msg-error">
+            No se pudo guardar. Corrige lo siguiente:
+            <ul>
+              <% for (String e : errores) { %><li><%=Html.esc(e)%></li><% } %>
+            </ul>
+          </div>
+          <% } %>
+
           <p class="form-section-label">INFORMACIÓN GENERAL</p>
 
           <div class="form-body">
@@ -33,7 +48,7 @@
               </div>
               <div class="form-field">
                 <label for="correo">CORREO *</label>
-                <input type="email" id="correo" name="correo" value="<%=Html.esc(usr.getCorreo())%>" required>
+                <input type="email" id="correo" name="correo" value="<%=Html.esc(usr.getCorreo())%>" required data-verificar-correo data-tipo="usuario" data-original="<%=Html.esc(correoGuardado)%>">
               </div>
               <div class="form-field">
                 <label for="nombre">NOMBRES</label>
@@ -80,4 +95,5 @@
         </form>
 
 <jsp:include page="/WEB-INF/includes/acciones-admin.jsp"/>
+<script src="<%=ctx%>/assets/js/verificar-correo.js"></script>
 <jsp:include page="/WEB-INF/includes/fin.jsp"/>

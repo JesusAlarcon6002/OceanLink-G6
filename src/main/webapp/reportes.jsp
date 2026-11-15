@@ -32,11 +32,13 @@
     // enlace de descarga: los mismos filtros + formato=csv
     String qs = request.getQueryString() == null ? "tipo=" + tipo : request.getQueryString().replaceAll("&?formato=[^&]*", "");
     String urlCsv = ctx + "/ReportesServlet?" + qs + "&formato=csv";
+    String urlXlsx = ctx + "/ReportesServlet?" + qs + "&formato=xlsx";
+    String urlPdf = ctx + "/ReportesServlet?" + qs + "&formato=pdf";
 %>
 <jsp:include page="/WEB-INF/includes/inicio.jsp">
     <jsp:param name="titulo" value="Reportes"/>
     <jsp:param name="encabezado" value="REPORTES"/>
-    <jsp:param name="subtitulo" value="Consulta con filtros y descarga en CSV"/>
+    <jsp:param name="subtitulo" value="Consulta con filtros y descarga en PDF, Excel y CSV"/>
     <jsp:param name="rol" value="supervisor"/>
     <jsp:param name="activo" value="reportes"/>
 </jsp:include>
@@ -85,6 +87,8 @@
             <% } %>
             <button type="submit" class="btn-mini">FILTRAR</button>
             <a class="btn-mini" style="text-decoration:none;" href="<%=ctx%>/ReportesServlet?tipo=<%=Html.esc(tipo)%>">LIMPIAR</a>
+            <a class="btn-mini" style="text-decoration:none;" href="<%=Html.esc(urlPdf)%>">DESCARGAR PDF</a>
+            <a class="btn-mini" style="text-decoration:none;" href="<%=Html.esc(urlXlsx)%>">DESCARGAR EXCEL</a>
             <a class="btn-mini" style="text-decoration:none;" href="<%=Html.esc(urlCsv)%>">DESCARGAR CSV</a>
           </form>
 

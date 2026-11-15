@@ -160,3 +160,22 @@ body.pagina-login { background: linear-gradient(180deg, #0a1628 0%, #0d1f38 100%
 .ol-modal.ol-normal .ol-modal-icono { color: #93c5fd; background: rgba(59, 130, 246, 0.14); border-color: rgba(96, 165, 250, 0.55); }
 .ol-modal.ol-normal .ol-modal-ok { background: #172a1f; border-color: rgba(74, 222, 128, 0.45); color: #86efac; }
 .ol-modal.ol-normal .ol-modal-ok:hover { background: rgba(74, 222, 128, 0.18); }
+
+/* ---- Verificación de correo (assets/js/verificar-correo.js) ---- */
+.vc-caja { margin-top: 8px; }
+.vc-caja[hidden], .vc-codigo[hidden] { display: none; }
+.vc-fila { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.vc-codigo { display: inline-flex; gap: 8px; align-items: center; }
+.vc-input { width: 110px; letter-spacing: 4px; text-align: center; font-weight: 700; }
+.vc-btn { background: transparent; color: #7dd3fc; border: 1px solid rgba(125, 211, 252, 0.55); border-radius: 6px;
+          padding: 7px 12px; font-size: 12px; font-weight: 700; letter-spacing: .5px; cursor: pointer; }
+.vc-btn:hover:not(:disabled) { background: rgba(125, 211, 252, 0.12); }
+.vc-btn:disabled { opacity: .5; cursor: wait; }
+.vc-estado { margin-top: 6px; font-size: 12px; min-height: 16px; }
+.vc-estado.vc-ok { color: #6ee7b7; }
+.vc-estado.vc-error { color: #fca5a5; }
+.vc-estado.vc-info { color: #cbd5e1; }
+
+/* ---- Radios y casillas dentro de formularios (comunicados) ---- */
+.form-field label > input[type="radio"], .form-field label > input[type="checkbox"] { width: auto; margin-right: 8px; accent-color: #38bdf8; }
+.form-field label:has(> input[type="radio"]), .form-field label:has(> input[type="checkbox"]) { display: block; text-transform: none; letter-spacing: 0; font-weight: 500; margin: 8px 0 4px; }
