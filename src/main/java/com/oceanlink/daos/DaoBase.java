@@ -40,7 +40,7 @@ public abstract class DaoBase {
         Class.forName("com.mysql.cj.jdbc.Driver");
         String url = CONFIG.getProperty("db.url", "jdbc:mysql://localhost:3306/proyecto_siete");
         String user = CONFIG.getProperty("db.user", "root");
-        String pass = CONFIG.getProperty("db.password", "12345678ABCD"); /*CONTRASEÑA QUE DEPENDE DE DÒNDE SE EJECUTA EL PROYECTO :]*/
+        String pass = CONFIG.getProperty("db.password", ""); /*CONTRASEÑA QUE DEPENDE DE DÒNDE SE EJECUTA EL PROYECTO :]*/
         return DriverManager.getConnection(url, user, pass);
     }
 }
