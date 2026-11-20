@@ -26,6 +26,29 @@ public final class Seguridad {
     private Seguridad() {
     }
 
+    public static final int CLAVE_MIN = 8;
+    public static final int CLAVE_MAX = 64;
+    public static final String MENSAJE_POLITICA_CLAVE =
+            "La contraseña debe tener entre " + CLAVE_MIN + " y " + CLAVE_MAX + " caracteres e incluir letras y números.";
+
+    /**
+     * Política de contraseñas para las claves NUEVAS (crear usuario o cambiarla): de 8 a 64 caracteres,
+     * con al menos una letra y un número, y sin espacios al inicio o al final.
+     * @return null si la clave es aceptable; si no, el mensaje listo para mostrar.
+     */
+    public static String validarClave(String clave) {
+        if (clave == null) return MENSAJE_POLITICA_CLAVE;
+        if (clave.length() < CLAVE_MIN || clave.length() > CLAVE_MAX) return MENSAJE_POLITICA_CLAVE;
+        if (!clave.equals(clave.trim())) return "La contraseña no puede empezar ni terminar con espacios.";
+        boolean letra = false, numero = false;
+        for (int i = 0; i < clave.length(); i++) {
+            char c = clave.charAt(i);
+            if (Character.isLetter(c)) letra = true;
+            else if (Character.isDigit(c)) numero = true;
+        }
+        return letra && numero ? null : MENSAJE_POLITICA_CLAVE;
+    }
+
     /** Devuelve la contraseña lista para guardar en la BD. Vacía o nula devuelve "" (el DAO decide qué hacer). */
     public static String hash(String clave) {
         if (clave == null || clave.isEmpty()) return "";

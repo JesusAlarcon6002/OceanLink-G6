@@ -50,7 +50,8 @@ public class UsuariosDao extends DaoBase {
         return listaUsuarios;
     }
 
-    public void crearUsuarios(String etiqueta, String nombre, String apellido, String correo, String passwd,String telefono,String rol){
+    /** @return null si se guardó; si no, un mensaje de error para mostrar al usuario. */
+    public String crearUsuarios(String etiqueta, String nombre, String apellido, String correo, String passwd,String telefono,String rol){
         try{
 
             try(Connection conn = getConnection();){
@@ -66,8 +67,13 @@ public class UsuariosDao extends DaoBase {
                     pstmt.executeUpdate();
                 }
             }
+            return null;
+        } catch (SQLIntegrityConstraintViolationException e) {
+            e.printStackTrace();
+            return "No se pudo crear el usuario: ya existe otro con ese correo o ese nombre de usuario.";
         } catch (ClassNotFoundException | SQLException e){
             e.printStackTrace();
+            return "No se pudo crear el usuario por un error del sistema. Inténtalo de nuevo.";
         }
     }
 
@@ -115,7 +121,8 @@ public class UsuariosDao extends DaoBase {
         return usuarios;
     }
 
-    public void actualizarUsuarios(int idUsuario, String etiqueta, String nombre, String apellido, String correo, String telefono, int rol, String passwd, String estado) {
+    /** @return null si se guardó; si no, un mensaje de error para mostrar al usuario. */
+    public String actualizarUsuarios(int idUsuario, String etiqueta, String nombre, String apellido, String correo, String telefono, int rol, String passwd, String estado) {
         try {
 
             try (Connection conn = getConnection();) {
@@ -134,8 +141,13 @@ public class UsuariosDao extends DaoBase {
                     pstmt.executeUpdate();
                 }
             }
+            return null;
+        } catch (SQLIntegrityConstraintViolationException e) {
+            e.printStackTrace();
+            return "No se pudo guardar: ya existe otro usuario con ese correo o ese nombre de usuario.";
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+            return "No se pudo guardar los cambios por un error del sistema. Inténtalo de nuevo.";
         }
     }
 

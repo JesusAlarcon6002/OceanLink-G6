@@ -56,6 +56,7 @@
                   <td><%=gbps.format(sg.getCapacidadTotalGbps())%> Gbps</td>
                   <td>
                     <div class="acciones-fila">
+                      <a class="btn-edit-white btn-ver" href="<%=ctx%>/SegmentosServlet?action=ver&id=<%=sg.getIdSegmento()%>">Ver</a>
                       <a class="btn-edit-white" href="<%=ctx%>/SegmentosServlet?action=editar&id=<%=sg.getIdSegmento()%>">Editar</a>
                       <% if (!"Fuera de servicio".equals(sg.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/SegmentosServlet?action=borrar"

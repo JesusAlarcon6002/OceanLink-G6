@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configuración de Tomcat para esta aplicación.
+     SameSite=Lax: la cookie de sesión no se envía en peticiones POST que vienen de otros sitios (refuerza el anti-CSRF). -->
+<Context>
+    <CookieProcessor className="org.apache.tomcat.util.http.Rfc6265CookieProcessor" sameSiteCookies="lax"/>
+</Context>

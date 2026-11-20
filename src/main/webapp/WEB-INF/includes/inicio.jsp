@@ -41,6 +41,7 @@
 <link href="<%=ctx%>/assets/css/base.css" rel="stylesheet">
 <link href="<%=ctx%>/assets/css/dashboard-admin.css" rel="stylesheet">
 <link href="<%=ctx%>/assets/css/oceanlink-jsp.css" rel="stylesheet">
+<script src="<%=ctx%>/assets/js/campana.js" defer data-ctx="<%=ctx%>"></script>
 </head>
 <body<%= soloLectura ? " class=\"solo-lectura\"" : "" %>>
 
@@ -57,9 +58,10 @@
         <p><%=Html.esc(subtitulo)%></p>
         </div>
         <div class="header-actions">
-          <button class="header-icon-btn" type="button" aria-label="Notificaciones">
+          <a class="header-icon-btn campana-btn" id="campana" href="<%=ctx%>/BandejaServlet" aria-label="Notificaciones y mensajes" title="Notificaciones y mensajes">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-          </button>
+            <span class="campana-num" id="campana-num" hidden></span>
+          </a>
           <button class="header-icon-btn" type="button" id="header-menu-toggle" aria-label="Mostrar/ocultar menú">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
           </button>

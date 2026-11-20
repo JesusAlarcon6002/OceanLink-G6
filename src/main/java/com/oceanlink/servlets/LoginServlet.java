@@ -3,6 +3,7 @@ package com.oceanlink.servlets;
 import com.oceanlink.beans.UsuarioSesion;
 import com.oceanlink.daos.LoginDao;
 import com.oceanlink.filters.AuthFilter;
+import com.oceanlink.util.IntentosLogin;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -31,8 +32,24 @@ public class LoginServlet extends HttpServlet {
         String correo = request.getParameter("correo");
         String clave = request.getParameter("clave");
 
+        String ip = request.getRemoteAddr();
+        String kCuenta = IntentosLogin.claveCuenta(correo, ip);
+        String kIp = IntentosLogin.claveIp(ip);
+
+        // Freno de fuerza bruta: demasiados fallos seguidos desde esta IP o con este correo
+        long espera = Math.max(IntentosLogin.segundosBloqueado(kCuenta), IntentosLogin.segundosBloqueado(kIp));
+        if (espera > 0) {
+            request.setAttribute("error", "Demasiados intentos fallidos. Espera " + IntentosLogin.textoEspera(espera) + " e inténtalo de nuevo.");
+            request.setAttribute("correo", correo == null ? "" : correo.trim());
+            response.setStatus(429);
+            request.getRequestDispatcher("/WEB-INF/vistas/login.jsp").forward(request, response);
+            return;
+        }
+
         UsuarioSesion usuario = autenticar(correo, clave);
         if (usuario == null) {
+            IntentosLogin.fallo(kCuenta, IntentosLogin.MAX_POR_CUENTA);
+            IntentosLogin.fallo(kIp, IntentosLogin.MAX_POR_IP);
             // Mensaje genérico: no dice si falló el correo o la contraseña
             request.setAttribute("error", "Correo o contraseña incorrectos.");
             request.setAttribute("correo", correo == null ? "" : correo.trim());
@@ -40,6 +57,8 @@ public class LoginServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/vistas/login.jsp").forward(request, response);
             return;
         }
+
+        IntentosLogin.exito(kCuenta);
 
         // Se descarta cualquier sesión previa y se crea una nueva (evita fijación de sesión)
         HttpSession vieja = request.getSession(false);

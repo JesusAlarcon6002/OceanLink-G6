@@ -24,6 +24,8 @@ public class Landing_StationsServlet  extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         String action = request.getParameter("action")==null ? "lista":request.getParameter("action");
+
+        request.setAttribute("soloLectura", "ver".equals(action)); // action=ver: el mismo formulario de editar, pero solo para mirar
         Landing_StationsDao landing_StationsDao = new Landing_StationsDao();
         RequestDispatcher view;
 
@@ -40,6 +42,7 @@ public class Landing_StationsServlet  extends HttpServlet {
                 view = request.getRequestDispatcher("nuevoLanding_Stations.jsp");
                 view.forward(request, response);
                 break;
+            case "ver":
             case "editar":
                 String Strg = request.getParameter("id");
                 int idLandingStation = Integer.parseInt(Strg);

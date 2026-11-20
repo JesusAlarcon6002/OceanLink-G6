@@ -171,6 +171,28 @@ public class NotificacionDao extends DaoBase {
     }
 
     /**
+     * Etiqueta legible de una infraestructura (para mostrarla en los correos en vez del id numérico).
+     * tipoInfra: "Segmento" o "Estación". Devuelve null si no se encuentra.
+     */
+    public String etiquetaInfraestructura(String tipoInfra, int idInfra) {
+        if (tipoInfra == null || idInfra <= 0) {
+            return null;
+        }
+        String sql = "Segmento".equals(tipoInfra)
+                ? "SELECT etiqueta_segmentos FROM segmentos WHERE id_segmentos = ?"
+                : "SELECT etiqueta_station FROM landing_stations WHERE id_landing_stations = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idInfra);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next() ? rs.getString(1) : null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Servicios (Activos o Pendientes) cuya ruta pasa por la infraestructura indicada.
      * tipoInfra: "Segmento" o "Estación" (como lo guardan los formularios de incidencias y mantenimientos).
      */

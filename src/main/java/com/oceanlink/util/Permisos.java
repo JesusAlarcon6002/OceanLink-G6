@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * Matriz de permisos fija (en código): qué rol puede usar cada Servlet.
  *  - "duenios": roles con acceso completo (ver, crear, editar, borrar).
- *  - El Supervisor tiene acceso de SOLO LECTURA (GET de la lista) a todos los módulos menos Usuarios.
+ *  - El Supervisor tiene acceso de SOLO LECTURA (GET de la lista y de action=ver) a todos los módulos menos Usuarios.
  */
 public final class Permisos {
 
@@ -54,6 +54,8 @@ public final class Permisos {
         add("/CorreoServlet", "Registro de correos", Rol.ADMIN, false);
         // Comunicados escritos a mano para clientes y usuarios (por rol): solo Network Admin
         add("/ComunicadosServlet", "Enviar comunicado", Rol.ADMIN, false);
+        // Solicitudes de registro de cuentas nuevas: solo Network Admin (única forma de crear usuarios)
+        add("/SolicitudesRegistroServlet", "Solicitudes de registro", Rol.ADMIN, false);
         // Verificación de correo (código de 6 dígitos) al registrar usuarios y clientes: no es una tarjeta del inicio
         MODULOS.put("/VerificarCorreoServlet", new Modulo("/VerificarCorreoServlet", "Verificación de correo",
                 EnumSet.of(Rol.ADMIN, Rol.CAPACITY_PLANNER), false, false));
@@ -89,7 +91,7 @@ public final class Permisos {
         if (m == null || rol == null) return false;
         if (m.duenios.contains(rol)) return true;
         if (rol == Rol.SUPERVISOR && m.supervisorLee) {
-            boolean soloListar = action == null || action.isEmpty() || "lista".equals(action);
+            boolean soloListar = action == null || action.isEmpty() || "lista".equals(action) || "ver".equals(action);
             return "GET".equalsIgnoreCase(metodo) && soloListar;
         }
         return false;

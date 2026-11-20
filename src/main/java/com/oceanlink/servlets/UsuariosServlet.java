@@ -24,6 +24,8 @@ public class UsuariosServlet  extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         String action = request.getParameter("action")==null ? "lista":request.getParameter("action");
+
+        request.setAttribute("soloLectura", "ver".equals(action)); // action=ver: el mismo formulario de editar, pero solo para mirar
         UsuariosDao usuariosDao = new UsuariosDao();
         RolesDao rolesDao = new RolesDao();
         RequestDispatcher view;
@@ -37,10 +39,10 @@ public class UsuariosServlet  extends HttpServlet {
                 view.forward(request, response);
                 break;
             case "formCrear":
-                request.setAttribute("listaRoles", rolesDao.obtenerListaRoles());
-                view = request.getRequestDispatcher("nuevoUsuarios.jsp");
-                view.forward(request, response);
+                // Los usuarios nuevos ya no los crea el admin a mano: llegan por "Solicitudes de registro"
+                response.sendRedirect(request.getContextPath() + "/SolicitudesRegistroServlet");
                 break;
+            case "ver":
             case "editar":
                 String Strg = request.getParameter("id");
                 int idUsuario = Integer.parseInt(Strg);
@@ -104,6 +106,11 @@ public class UsuariosServlet  extends HttpServlet {
 
                 Usuarios usuario = usuariosDao.obtenerUsuarios(idUsuario);
                 boolean esNuevoUsuario = usuario == null;
+                if (esNuevoUsuario) {
+                    // crear usuarios directamente está desactivado (solo por solicitud de registro)
+                    response.sendRedirect(request.getContextPath() + "/SolicitudesRegistroServlet");
+                    break;
+                }
 
                 // ---- validación
                 ArrayList<String> errores = new ArrayList<>();
@@ -111,7 +118,15 @@ public class UsuariosServlet  extends HttpServlet {
                 correo = correo == null ? "" : correo.trim();
                 if (etiqueta.isEmpty()) errores.add("El usuario es obligatorio.");
                 if (idRol <= 0) errores.add("Elige un rol.");
-                if (esNuevoUsuario && (passwd == null || passwd.isEmpty())) errores.add("La contraseña es obligatoria.");
+                if (esNuevoUsuario && (passwd == null || passwd.isEmpty())) {
+                    errores.add("La contraseña es obligatoria.");
+                } else if (passwd != null && !passwd.isEmpty()) {
+                    // política de contraseñas (también al cambiarla en la edición)
+                    String errorClave = com.oceanlink.util.Seguridad.validarClave(passwd);
+                    if (errorClave != null) errores.add(errorClave);
+                    String confirmacion = request.getParameter("passwd2");
+                    if (confirmacion != null && !confirmacion.equals(passwd)) errores.add("Las contraseñas no coinciden.");
+                }
                 if (correo.isEmpty()) {
                     errores.add("El correo es obligatorio.");
                 } else {
@@ -122,6 +137,13 @@ public class UsuariosServlet  extends HttpServlet {
                         String errorCorreo = VerificacionCorreo.errorAlGuardar(request.getSession(), correo, com.oceanlink.util.ConfigCorreo.dominiosUsuarios());
                         if (errorCorreo != null) errores.add(errorCorreo);
                     }
+                }
+                if (errores.isEmpty()) {
+                    // se guarda aquí; si la BD rechaza (correo o usuario repetido) se vuelve al formulario con el mensaje
+                    String errorGuardar = esNuevoUsuario
+                            ? usuariosDao.crearUsuarios(etiqueta, nombre, apellido, correo, passwd, telefono, String.valueOf(idRol))
+                            : usuariosDao.actualizarUsuarios(idUsuario, etiqueta, nombre, apellido, correo, telefono, idRol, passwd, estado);
+                    if (errorGuardar != null) errores.add(errorGuardar);
                 }
                 if (!errores.isEmpty()) {
                     Usuarios devuelto = new Usuarios();
@@ -143,7 +165,6 @@ public class UsuariosServlet  extends HttpServlet {
                 }
 
                 if (esNuevoUsuario) {
-                    usuariosDao.crearUsuarios(etiqueta, nombre, apellido, correo, passwd, telefono, String.valueOf(idRol));
                     String rolNombre = "";
                     for (com.oceanlink.beans.Roles r : new RolesDao().obtenerListaRoles()) {
                         if (r.getIdRoles() == idRol) rolNombre = r.getNombreRoles();
@@ -151,7 +172,6 @@ public class UsuariosServlet  extends HttpServlet {
                     String completo = ((nombre == null ? "" : nombre) + " " + (apellido == null ? "" : apellido)).trim();
                     NotificadorCorreos.usuarioCreado(completo.isEmpty() ? etiqueta : completo, correo, etiqueta, rolNombre);
                 } else {
-                    usuariosDao.actualizarUsuarios(idUsuario, etiqueta, nombre, apellido, correo, telefono, idRol,passwd,estado);
                     // correos de seguridad (al correo que tenía guardado: si lo cambió, el aviso va al nuevo)
                     if (passwd != null && !passwd.isEmpty()) {
                         NotificadorCorreos.contrasenaCambiada(nombre, correo);

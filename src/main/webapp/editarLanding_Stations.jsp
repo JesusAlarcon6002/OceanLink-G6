@@ -51,4 +51,5 @@
         </form>
 
 <jsp:include page="/WEB-INF/includes/acciones-admin.jsp"/>
+<jsp:include page="/WEB-INF/includes/modo-ver.jsp"/>
 <jsp:include page="/WEB-INF/includes/fin.jsp"/>

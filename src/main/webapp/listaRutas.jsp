@@ -75,6 +75,7 @@
                   </td>
                   <td>
                     <div class="acciones-fila">
+                      <a class="btn-edit-white btn-ver" href="<%=ctx%>/RutasServlet?action=ver&id=<%=r.getIdRuta()%>">Ver</a>
                       <a class="btn-edit-white" href="<%=ctx%>/RutasServlet?action=editar&id=<%=r.getIdRuta()%>">Editar</a>
                       <% if (!"Inactiva".equals(r.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/RutasServlet?action=borrar"

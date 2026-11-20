@@ -25,6 +25,8 @@ public class SegmentosServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         String action = request.getParameter("action")==null ? "lista":request.getParameter("action");
+
+        request.setAttribute("soloLectura", "ver".equals(action)); // action=ver: el mismo formulario de editar, pero solo para mirar
         SegmentosDao segmentosDao = new SegmentosDao();
         Landing_StationsDao landing_StationsDao = new Landing_StationsDao();
         RequestDispatcher view;
@@ -42,6 +44,7 @@ public class SegmentosServlet extends HttpServlet {
                 view = request.getRequestDispatcher("nuevoSegmentos.jsp");
                 view.forward(request, response);
                 break;
+            case "ver":
             case "editar":
                 String Strg = request.getParameter("id");
                 int idSegmento = Integer.parseInt(Strg);

@@ -16,12 +16,18 @@ import java.io.IOException;
 
 /**
  * Guardia de TODO el sitio (autenticación + autorización por rol), corre antes de cualquier Servlet o JSP.
- *   1. Recursos estáticos (/assets/) y el login: pasan sin sesión.
+ *   1. Recursos estáticos (/assets/), el login, recuperar contraseña y solicitud de registro: pasan sin sesión.
  *   2. "/" e index.jsp: redirigen al inicio (o al login si no hay sesión).
  *   3. Cualquier .jsp pedido directo por URL: no se puede (las vistas solo se abren a través de un Servlet).
  *   4. Sin sesión: redirige al login.
  *   5. Con sesión: se revisa en Permisos si el rol puede usar ese Servlet con ese método/action; si no, 403.
  * Además manda cabeceras no-store para que el botón "atrás" no muestre páginas guardadas tras cerrar sesión.
+ *
+ * Seguridad extra (aplica a TODAS las peticiones, antes de cualquier otra cosa):
+ *   - Cabeceras: X-Frame-Options (anti clickjacking), X-Content-Type-Options, Referrer-Policy, Permissions-Policy.
+ *   - Anti-CSRF: todo POST/PUT/DELETE debe venir de una página de este mismo sitio (cabecera Origin o Referer
+ *     con el mismo host que la petición). Si viene de otro sitio se responde 403. Si el navegador no manda
+ *     ninguna de las dos cabeceras se deja pasar (los navegadores actuales siempre mandan Origin en los POST).
  */
 @WebFilter(filterName = "AuthFilter", urlPatterns = "/*")
 public class AuthFilter implements Filter {
@@ -35,6 +41,19 @@ public class AuthFilter implements Filter {
         req.setCharacterEncoding("UTF-8");
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
+
+        // Cabeceras de seguridad (también para /assets/)
+        response.setHeader("X-Frame-Options", "DENY");
+        response.setHeader("X-Content-Type-Options", "nosniff");
+        response.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+        response.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+
+        // Anti-CSRF: los métodos que modifican datos solo se aceptan desde este mismo sitio
+        if (!esMetodoSeguro(request.getMethod())
+                && !origenValido(request.getHeader("Origin"), request.getHeader("Referer"), request.getHeader("Host"))) {
+            denegar(request, response);
+            return;
+        }
 
         String ctx = request.getContextPath();
         String ruta = request.getRequestURI().substring(ctx.length());
@@ -51,7 +70,8 @@ public class AuthFilter implements Filter {
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0);
 
-        if (ruta.equals("/LoginServlet")) {
+        // Públicas (sin sesión): login, recuperar contraseña y solicitud de registro
+        if (ruta.equals("/LoginServlet") || ruta.equals("/RecuperarServlet") || ruta.equals("/RegistrarseServlet")) {
             chain.doFilter(req, res);
             return;
         }
@@ -78,7 +98,7 @@ public class AuthFilter implements Filter {
         }
 
         // Servlets comunes a todos los roles autenticados
-        if (ruta.equals("/InicioServlet") || ruta.equals("/LogoutServlet")) {
+        if (ruta.equals("/InicioServlet") || ruta.equals("/LogoutServlet") || ruta.equals("/BandejaServlet")) {
             chain.doFilter(req, res);
             return;
         }
@@ -88,6 +108,28 @@ public class AuthFilter implements Filter {
             chain.doFilter(req, res);
         } else {
             denegar(request, response);
+        }
+    }
+
+    private static boolean esMetodoSeguro(String metodo) {
+        return "GET".equalsIgnoreCase(metodo) || "HEAD".equalsIgnoreCase(metodo) || "OPTIONS".equalsIgnoreCase(metodo);
+    }
+
+    /**
+     * ¿La petición viene de una página de este mismo sitio? Compara el host:puerto de Origin (o, si no
+     * viene, de Referer) con el de la cabecera Host. Sin ninguna de las dos cabeceras se acepta.
+     * Origin "null" (formularios de páginas aisladas) se rechaza.
+     */
+    public static boolean origenValido(String origin, String referer, String host) {
+        String declarado = origin != null && !origin.trim().isEmpty() ? origin.trim()
+                : (referer != null && !referer.trim().isEmpty() ? referer.trim() : null);
+        if (declarado == null) return true;
+        if (host == null || host.trim().isEmpty()) return false;
+        try {
+            String autoridad = new java.net.URI(declarado).getAuthority();
+            return autoridad != null && autoridad.equalsIgnoreCase(host.trim());
+        } catch (java.net.URISyntaxException e) {
+            return false;
         }
     }
 

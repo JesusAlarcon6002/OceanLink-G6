@@ -179,3 +179,18 @@ body.pagina-login { background: linear-gradient(180deg, #0a1628 0%, #0d1f38 100%
 /* ---- Radios y casillas dentro de formularios (comunicados) ---- */
 .form-field label > input[type="radio"], .form-field label > input[type="checkbox"] { width: auto; margin-right: 8px; accent-color: #38bdf8; }
 .form-field label:has(> input[type="radio"]), .form-field label:has(> input[type="checkbox"]) { display: block; text-transform: none; letter-spacing: 0; font-weight: 500; margin: 8px 0 4px; }
+
+/* ---- Campana, bandeja y pantallas públicas (recuperar contraseña / registro) ---- */
+.campana-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.campana-num { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
+  background: #ef4444; color: #fff; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center; box-sizing: border-box; }
+.campana-num[hidden] { display: none; }
+.login-links { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; text-align: center; font-size: 13px; }
+.login-links a { color: #93c5fd; text-decoration: none; }
+.login-links a:hover { text-decoration: underline; }
+.login-card .login-btn-sec { background: transparent; }
+.login-card small { color: #94a3b8; font-size: 12px; }
+.aviso-no-leida td:first-child { border-left: 3px solid #3b82f6; }
+.aviso-no-leida { font-weight: 600; }
+.aviso-texto { white-space: pre-wrap; font-weight: 400; color: #cbd5e1; margin-top: 4px; }
+.fila-inline { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }

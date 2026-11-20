@@ -32,6 +32,7 @@ public class SolicitudesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
+        request.setAttribute("soloLectura", "ver".equals(action)); // action=ver: el mismo formulario de editar, pero solo para mirar
         SolicitudesDao dao = new SolicitudesDao();
 
         switch (action) {
@@ -41,6 +42,7 @@ public class SolicitudesServlet extends HttpServlet {
                 nueva.setFechaSolicitud(LocalDateTime.now().withSecond(0).withNano(0));
                 mostrarFormulario(request, response, nueva, "crear");
                 break;
+            case "ver":
             case "editar":
                 int id = leerId(request.getParameter("id"));
                 Solicitudes existente = id > 0 ? dao.obtenerSolicitudes(id) : null;

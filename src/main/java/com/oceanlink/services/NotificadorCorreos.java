@@ -51,6 +51,17 @@ public final class NotificadorCorreos {
     }
 
     // ---------------------------------------------------------------- 1. Incidencia registrada
+    /**
+     * Texto de la infraestructura para los correos: "Segmento SEG-LIM-PIU" (la etiqueta, nunca el id numérico).
+     * Si el objeto no trae la etiqueta (viene de un formulario), se busca en la BD.
+     */
+    static String infraTexto(NotificacionDao dao, String tipo, int idInfra, String etiquetaConocida) {
+        if (tipo == null) return "No indicada";
+        String etiqueta = etiquetaConocida != null && !etiquetaConocida.trim().isEmpty()
+                ? etiquetaConocida : dao.etiquetaInfraestructura(tipo, idInfra);
+        return etiqueta == null ? tipo : tipo + " " + etiqueta;
+    }
+
     public static void incidenciaRegistrada(Incidencias inc) {
         try {
             NotificacionDao dao = new NotificacionDao();
@@ -65,8 +76,7 @@ public final class NotificadorCorreos {
                     "Severidad", inc.getSeveridad(),
                     "Estado", inc.getEstado(),
                     "Detectada", inc.getFechaDeteccionTexto(),
-                    "Infraestructura afectada", inc.getTipoInfra() == null ? "No indicada"
-                            : inc.getTipoInfra() + " (id " + inc.getIdInfra() + ")",
+                    "Infraestructura afectada", infraTexto(dao, inc.getTipoInfra(), inc.getIdInfra(), inc.getEtiquetaInfra()),
                     "Descripción", inc.getDescripcion()));
             cuerpo.append(tablaAfectados(afectados));
             CorreoService.enviarAsync(para,
@@ -147,8 +157,7 @@ public final class NotificadorCorreos {
                     "Fecha programada", m.getFechaProgramadaTexto(),
                     "Duración estimada", NUM.format(m.getDuracionEstimadaHoras()) + " horas",
                     "Estado", m.getEstado(),
-                    "Infraestructura", m.getTipoInfra() == null ? "No indicada"
-                            : m.getTipoInfra() + " (id " + m.getIdInfra() + ")",
+                    "Infraestructura", infraTexto(dao, m.getTipoInfra(), m.getIdInfra(), m.getEtiquetaInfra()),
                     "Descripción", m.getDescripcion()));
             cuerpo.append(tablaAfectados(afectados));
             CorreoService.enviarAsync(para,
@@ -536,7 +545,7 @@ public final class NotificadorCorreos {
     }
 
     /** Marco común de todos los correos (cabecera azul de OceanLink + pie). */
-    static String plantilla(String titulo, String contenido) {
+    public static String plantilla(String titulo, String contenido) {
         return "<div style=\"font-family:Arial,Helvetica,sans-serif;max-width:640px;margin:0 auto;color:#0f172a\">"
                 + "<div style=\"background:#1e3a5f;color:#ffffff;padding:16px 20px;border-radius:8px 8px 0 0\">"
                 + "<div style=\"font-size:12px;letter-spacing:2px;color:#93c5fd\">OCEAN LINK</div>"

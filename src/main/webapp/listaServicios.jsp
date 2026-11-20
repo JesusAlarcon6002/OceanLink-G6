@@ -69,6 +69,7 @@
                   <td><span class="badge <%=clase%>"><%=Html.esc(est)%></span></td>
                   <td>
                     <div class="acciones-fila">
+                      <a class="btn-edit-white btn-ver" href="<%=ctx%>/ServiciosServlet?action=ver&id=<%=s.getIdServicio()%>">Ver</a>
                       <a class="btn-edit-white" href="<%=ctx%>/ServiciosServlet?action=editar&id=<%=s.getIdServicio()%>">Editar</a>
                       <% if ("Pendiente".equals(est)) { %>
                       <form method="post" action="<%=ctx%>/ServiciosServlet?action=borrar"

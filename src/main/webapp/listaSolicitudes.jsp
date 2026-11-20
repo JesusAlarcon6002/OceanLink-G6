@@ -74,6 +74,7 @@
                   <td><span class="badge <%=claseEstado%>"><%=Html.esc(est)%></span></td>
                   <td>
                     <div class="acciones-fila">
+                      <a class="btn-edit-white btn-ver" href="<%=ctx%>/SolicitudesServlet?action=ver&id=<%=sol.getIdSolicitud()%>">Ver</a>
                       <a class="btn-edit-white" href="<%=ctx%>/SolicitudesServlet?action=editar&id=<%=sol.getIdSolicitud()%>">Editar</a>
                       <a class="btn-edit-white" href="<%=ctx%>/ReservasServlet?solicitud=<%=sol.getIdSolicitud()%>">Capacidad</a>
                       <% if (!"Rechazada".equals(sol.getEstado())) { %>

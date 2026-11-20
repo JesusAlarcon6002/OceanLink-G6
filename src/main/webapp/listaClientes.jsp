@@ -71,6 +71,7 @@
                   <td><span class="badge <%=claseEstado%>"><%=Html.esc(c.getEstado())%></span></td>
                   <td>
                     <div class="acciones-fila">
+                      <a class="btn-edit-white btn-ver" href="<%=ctx%>/ClientesServlet?action=ver&id=<%=c.getIdCliente()%>">Ver</a>
                       <a class="btn-edit-white" href="<%=ctx%>/ClientesServlet?action=editar&id=<%=c.getIdCliente()%>">Editar</a>
                       <% if (!"Inactivo".equals(c.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/ClientesServlet?action=borrar"

@@ -154,6 +154,20 @@ public final class CorreoService {
         if (destinatarios == null || destinatarios.isEmpty()) {
             return;
         }
+        // Copia en la campana de los usuarios que reciben el correo (así ven lo mismo en la plataforma)
+        try {
+            new com.oceanlink.daos.BandejaDao().avisarPorCorreos(destinatarios, asunto, textoPlano(html));
+        } catch (Exception e) {
+            System.err.println("[Campana] " + e.getMessage());
+        }
+        enviarSinCampana(destinatarios, asunto, html);
+    }
+
+    /** Igual que enviarAsync pero sin copiar en la campana (para correos que la plataforma ya guardó por su lado). */
+    public static void enviarSinCampana(Collection<String> destinatarios, String asunto, String html) {
+        if (destinatarios == null || destinatarios.isEmpty()) {
+            return;
+        }
         if (!ConfigCorreo.estaConfigurado()) {
             System.out.println("[Correo] SMTP no configurado: se omite \"" + asunto + "\"");
             registrar(String.join(", ", destinatarios), asunto, false, "No enviado: el servidor de correo no está configurado");
@@ -168,6 +182,22 @@ public final class CorreoService {
                 System.err.println("[Correo] No se pudo enviar \"" + asunto + "\": " + e.getMessage());
             }
         });
+    }
+
+    /** Convierte el HTML del correo en texto simple para la campana (saltos de línea por filas/párrafos, sin etiquetas). */
+    public static String textoPlano(String html) {
+        if (html == null) return "";
+        String t = html.replaceAll("(?is)<(style|script)[^>]*>.*?</\\1>", " ")
+                .replaceAll("(?i)</t[dh]>", ": ")
+                .replaceAll("(?i)<br\\s*/?>|</p>|</div>|</tr>|</h[1-6]>|</li>", "\n")
+                .replaceAll("(?s)<[^>]*>", "")
+                .replace("&nbsp;", " ").replace("&lt;", "<").replace("&gt;", ">")
+                .replace("&quot;", "\"").replace("&#39;", "'").replace("&amp;", "&")
+                .replaceAll("[ \\t]+", " ")
+                .replaceAll(" ?\\n ?", "\n")
+                .replaceAll("(?m): $", "")
+                .replaceAll("\\n{3,}", "\n\n");
+        return t.trim();
     }
 
     // ------------------------------------------------------------------ interno

@@ -76,6 +76,7 @@
                   <td><span class="badge <%=claseEstado%>"><%=Html.esc(m.getEstado())%></span></td>
                   <td>
                     <div class="acciones-fila">
+                      <a class="btn-edit-white btn-ver" href="<%=ctx%>/MantenimientosServlet?action=ver&id=<%=m.getIdMantenimiento()%>">Ver</a>
                       <a class="btn-edit-white" href="<%=ctx%>/MantenimientosServlet?action=editar&id=<%=m.getIdMantenimiento()%>">Editar</a>
                       <%-- Borrar va por POST (no por link) para que un robot o un clic accidental no elimine datos --%>
                       <% if (!"Finalizado".equals(m.getEstado())) { %>

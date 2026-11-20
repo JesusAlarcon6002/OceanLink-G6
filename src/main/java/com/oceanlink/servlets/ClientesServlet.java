@@ -28,6 +28,7 @@ public class ClientesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
+        request.setAttribute("soloLectura", "ver".equals(action)); // action=ver: el mismo formulario de editar, pero solo para mirar
         ClientesDao dao = new ClientesDao();
 
         switch (action) {
@@ -36,6 +37,7 @@ public class ClientesServlet extends HttpServlet {
                 nuevo.setEstado("Activo");
                 mostrarFormulario(request, response, nuevo, "crear");
                 break;
+            case "ver":
             case "editar":
                 int id = leerId(request.getParameter("id"));
                 Clientes existente = id > 0 ? dao.getClientes(id) : null;

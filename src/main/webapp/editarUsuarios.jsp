@@ -96,4 +96,5 @@
 
 <jsp:include page="/WEB-INF/includes/acciones-admin.jsp"/>
 <script src="<%=ctx%>/assets/js/verificar-correo.js"></script>
+<jsp:include page="/WEB-INF/includes/modo-ver.jsp"/>
 <jsp:include page="/WEB-INF/includes/fin.jsp"/>
