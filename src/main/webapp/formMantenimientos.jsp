@@ -25,7 +25,7 @@
     <jsp:param name="encabezado" value="REGISTRAR/EDITAR MANTENIMIENTOS"/>
     <jsp:param name="subtitulo" value="Gestiona los mantenimientos"/>
     <jsp:param name="rol" value="maintenance-coordinator"/>
-    <jsp:param name="activo" value="historial-mant"/>
+    <jsp:param name="activo" value="mantenimientos"/>
 </jsp:include>
 
         <form class="form-panel-dark" method="post" action="<%=ctx%>/MantenimientosServlet?action=guardar">

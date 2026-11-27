@@ -8,7 +8,8 @@ import java.util.Set;
 /**
  * Matriz de permisos fija (en código): qué rol puede usar cada Servlet.
  *  - "duenios": roles con acceso completo (ver, crear, editar, borrar).
- *  - El Supervisor tiene acceso de SOLO LECTURA (GET de la lista y de action=ver) a todos los módulos menos Usuarios.
+ *  - "lectores": otros roles con acceso de SOLO LECTURA a ese módulo (ej. el Maintenance Coordinator ve las incidencias).
+ *  - El Supervisor tiene acceso de SOLO LECTURA (GET de la lista, action=ver y action=historial) a todos los módulos menos Usuarios.
  */
 public final class Permisos {
 
@@ -17,6 +18,8 @@ public final class Permisos {
         public final String nombre;
         public final Set<Rol> duenios;
         public final boolean supervisorLee;
+        /** Roles que solo pueden consultar el módulo (además del Supervisor, si corresponde). */
+        public final Set<Rol> lectores;
         /** false = servicio de apoyo (ej. verificación de correo): se controla por rol pero no sale como tarjeta en el inicio. */
         public final boolean visible;
 
@@ -25,6 +28,11 @@ public final class Permisos {
         }
 
         Modulo(String ruta, String nombre, Set<Rol> duenios, boolean supervisorLee, boolean visible) {
+            this(ruta, nombre, duenios, supervisorLee, visible, EnumSet.noneOf(Rol.class));
+        }
+
+        Modulo(String ruta, String nombre, Set<Rol> duenios, boolean supervisorLee, boolean visible, Set<Rol> lectores) {
+            this.lectores = lectores;
             this.ruta = ruta;
             this.nombre = nombre;
             this.duenios = duenios;
@@ -48,14 +56,17 @@ public final class Permisos {
         add("/IncidenciasServlet", "Incidencias", Rol.NETWORK_OPERATOR, true);
         add("/MantenimientosServlet", "Mantenimientos", Rol.MAINTENANCE_COORDINATOR, true);
         // Dashboard y reportes (solo consulta): Supervisor y Network Admin
-        addVarios("/DashboardServlet", "Dashboard de la red", Rol.SUPERVISOR, Rol.ADMIN);
-        addVarios("/ReportesServlet", "Reportes", Rol.SUPERVISOR, Rol.ADMIN);
+        // El Network Operator también ve el dashboard y descarga reportes, pero de reportes solo los de incidencias (lo limita ReportesServlet)
+        addVarios("/DashboardServlet", "Dashboard de la red", Rol.SUPERVISOR, Rol.ADMIN, Rol.NETWORK_OPERATOR);
+        addVarios("/ReportesServlet", "Reportes", Rol.SUPERVISOR, Rol.ADMIN, Rol.NETWORK_OPERATOR);
         // Registro de los correos enviados por el sistema: solo Network Admin
         add("/CorreoServlet", "Registro de correos", Rol.ADMIN, false);
         // Comunicados escritos a mano para clientes y usuarios (por rol): solo Network Admin
         add("/ComunicadosServlet", "Enviar comunicado", Rol.ADMIN, false);
         // Solicitudes de registro de cuentas nuevas: solo Network Admin (única forma de crear usuarios)
         add("/SolicitudesRegistroServlet", "Solicitudes de registro", Rol.ADMIN, false);
+        // El Maintenance Coordinator consulta las incidencias (solo lectura) para decidir dónde aplicar mantenimiento
+        conLectores("/IncidenciasServlet", Rol.MAINTENANCE_COORDINATOR);
         // Roles y permisos (solo consulta): qué puede hacer cada rol y cuántos usuarios tiene
         add("/RolesServlet", "Roles y permisos", Rol.ADMIN, false);
         // Verificación de correo (código de 6 dígitos) al registrar usuarios y clientes: no es una tarjeta del inicio
@@ -72,6 +83,12 @@ public final class Permisos {
 
     private static void addVarios(String ruta, String nombre, Rol primero, Rol... otros) {
         MODULOS.put(ruta, new Modulo(ruta, nombre, EnumSet.of(primero, otros), false));
+    }
+
+    /** Agrega roles de solo lectura a un módulo que ya existe. */
+    private static void conLectores(String ruta, Rol primero, Rol... otros) {
+        Modulo m = MODULOS.get(ruta);
+        MODULOS.put(ruta, new Modulo(m.ruta, m.nombre, m.duenios, m.supervisorLee, m.visible, EnumSet.of(primero, otros)));
     }
 
     public static Modulo modulo(String ruta) {
@@ -92,15 +109,16 @@ public final class Permisos {
         Modulo m = MODULOS.get(ruta);
         if (m == null || rol == null) return false;
         if (m.duenios.contains(rol)) return true;
-        if (rol == Rol.SUPERVISOR && m.supervisorLee) {
-            boolean soloListar = action == null || action.isEmpty() || "lista".equals(action) || "ver".equals(action);
-            return "GET".equalsIgnoreCase(metodo) && soloListar;
+        if ((rol == Rol.SUPERVISOR && m.supervisorLee) || m.lectores.contains(rol)) {
+            boolean soloConsultar = action == null || action.isEmpty() || "lista".equals(action)
+                    || "ver".equals(action) || "historial".equals(action);
+            return "GET".equalsIgnoreCase(metodo) && soloConsultar;
         }
         return false;
     }
 
     /** ¿Este rol ve el módulo en su pantalla de inicio / menú (aunque sea solo lectura)? */
     public static boolean veModulo(Rol rol, Modulo m) {
-        return m.duenios.contains(rol) || (rol == Rol.SUPERVISOR && m.supervisorLee);
+        return m.duenios.contains(rol) || m.lectores.contains(rol) || (rol == Rol.SUPERVISOR && m.supervisorLee);
     }
 }

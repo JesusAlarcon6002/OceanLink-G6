@@ -9,6 +9,8 @@
         listaMantenimientos = new ArrayList<>();
     }
     String ctx = request.getContextPath();
+    // action=historial: solo los finalizados y solo para consultar (sin registrar, editar ni borrar)
+    boolean historial = Boolean.TRUE.equals(request.getAttribute("modoHistorial"));
 
     // Mensajes que llegan por la URL después de un Post/Redirect/Get (ej: ?ok=creado)
     String ok = request.getParameter("ok");
@@ -19,16 +21,16 @@
     else if ("borrado".equals(ok)) mensajeOk = "Mantenimiento desactivado.";
 %>
 <jsp:include page="/WEB-INF/includes/inicio.jsp">
-    <jsp:param name="titulo" value="Mantenimientos"/>
-    <jsp:param name="encabezado" value="MANTENIMIENTOS"/>
-    <jsp:param name="subtitulo" value="Lista de mantenimientos"/>
+    <jsp:param name="titulo" value='<%= historial ? "Historial de mantenimientos" : "Mantenimientos" %>'/>
+    <jsp:param name="encabezado" value='<%= historial ? "HISTORIAL DE MANTENIMIENTOS" : "MANTENIMIENTOS" %>'/>
+    <jsp:param name="subtitulo" value='<%= historial ? "Mantenimientos finalizados (solo lectura)" : "Lista de mantenimientos" %>'/>
     <jsp:param name="rol" value="maintenance-coordinator"/>
-    <jsp:param name="activo" value="historial-mant"/>
+    <jsp:param name="activo" value='<%= historial ? "historial-mant" : "mantenimientos" %>'/>
 </jsp:include>
 
         <div class="form-panel-dark" style="min-height:auto;">
           <div class="infra-header">
-            <h2>MANTENIMIENTOS</h2>
+            <h2><%= historial ? "MANTENIMIENTOS FINALIZADOS" : "MANTENIMIENTOS" %></h2>
           </div>
 
           <% if (mensajeOk != null) { %>
@@ -46,13 +48,17 @@
                 <option value="tipo:Preventivo">Preventivo</option>
                 <option value="tipo:Correctivo">Correctivo</option>
               </optgroup>
+              <% if (!historial) { %>
               <optgroup label="Estado">
                 <option value="estado:Programado">Programado</option>
                 <option value="estado:En curso">En curso</option>
                 <option value="estado:Finalizado">Finalizado</option>
               </optgroup>
+              <% } %>
             </select>
+            <% if (!historial) { %>
             <a class="btn-register-toolbar" href="<%=ctx%>/MantenimientosServlet?action=formCrear" style="text-decoration:none;">REGISTRAR MANTENIMIENTO</a>
+            <% } %>
           </div>
 
           <div class="dark-table-wrap">
@@ -60,7 +66,7 @@
               <thead><tr><th>ID</th><th>TIPO</th><th>INFRAESTRUCTURA</th><th>FECHA PROGRAMADA</th><th>DURACIÓN</th><th>ESTADO</th><th>ACCIÓN</th></tr></thead>
               <tbody id="tabla-datos">
                 <% if (listaMantenimientos.isEmpty()) { %>
-                <tr class="fila-vacia"><td colspan="7">Aún no hay mantenimientos registrados.</td></tr>
+                <tr class="fila-vacia"><td colspan="7"><%= historial ? "Aún no hay mantenimientos finalizados." : "Aún no hay mantenimientos registrados." %></td></tr>
                 <% }
                    for (Mantenimientos m : listaMantenimientos) {
                        String claseEstado = "badge-info";                        // Programado
@@ -77,9 +83,11 @@
                   <td>
                     <div class="acciones-fila">
                       <a class="btn-edit-white btn-ver" href="<%=ctx%>/MantenimientosServlet?action=ver&id=<%=m.getIdMantenimiento()%>">Ver</a>
+                      <% if (!historial) { %>
                       <a class="btn-edit-white" href="<%=ctx%>/MantenimientosServlet?action=editar&id=<%=m.getIdMantenimiento()%>">Editar</a>
+                      <% } %>
                       <%-- Borrar va por POST (no por link) para que un robot o un clic accidental no elimine datos --%>
-                      <% if (!"Finalizado".equals(m.getEstado())) { %>
+                      <% if (!historial && !"Finalizado".equals(m.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/MantenimientosServlet?action=borrar"
                             data-confirmar="¿Seguro que quieres desactivar este mantenimiento?" data-confirmar-btn="Desactivar" data-confirmar-titulo="Desactivar mantenimiento">
                         <input type="hidden" name="id" value="<%=m.getIdMantenimiento()%>">

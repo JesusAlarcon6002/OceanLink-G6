@@ -2,6 +2,8 @@ package com.oceanlink.servlets;
 
 import com.oceanlink.beans.Clientes;
 import com.oceanlink.beans.Reporte;
+import com.oceanlink.beans.UsuarioSesion;
+import com.oceanlink.util.Rol;
 import com.oceanlink.daos.ClientesDao;
 import com.oceanlink.daos.ReportesDao;
 import com.oceanlink.util.ExportadorPdf;
@@ -35,6 +37,13 @@ public class ReportesServlet extends HttpServlet {
         if (tipo == null || !TIPOS.contains(tipo)) {
             tipo = "utilizacion";
         }
+        // El Network Operator solo puede ver y descargar reportes de incidencias
+        UsuarioSesion u = (UsuarioSesion) request.getSession().getAttribute("usuario");
+        boolean soloIncidencias = u != null && u.getRol() == Rol.NETWORK_OPERATOR;
+        if (soloIncidencias) {
+            tipo = "incidencias";
+        }
+        request.setAttribute("soloIncidencias", soloIncidencias);
 
         ReportesDao dao = new ReportesDao();
         Reporte reporte;

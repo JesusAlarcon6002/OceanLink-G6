@@ -118,14 +118,14 @@ body.pagina-login { background: linear-gradient(180deg, #0a1628 0%, #0d1f38 100%
 
 /* ===== Dashboard (KPIs y gráficos) ===== */
 .dash-col { flex: 1; min-width: 0; }
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-bottom: 14px; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px; margin-bottom: 14px; }
 .kpi-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 14px 16px; }
 .kpi-card.kpi-alerta { border-color: rgba(248, 113, 113, 0.6); }
 .kpi-num { margin: 0; font-size: 26px; font-weight: 700; color: #fff; }
 .kpi-num small { font-size: 13px; font-weight: 500; color: #94a3b8; }
 .kpi-lbl { margin: 2px 0 0; font-size: 13px; color: #c9d4e3; }
 .kpi-sub { margin: 4px 0 0; font-size: 12px; color: #94a3b8; }
-.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; margin-bottom: 14px; }
+.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 14px; margin-bottom: 14px; }
 .chart-grid > .form-panel-dark { min-width: 0; }
 .chart-box { position: relative; height: 240px; }
 .chart-nota { margin: 8px 0 0; font-size: 12px; color: #94a3b8; }
@@ -194,3 +194,118 @@ body.pagina-login { background: linear-gradient(180deg, #0a1628 0%, #0d1f38 100%
 .aviso-no-leida { font-weight: 600; }
 .aviso-texto { white-space: pre-wrap; font-weight: 400; color: #cbd5e1; margin-top: 4px; }
 .fila-inline { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+
+/* ============================================
+   Roles y permisos: chips por módulo
+   ============================================ */
+.tabla-roles th, .tabla-roles td { text-align: left; white-space: normal; vertical-align: top; padding: 12px 10px; }
+.tabla-roles th { font-size: 13px; letter-spacing: .6px; color: #a0b8d8; }
+.tabla-roles td.rol-nombre { white-space: nowrap; font-size: 14px; }
+.tabla-roles td.rol-usuarios { width: 1%; white-space: nowrap; }
+.tabla-roles td.rol-chips { line-height: 2; min-width: 220px; }
+.rol-num { display: inline-block; min-width: 28px; padding: 2px 10px; text-align: center; border-radius: 999px;
+  background: #1e3a5f; border: 1px solid rgba(59,130,246,.6); color: #93c5fd; font-weight: 700; font-size: 13px; }
+.chip { display: inline-block; margin: 2px 4px 2px 0; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; line-height: 1.5; border: 1px solid; }
+.chip-completo { background: #172a1f; border-color: rgba(74,222,128,.4); color: #86efac; }
+.chip-lectura { background: rgba(30,58,95,.45); border-color: rgba(147,197,253,.4); color: #93c5fd; }
+
+/* ============================================
+   Perfil y Configuración
+   ============================================ */
+.perfil-cabecera { display: flex; align-items: center; gap: 14px; padding-bottom: 6px; }
+.perfil-avatar { width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #38bdf8, #0b1528); color: #fff; font-size: 24px; font-weight: 700; border: 1px solid rgba(255,255,255,.3); }
+.perfil-nombre { margin: 0 0 4px; color: #fff; font-size: 20px; }
+.perfil-rol { display: inline-block; padding: 2px 10px; border-radius: 999px; background: #1e3a5f; border: 1px solid rgba(59,130,246,.6); color: #93c5fd; font-size: 12px; font-weight: 700; }
+.seccion-titulo { margin: 0; color: #fff; font-size: 16px; font-weight: 700; }
+.form-field input:disabled { opacity: .6; cursor: not-allowed; }
+.pref-fila { display: flex; gap: 12px; align-items: flex-start; color: #e2e8f0; font-size: 14px; cursor: pointer; }
+.pref-fila input { width: 18px; height: 18px; margin-top: 2px; accent-color: #38bdf8; flex-shrink: 0; }
+.pref-fila small { color: #a0b8d8; font-size: 12px; }
+
+/* ============================================
+   MÓVIL Y TABLET (hasta 900px)
+   El menú lateral pasa a ser un panel que se abre con el botón de las tres rayas.
+   ============================================ */
+@media (max-width: 900px) {
+  .app-shell { height: 100vh; height: 100dvh; }
+  .dark-dashboard { height: 100%; }
+
+  #sidebar-mount { position: fixed; top: 0; right: 0; bottom: 0; z-index: 1000; overflow: visible; pointer-events: none; }
+  .sidebar { pointer-events: auto; height: 100%; width: 280px; min-width: 0; max-width: 86vw;
+    margin-right: 0 !important; transition: transform .25s ease; box-shadow: -10px 0 30px rgba(0,0,0,.55); }
+  .sidebar.collapsed { transform: translateX(110%); box-shadow: none; }
+  .nav-item { padding: 13px 14px; }
+
+  .dark-content { padding: 0 12px 10px; gap: 12px; }
+  .dark-scroll-area { padding-top: 14px; gap: 14px; }
+  .dark-header h1 { font-size: 20px; }
+  .dark-header p { font-size: 12px; }
+  .header-actions { gap: 4px; }
+  .header-icon-btn { width: 42px; height: 42px; }
+
+  .middle-row { flex-direction: column; gap: 12px; }
+  .quick-actions { width: 100%; }
+  .form-panel-dark { padding: 14px; min-height: auto; gap: 14px; }
+  .form-grid-2 { grid-template-columns: 1fr; gap: 14px; }
+  .form-field:empty { display: none; }
+  .form-body { flex-direction: column; }
+  .info-card-dark { width: 100%; }
+  .info-display-grid { grid-template-columns: 1fr; max-width: none; }
+  .form-field input, .form-field select, .form-field textarea { font-size: 16px; padding: 11px 12px; }
+  .form-actions { flex-wrap: wrap; }
+  .btn-form-save, .btn-form-cancel, .btn-approve, .btn-reject, .btn-pending { flex: 1 1 140px; text-align: center; padding: 12px 16px; }
+
+  .panel-toolbar { gap: 10px; }
+  .search-input, .filter-select { width: 100%; height: 38px; font-size: 14px; }
+  .btn-register-toolbar { width: 100%; text-align: center; }
+  .rep-filtros { align-items: stretch; }
+  .rep-filtros label, .rep-filtros select, .rep-filtros input[type=date] { width: 100%; }
+
+  .seg-grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-row-dark .stat-card-dark { min-width: 140px; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .chart-box { height: 220px; }
+
+  /* el resumen de abajo se compacta: 3 datos en una fila, sin iconos */
+  .summary-row { padding: 10px 12px; gap: 8px; }
+  .summary-divider, .summary-icon { display: none; }
+  .summary-item { flex-direction: column; align-items: flex-start; gap: 0; min-width: 0; }
+  .summary-text .num { font-size: 16px; }
+  .summary-text .lbl { font-size: 10px; }
+
+  /* tablas: más cómodas de deslizar; los botones de cada fila, más grandes para el dedo */
+  .dark-table-wrap { -webkit-overflow-scrolling: touch; }
+  .acciones-fila .btn-edit-white, .acciones-fila .btn-delete-red { padding: 8px 14px; }
+
+  /* Roles y permisos: cada rol se vuelve una tarjeta */
+  .tabla-roles thead { display: none; }
+  .tabla-roles, .tabla-roles tbody, .tabla-roles tr, .tabla-roles td { display: block; width: 100%; }
+  .tabla-roles tr { border: 1px solid rgba(255,255,255,.15); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; background: rgba(255,255,255,.04); }
+  .tabla-roles tr:last-child td { border-bottom: none; }
+  .tabla-roles td { border: none !important; padding: 6px 0 !important; min-width: 0 !important; width: 100% !important; white-space: normal !important; }
+  .tabla-roles td.rol-nombre { font-size: 16px; }
+  .tabla-roles td[data-label]::before { content: attr(data-label); display: block; color: #a0b8d8; font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 2px; }
+  .tabla-roles td.rol-nombre::before { display: none; }
+
+  .ol-modal-acciones { flex-direction: column; }
+  .ol-modal-acciones button { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .dark-header h1 { font-size: 18px; }
+  .perfil-nombre { font-size: 18px; }
+}
+
+/* Pantallas bajas (laptops chicas) y celulares: el menú se compacta para que quepan todas las opciones
+   (con 13 opciones, "Mensajes y avisos" y "Perfil" quedaban escondidas abajo) */
+@media (max-height: 860px), (max-width: 900px) {
+  .sidebar { padding: 16px 14px; }
+  .brand-lockup { margin-bottom: 14px; }
+  .brand-logo { width: 44px; height: 44px; }
+  .nav-list { gap: 2px; }
+  .nav-item { padding: 8px 14px; }
+  .sidebar-bottom { gap: 10px; }
+}

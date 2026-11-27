@@ -132,8 +132,8 @@
 <script>
 (function () {
   if (typeof Chart === "undefined") { return; }   // sin internet no hay gráficos, pero las tablas siguen
-  Chart.defaults.color = "#c9d4e3";
-  Chart.defaults.borderColor = "rgba(148,163,184,0.18)";
+  Chart.defaults.color = document.documentElement.getAttribute("data-tema") === "claro" ? "#334e68" : "#c9d4e3";
+  Chart.defaults.borderColor = document.documentElement.getAttribute("data-tema") === "claro" ? "rgba(51,78,104,0.18)" : "rgba(148,163,184,0.18)";
   var base = { responsive: true, maintainAspectRatio: false };
 
   new Chart(document.getElementById("grafUtilizacion"), {

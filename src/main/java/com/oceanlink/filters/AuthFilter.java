@@ -98,7 +98,8 @@ public class AuthFilter implements Filter {
         }
 
         // Servlets comunes a todos los roles autenticados
-        if (ruta.equals("/InicioServlet") || ruta.equals("/LogoutServlet") || ruta.equals("/BandejaServlet")) {
+        if (ruta.equals("/InicioServlet") || ruta.equals("/LogoutServlet") || ruta.equals("/BandejaServlet")
+                || ruta.equals("/PerfilServlet") || ruta.equals("/ConfiguracionServlet")) {
             chain.doFilter(req, res);
             return;
         }

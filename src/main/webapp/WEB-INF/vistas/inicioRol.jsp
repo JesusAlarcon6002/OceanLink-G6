@@ -24,10 +24,11 @@
               <thead><tr><th>MÓDULO</th><th>ACCESO</th><th>ACCIÓN</th></tr></thead>
               <tbody>
               <% for (Permisos.Modulo m : Permisos.todos()) {
-                   if (!Permisos.veModulo(u.getRol(), m)) continue; %>
+                   if (!Permisos.veModulo(u.getRol(), m)) continue;
+                   boolean soloLeer = !m.duenios.contains(u.getRol()); %>
                 <tr>
                   <td><%=Html.esc(m.nombre)%></td>
-                  <td><span class="badge <%= lectura ? "badge-warning" : "badge-success" %>"><%= lectura ? "Solo lectura" : "Completo" %></span></td>
+                  <td><span class="badge <%= soloLeer ? "badge-warning" : "badge-success" %>"><%= soloLeer ? "Solo lectura" : "Completo" %></span></td>
                   <td><a class="btn-edit-white" href="<%=ctx%><%=m.ruta%>">Abrir</a></td>
                 </tr>
               <% } %>

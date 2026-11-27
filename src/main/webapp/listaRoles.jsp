@@ -17,7 +17,7 @@
 
         <div class="form-panel-dark" style="min-height:auto;">
           <div class="dark-table-wrap">
-            <table>
+            <table class="tabla-roles">
               <thead><tr><th>ROL</th><th>USUARIOS ACTIVOS</th><th>ACCESO COMPLETO</th><th>SOLO LECTURA</th></tr></thead>
               <tbody>
                 <% for (Rol r : Rol.values()) {
@@ -25,20 +25,18 @@
                        StringBuilder lectura = new StringBuilder();
                        for (Permisos.Modulo m : Permisos.todos()) {
                            if (m.duenios.contains(r)) {
-                               if (completo.length() > 0) completo.append(", ");
-                               completo.append(m.nombre);
+                               completo.append("<span class=\"chip chip-completo\">").append(Html.esc(m.nombre)).append("</span>");
                            } else if (Permisos.veModulo(r, m)) {
-                               if (lectura.length() > 0) lectura.append(", ");
-                               lectura.append(m.nombre);
+                               lectura.append("<span class=\"chip chip-lectura\">").append(Html.esc(m.nombre)).append("</span>");
                            }
                        }
                        int usuarios = conteo == null || conteo.get(r.getNombreBd()) == null ? 0 : conteo.get(r.getNombreBd());
                 %>
                 <tr>
-                  <td><b><%=Html.esc(r.getNombreBd())%></b></td>
-                  <td><%=usuarios%></td>
-                  <td><%= completo.length() == 0 ? "—" : Html.esc(completo.toString()) %></td>
-                  <td><%= lectura.length() == 0 ? "—" : Html.esc(lectura.toString()) %></td>
+                  <td data-label="Rol" class="rol-nombre"><b><%=Html.esc(r.getNombreBd())%></b></td>
+                  <td data-label="Usuarios activos" class="rol-usuarios"><span class="rol-num"><%=usuarios%></span></td>
+                  <td data-label="Acceso completo" class="rol-chips"><%= completo.length() == 0 ? "—" : completo.toString() %></td>
+                  <td data-label="Solo lectura" class="rol-chips"><%= lectura.length() == 0 ? "—" : lectura.toString() %></td>
                 </tr>
                 <% } %>
               </tbody>

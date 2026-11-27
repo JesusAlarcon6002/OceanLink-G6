@@ -47,10 +47,15 @@
           <div class="infra-header"><h2><%=Html.esc(reporte.getTitulo()).toUpperCase()%></h2></div>
 
           <div class="rep-tabs">
+            <% boolean soloInc = Boolean.TRUE.equals(request.getAttribute("soloIncidencias")); %>
+            <% if (!soloInc) { %>
             <a class="rep-tab <%= "utilizacion".equals(tipo) ? "activa" : "" %>" href="<%=ctx%>/ReportesServlet?tipo=utilizacion">Utilización</a>
+            <% } %>
             <a class="rep-tab <%= "incidencias".equals(tipo) ? "activa" : "" %>" href="<%=ctx%>/ReportesServlet?tipo=incidencias">Incidencias</a>
+            <% if (!soloInc) { %>
             <a class="rep-tab <%= "servicios".equals(tipo) ? "activa" : "" %>" href="<%=ctx%>/ReportesServlet?tipo=servicios">Servicios por cliente</a>
             <a class="rep-tab <%= "mantenimientos".equals(tipo) ? "activa" : "" %>" href="<%=ctx%>/ReportesServlet?tipo=mantenimientos">Mantenimientos</a>
+            <% } %>
           </div>
 
           <form class="rep-filtros" method="get" action="<%=ctx%>/ReportesServlet">

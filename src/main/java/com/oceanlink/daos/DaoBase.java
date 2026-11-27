@@ -50,6 +50,10 @@ public abstract class DaoBase {
         String url = entorno("DB_URL", CONFIG.getProperty("db.url", "jdbc:mysql://localhost:3306/proyecto_siete"));
         String user = entorno("DB_USER", CONFIG.getProperty("db.user", "root"));
         String pass = entorno("DB_PASSWORD", CONFIG.getProperty("db.password", ""));
+        // tildes y "ñ": la conexión siempre va en UTF-8, aunque la URL no lo diga
+        if (!url.contains("characterEncoding")) {
+            url += (url.contains("?") ? "&" : "?") + "characterEncoding=UTF-8";
+        }
         return DriverManager.getConnection(url, user, pass);
     }
 }

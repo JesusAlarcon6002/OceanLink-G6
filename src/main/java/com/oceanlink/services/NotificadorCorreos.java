@@ -384,6 +384,20 @@ public final class NotificadorCorreos {
 
     // ---------------------------------------------------------------- 8. Seguridad de la cuenta
     /** Un administrador cambió la contraseña de la cuenta. Nunca se incluye la contraseña. */
+    /** Aviso cuando la propia persona cambia su contraseña desde Configuración. */
+    public static void contrasenaCambiadaPorUsuario(String nombre, String correo) {
+        try {
+            if (correo == null || correo.trim().isEmpty()) return;
+            String cuerpo = saludo(nombre)
+                    + "<p style=\"margin:0 0 12px\">Cambiaste la contraseña de tu cuenta de OceanLink desde Configuración.</p>"
+                    + "<p style=\"margin:0\">Si no fuiste tú, avisa de inmediato al administrador del sistema.</p>";
+            CorreoService.enviarAsync(Collections.singletonList(correo.trim()),
+                    "[OceanLink] Cambiaste tu contraseña", plantilla("Contraseña actualizada", cuerpo));
+        } catch (Exception e) {
+            System.err.println("[Correo] Falló el aviso de cambio de contraseña: " + e.getMessage());
+        }
+    }
+
     public static void contrasenaCambiada(String nombre, String correo) {
         try {
             if (correo == null || correo.trim().isEmpty()) return;

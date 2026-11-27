@@ -36,9 +36,8 @@ const ROLE_MENUS = {
       { id: "reportes", icon: "shield-check", label: "Reportes", href: "ReportesServlet" },
       { id: "comunicados", icon: "users", label: "Enviar comunicado", href: "ComunicadosServlet" },
       { id: "correo", icon: "settings", label: "Registro de correos", href: "CorreoServlet" },
-      { id: "config", icon: "settings", label: "Configuración", href: "#" },
       { id: "mensajes", icon: "bell", label: "Mensajes y avisos", href: "BandejaServlet" },
-      { id: "perfil", icon: "user", label: "Perfil", href: "#" }
+      { id: "perfil", icon: "user", label: "Perfil", href: "PerfilServlet" }
     ]
   },
   "capacity-planner": {
@@ -50,9 +49,8 @@ const ROLE_MENUS = {
       { id: "servicios", icon: "git-branch", label: "Servicios", href: "ServiciosServlet" },
       { id: "rutas", icon: "git-branch", label: "Rutas", href: "RutasServlet" },
       { id: "historial", icon: "git-branch", label: "Historial de utilización", href: "HistorialServlet" },
-      { id: "config", icon: "settings", label: "Configuración", href: "#" },
       { id: "mensajes", icon: "bell", label: "Mensajes y avisos", href: "BandejaServlet" },
-      { id: "perfil", icon: "user", label: "Perfil", href: "#" }
+      { id: "perfil", icon: "user", label: "Perfil", href: "PerfilServlet" }
     ]
   },
   supervisor: {
@@ -70,9 +68,9 @@ const ROLE_MENUS = {
       { id: "servicios", icon: "git-branch", label: "Servicios", href: "ServiciosServlet" },
       { id: "historial", icon: "git-branch", label: "Historial de utilización", href: "HistorialServlet" },
       { id: "incidencias", icon: "shield-check", label: "Incidencias", href: "IncidenciasServlet" },
-      { id: "historial-mant", icon: "users", label: "Mantenimientos", href: "MantenimientosServlet" },
+      { id: "mantenimientos", icon: "users", label: "Mantenimientos", href: "MantenimientosServlet" },
       { id: "mensajes", icon: "bell", label: "Mensajes y avisos", href: "BandejaServlet" },
-      { id: "perfil", icon: "user", label: "Perfil", href: "#" }
+      { id: "perfil", icon: "user", label: "Perfil", href: "PerfilServlet" }
     ]
   },
   "network-operator": {
@@ -83,19 +81,22 @@ const ROLE_MENUS = {
       { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
       { id: "incidencias", icon: "shield-check", label: "Incidencias", href: "IncidenciasServlet" },
       { id: "historial-incidencias", icon: "globe", label: "Historial de incidencias", href: "IncidenciasServlet?action=historial" },
-      { id: "config", icon: "settings", label: "Configuración", href: "#" },
+      { id: "dashboard", icon: "globe", label: "Dashboard de la red", href: "DashboardServlet" },
+      { id: "reportes", icon: "shield-check", label: "Reportes de incidencias", href: "ReportesServlet" },
       { id: "mensajes", icon: "bell", label: "Mensajes y avisos", href: "BandejaServlet" },
-      { id: "perfil", icon: "user", label: "Perfil", href: "#" }
+      { id: "perfil", icon: "user", label: "Perfil", href: "PerfilServlet" }
     ]
   },
   "maintenance-coordinator": {
+    // Mantenimientos (completo), historial de finalizados (solo lectura) e incidencias (solo lectura, para decidir dónde aplicar mantenimiento)
     roleLabel: "Maintenance Coord.",
     items: [
       { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
-      { id: "historial-mant", icon: "users", label: "Historial de mantenimientos", href: "MantenimientosServlet" },
-      { id: "config", icon: "settings", label: "Configuración", href: "#" },
+      { id: "mantenimientos", icon: "users", label: "Mantenimientos", href: "MantenimientosServlet" },
+      { id: "historial-mant", icon: "globe", label: "Historial de mantenimientos", href: "MantenimientosServlet?action=historial" },
+      { id: "historial-incidencias", icon: "shield-check", label: "Incidencias (consulta)", href: "IncidenciasServlet?action=historial" },
       { id: "mensajes", icon: "bell", label: "Mensajes y avisos", href: "BandejaServlet" },
-      { id: "perfil", icon: "user", label: "Perfil", href: "#" }
+      { id: "perfil", icon: "user", label: "Perfil", href: "PerfilServlet" }
     ]
   }
 };
@@ -176,8 +177,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const headerToggle = document.getElementById("header-menu-toggle");
   const sidebarEl = document.getElementById("oceanlink-sidebar");
   if (headerToggle && sidebarEl) {
-    headerToggle.addEventListener("click", () => {
+    // En celular/tablet el menú es un panel que empieza cerrado. En pantalla grande empieza abierto,
+    // salvo que la persona haya marcado "Ocultar el menú lateral al entrar" en Configuración.
+    const esMovil = () => window.matchMedia("(max-width: 900px)").matches;
+    let ocultoPorPreferencia = false;
+    try { ocultoPorPreferencia = localStorage.getItem("ol_menu_oculto") === "1"; } catch (e) { /* sin almacenamiento: se ignora */ }
+    if (esMovil() || ocultoPorPreferencia) sidebarEl.classList.add("collapsed");
+
+    headerToggle.addEventListener("click", (ev) => {
+      ev.stopPropagation();
       sidebarEl.classList.toggle("collapsed");
+    });
+    // en celular, tocar fuera del panel lo cierra
+    document.addEventListener("click", (ev) => {
+      if (esMovil() && !sidebarEl.classList.contains("collapsed") && !sidebarEl.contains(ev.target)) {
+        sidebarEl.classList.add("collapsed");
+      }
     });
   }
 });
