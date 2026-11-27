@@ -30,6 +30,7 @@
     <jsp:param name="activo" value="perfil"/>
 </jsp:include>
 
+        <div class="perfil-grid">
         <div class="form-panel-dark" style="min-height:auto;">
           <% if (guardado) { %><div class="msg msg-ok">Tus datos se guardaron.</div><% } %>
           <% if (errores != null && !errores.isEmpty()) { %>
@@ -76,9 +77,8 @@
           <form method="post" action="<%=ctx%>/PerfilServlet" autocomplete="off">
             <input type="hidden" name="action" value="clave">
             <div class="form-grid-2">
-              <div class="form-field"><label for="claveActual">CONTRASEÑA ACTUAL</label>
+              <div class="form-field campo-ancho"><label for="claveActual">CONTRASEÑA ACTUAL</label>
                 <input id="claveActual" name="claveActual" type="password" maxlength="64" required autocomplete="current-password"></div>
-              <div class="form-field"></div>
               <div class="form-field"><label for="claveNueva">CONTRASEÑA NUEVA</label>
                 <input id="claveNueva" name="claveNueva" type="password" maxlength="64" required autocomplete="new-password"></div>
               <div class="form-field"><label for="claveRepite">REPITE LA CONTRASEÑA NUEVA</label>
@@ -106,10 +106,11 @@
 
         <div class="form-panel-dark" style="min-height:auto;">
           <h3 class="seccion-titulo">Tu sesión</h3>
-          <div class="form-grid-2">
+          <div class="form-grid-2 una-columna">
             <div class="form-field"><label>SESIÓN INICIADA</label><input type="text" disabled value="<%=Html.esc(inicioSesion)%> (hora de Lima)"></div>
             <div class="form-field"><label>SE CIERRA POR INACTIVIDAD</label><input type="text" disabled value="<%=minutosInactividad%> minutos"></div>
           </div>
+        </div>
         </div>
 
 <script>
