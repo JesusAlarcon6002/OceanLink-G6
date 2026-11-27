@@ -62,6 +62,12 @@
 .acciones-fila { display: grid; grid-template-columns: 52px 68px 72px; gap: 8px; justify-content: center; align-items: center; }
 .acciones-fila:has(a[href*="ReservasServlet"]) { grid-template-columns: 52px 68px 92px 72px; }
 .acciones-fila > a, .acciones-fila > form { grid-row: 1; min-width: 0; }
+/* Si la fila solo tiene "Ver" (historiales de solo lectura), un solo casillero centrado bajo el encabezado */
+.acciones-fila:not(:has(a:not(.btn-ver))):not(:has(form)) { grid-template-columns: 52px; }
+/* Aprobar / Rechazar (Solicitudes de registro): campo a la izquierda y botón del mismo ancho en ambas filas */
+form.fila-inline { display: grid; grid-template-columns: minmax(130px, 1fr) 96px; gap: 8px; align-items: center; }
+form.fila-inline .btn-edit-white, form.fila-inline .btn-delete-red { display: block; width: 100%; box-sizing: border-box; text-align: center; padding: 6px 0; white-space: nowrap; }
+form.fila-inline select, form.fila-inline input[type="text"] { width: 100%; box-sizing: border-box; min-width: 0; }
 .acciones-fila .btn-edit-white, .acciones-fila .btn-delete-red {
   display: block; width: 100%; box-sizing: border-box; text-align: center; padding: 4px 0; line-height: 1.5; white-space: nowrap;
 }

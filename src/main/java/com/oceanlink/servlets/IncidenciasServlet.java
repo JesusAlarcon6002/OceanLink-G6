@@ -32,6 +32,13 @@ public class IncidenciasServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
+        // El Maintenance Coordinator solo consulta incidencias: la lista normal (con registrar/editar/borrar)
+        // se cambia por el historial de solo lectura, venga de la pantalla de inicio, del menú o de un enlace directo.
+        com.oceanlink.beans.UsuarioSesion sesion = request.getSession(false) == null ? null
+                : (com.oceanlink.beans.UsuarioSesion) request.getSession(false).getAttribute("usuario");
+        if (sesion != null && sesion.getRol() == com.oceanlink.util.Rol.MAINTENANCE_COORDINATOR && "lista".equals(action)) {
+            action = "historial";
+        }
         request.setAttribute("soloLectura", "ver".equals(action)); // action=ver: el mismo formulario de editar, pero solo para mirar
         IncidenciasDao dao = new IncidenciasDao();
 
