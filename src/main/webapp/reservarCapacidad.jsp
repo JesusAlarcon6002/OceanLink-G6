@@ -65,7 +65,7 @@
             <% } else { %>
             <a class="btn-form-save" style="text-decoration:none;display:inline-flex;align-items:center;" href="<%=ctx%>/ServiciosServlet?action=formCrear&solicitud=<%=sol.getIdSolicitud()%>">CREAR SERVICIO</a>
             <form method="post" action="<%=ctx%>/ReservasServlet?action=liberar" style="margin:0;"
-                  onsubmit="return confirm('¿Liberar la capacidad reservada de esta solicitud?');">
+                  data-confirmar="¿Liberar la capacidad reservada de esta solicitud?" data-confirmar-btn="Liberar" data-confirmar-titulo="Liberar reserva" data-confirmar-tipo="normal">
               <input type="hidden" name="solicitud" value="<%=sol.getIdSolicitud()%>">
               <button type="submit" class="btn-delete-red">LIBERAR RESERVA</button>
             </form>
@@ -103,7 +103,7 @@
                   <td>
                     <% if (puede) { %>
                     <form method="post" action="<%=ctx%>/ReservasServlet?action=reservar" style="margin:0;"
-                          onsubmit="return confirm('¿Reservar <%=gbps.format(sol.getCapacidadSolicitadaGbps())%> Gbps en esta ruta?');">
+                          data-confirmar="¿Reservar <%=gbps.format(sol.getCapacidadSolicitadaGbps())%> Gbps en esta ruta?" data-confirmar-btn="Reservar" data-confirmar-titulo="Reservar capacidad" data-confirmar-tipo="normal">
                       <input type="hidden" name="solicitud" value="<%=sol.getIdSolicitud()%>">
                       <input type="hidden" name="ruta" value="<%=r.getIdRuta()%>">
                       <button type="submit" class="btn-mini">Reservar</button>

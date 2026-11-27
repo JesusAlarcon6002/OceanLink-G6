@@ -2,6 +2,9 @@ package com.oceanlink.servlets;
 
 import com.oceanlink.beans.Clientes;
 import com.oceanlink.daos.ClientesDao;
+import com.oceanlink.services.NotificadorCorreos;
+import com.oceanlink.services.VerificacionCorreo;
+import com.oceanlink.util.ValidadorCorreo;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -25,6 +28,7 @@ public class ClientesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
+        request.setAttribute("soloLectura", "ver".equals(action)); // action=ver: el mismo formulario de editar, pero solo para mirar
         ClientesDao dao = new ClientesDao();
 
         switch (action) {
@@ -33,6 +37,7 @@ public class ClientesServlet extends HttpServlet {
                 nuevo.setEstado("Activo");
                 mostrarFormulario(request, response, nuevo, "crear");
                 break;
+            case "ver":
             case "editar":
                 int id = leerId(request.getParameter("id"));
                 Clientes existente = id > 0 ? dao.getClientes(id) : null;
@@ -90,8 +95,19 @@ public class ClientesServlet extends HttpServlet {
         if (c.getEtiqueta() != null && c.getEtiqueta().length() > 45) {
             errores.add("El identificador no puede pasar de 45 caracteres.");
         }
-        if (c.getCorreo() != null && (c.getCorreo().length() > 150 || !CORREO.matcher(c.getCorreo()).matches())) {
-            errores.add("El correo no tiene un formato válido.");
+        // Correo: formato siempre; si es nuevo o cambió, además dominio real y código de verificación
+        if (c.getCorreo() != null) {
+            Clientes previo = c.getIdCliente() > 0 ? dao.getClientes(c.getIdCliente()) : null;
+            boolean cambio = previo == null || previo.getCorreo() == null
+                    || !previo.getCorreo().trim().equalsIgnoreCase(c.getCorreo());
+            if (c.getCorreo().length() > 150) {
+                errores.add("El correo no puede pasar de 150 caracteres.");
+            } else if (cambio) {
+                String errorCorreo = VerificacionCorreo.errorAlGuardar(request.getSession(), c.getCorreo());
+                if (errorCorreo != null) errores.add(errorCorreo);
+            } else if (!ValidadorCorreo.sintaxisValida(c.getCorreo())) {
+                errores.add("El correo no tiene un formato válido.");
+            }
         }
         if (c.getTelefono() != null && !TELEFONO.matcher(c.getTelefono()).matches()) {
             errores.add("El teléfono solo puede tener números, espacios, + ( ) - (6 a 20 caracteres).");
@@ -107,6 +123,10 @@ public class ClientesServlet extends HttpServlet {
                     ? dao.crearClientes(c.getEtiqueta(), c.getNombre(), c.getCorreo(), c.getTelefono(), c.getEstado())
                     : dao.actualizarClientes(c.getIdCliente(), c.getEtiqueta(), c.getNombre(), c.getCorreo(), c.getTelefono(), c.getEstado());
             if (ok) {
+                if (c.getCorreo() != null) {
+                    VerificacionCorreo.olvidar(request.getSession(), c.getCorreo());
+                    if (esNuevo) NotificadorCorreos.clienteRegistrado(c.getNombre(), c.getCorreo(), c.getEstado());
+                }
                 response.sendRedirect(request.getContextPath() + "/ClientesServlet?ok=" + (esNuevo ? "creado" : "actualizado"));
                 return;
             }

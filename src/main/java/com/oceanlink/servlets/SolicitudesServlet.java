@@ -6,6 +6,7 @@ import com.oceanlink.beans.Solicitudes;
 import com.oceanlink.daos.ClientesDao;
 import com.oceanlink.daos.Landing_StationsDao;
 import com.oceanlink.daos.SolicitudesDao;
+import com.oceanlink.services.NotificadorCorreos;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -31,6 +32,7 @@ public class SolicitudesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
+        request.setAttribute("soloLectura", "ver".equals(action)); // action=ver: el mismo formulario de editar, pero solo para mirar
         SolicitudesDao dao = new SolicitudesDao();
 
         switch (action) {
@@ -40,6 +42,7 @@ public class SolicitudesServlet extends HttpServlet {
                 nueva.setFechaSolicitud(LocalDateTime.now().withSecond(0).withNano(0));
                 mostrarFormulario(request, response, nueva, "crear");
                 break;
+            case "ver":
             case "editar":
                 int id = leerId(request.getParameter("id"));
                 Solicitudes existente = id > 0 ? dao.obtenerSolicitudes(id) : null;
@@ -113,8 +116,16 @@ public class SolicitudesServlet extends HttpServlet {
         }
 
         if (errores.isEmpty()) {
+            // estado antes de guardar, para avisar por correo si cambia
+            Solicitudes antes = esNueva ? null : dao.obtenerSolicitudes(sol.getIdSolicitud());
+            String estadoAnterior = antes == null ? null : antes.getEstado();
             boolean ok = esNueva ? dao.crearSolicitudes(sol) : dao.actualizarSolicitudes(sol);
             if (ok) {
+                if (!esNueva) {
+                    NotificadorCorreos.solicitudCambioEstado(sol, estadoAnterior); // correo si cambió el estado
+                } else {
+                    NotificadorCorreos.solicitudRecibida(sol); // confirmación al cliente
+                }
                 response.sendRedirect(request.getContextPath() + "/SolicitudesServlet?ok=" + (esNueva ? "creado" : "actualizado"));
                 return;
             }
@@ -176,11 +187,12 @@ public class SolicitudesServlet extends HttpServlet {
             }
         }
 
-        LocalDateTime fecha = parsearFecha(request.getParameter("fechaSolicitud"));
-        sol.setFechaSolicitud(fecha);
-        if (fecha == null) {
-            errores.add("La fecha de solicitud es obligatoria y debe ser válida.");
-        }
+        // La fecha de solicitud NO se puede cambiar desde el formulario: al registrar es la de hoy
+        // y al editar se conserva la que ya tenía (cualquier valor enviado por el navegador se ignora).
+        Solicitudes existente = sol.getIdSolicitud() > 0 ? new SolicitudesDao().obtenerSolicitudes(sol.getIdSolicitud()) : null;
+        sol.setFechaSolicitud(existente != null && existente.getFechaSolicitud() != null
+                ? existente.getFechaSolicitud()
+                : LocalDateTime.now().withSecond(0).withNano(0));
 
         String estado = texto(request.getParameter("estado"));
         sol.setEstado(estado);

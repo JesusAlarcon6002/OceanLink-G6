@@ -16,6 +16,7 @@ const ICONS = {
   settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
   user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
   "log-out": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>',
+  bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>',
   menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>'
 };
 
@@ -27,25 +28,29 @@ const ROLE_MENUS = {
     items: [
       { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
       { id: "usuarios", icon: "users", label: "Usuarios", href: "UsuariosServlet" },
-      { id: "roles", icon: "shield-check", label: "Roles", href: "#" },
+      { id: "solicitudes-registro", icon: "users", label: "Solicitudes de registro", href: "SolicitudesRegistroServlet" },
+      { id: "roles", icon: "shield-check", label: "Roles y permisos", href: "RolesServlet" },
       { id: "stations", icon: "globe", label: "Stations", href: "EstacionesServlet" },
       { id: "segmentos", icon: "git-branch", label: "Segmentos", href: "SegmentosServlet" },
-      { id: "config", icon: "settings", label: "Configuración", href: "#" },
-      { id: "perfil", icon: "user", label: "Perfil", href: "#" }
+      { id: "dashboard", icon: "globe", label: "Dashboard", href: "DashboardServlet" },
+      { id: "reportes", icon: "shield-check", label: "Reportes", href: "ReportesServlet" },
+      { id: "comunicados", icon: "users", label: "Enviar comunicado", href: "ComunicadosServlet" },
+      { id: "correo", icon: "settings", label: "Registro de correos", href: "CorreoServlet" },
+      { id: "mensajes", icon: "bell", label: "Mensajes y avisos", href: "BandejaServlet" },
+      { id: "perfil", icon: "user", label: "Perfil", href: "PerfilServlet" }
     ]
   },
   "capacity-planner": {
     roleLabel: "Capacity Planner",
     items: [
       { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
-      { id: "capacidad", icon: "users", label: "Capacidad", href: "#" },
       { id: "solicitudes", icon: "shield-check", label: "Solicitudes", href: "SolicitudesServlet" },
       { id: "clientes", icon: "globe", label: "Clientes", href: "ClientesServlet" },
       { id: "servicios", icon: "git-branch", label: "Servicios", href: "ServiciosServlet" },
       { id: "rutas", icon: "git-branch", label: "Rutas", href: "RutasServlet" },
       { id: "historial", icon: "git-branch", label: "Historial de utilización", href: "HistorialServlet" },
-      { id: "config", icon: "settings", label: "Configuración", href: "#" },
-      { id: "perfil", icon: "user", label: "Perfil", href: "#" }
+      { id: "mensajes", icon: "bell", label: "Mensajes y avisos", href: "BandejaServlet" },
+      { id: "perfil", icon: "user", label: "Perfil", href: "PerfilServlet" }
     ]
   },
   supervisor: {
@@ -53,6 +58,8 @@ const ROLE_MENUS = {
     roleLabel: "Supervisor",
     items: [
       { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
+      { id: "dashboard", icon: "globe", label: "Dashboard", href: "DashboardServlet" },
+      { id: "reportes", icon: "shield-check", label: "Reportes", href: "ReportesServlet" },
       { id: "stations", icon: "globe", label: "Stations", href: "EstacionesServlet" },
       { id: "segmentos", icon: "git-branch", label: "Segmentos", href: "SegmentosServlet" },
       { id: "clientes", icon: "users", label: "Clientes", href: "ClientesServlet" },
@@ -61,8 +68,9 @@ const ROLE_MENUS = {
       { id: "servicios", icon: "git-branch", label: "Servicios", href: "ServiciosServlet" },
       { id: "historial", icon: "git-branch", label: "Historial de utilización", href: "HistorialServlet" },
       { id: "incidencias", icon: "shield-check", label: "Incidencias", href: "IncidenciasServlet" },
-      { id: "historial-mant", icon: "users", label: "Mantenimientos", href: "MantenimientosServlet" },
-      { id: "perfil", icon: "user", label: "Perfil", href: "#" }
+      { id: "mantenimientos", icon: "users", label: "Mantenimientos", href: "MantenimientosServlet" },
+      { id: "mensajes", icon: "bell", label: "Mensajes y avisos", href: "BandejaServlet" },
+      { id: "perfil", icon: "user", label: "Perfil", href: "PerfilServlet" }
     ]
   },
   "network-operator": {
@@ -72,18 +80,23 @@ const ROLE_MENUS = {
     items: [
       { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
       { id: "incidencias", icon: "shield-check", label: "Incidencias", href: "IncidenciasServlet" },
-      { id: "historial-incidencias", icon: "globe", label: "Historial de incidencias", href: "#" },
-      { id: "config", icon: "settings", label: "Configuración", href: "#" },
-      { id: "perfil", icon: "user", label: "Perfil", href: "#" }
+      { id: "historial-incidencias", icon: "globe", label: "Historial de incidencias", href: "IncidenciasServlet?action=historial" },
+      { id: "dashboard", icon: "globe", label: "Dashboard de la red", href: "DashboardServlet" },
+      { id: "reportes", icon: "shield-check", label: "Reportes de incidencias", href: "ReportesServlet" },
+      { id: "mensajes", icon: "bell", label: "Mensajes y avisos", href: "BandejaServlet" },
+      { id: "perfil", icon: "user", label: "Perfil", href: "PerfilServlet" }
     ]
   },
   "maintenance-coordinator": {
+    // Mantenimientos (completo), historial de finalizados (solo lectura) e incidencias (solo lectura, para decidir dónde aplicar mantenimiento)
     roleLabel: "Maintenance Coord.",
     items: [
       { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
-      { id: "historial-mant", icon: "users", label: "Historial de mantenimientos", href: "MantenimientosServlet" },
-      { id: "config", icon: "settings", label: "Configuración", href: "#" },
-      { id: "perfil", icon: "user", label: "Perfil", href: "#" }
+      { id: "mantenimientos", icon: "users", label: "Mantenimientos", href: "MantenimientosServlet" },
+      { id: "historial-mant", icon: "globe", label: "Historial de mantenimientos", href: "MantenimientosServlet?action=historial" },
+      { id: "historial-incidencias", icon: "shield-check", label: "Incidencias (consulta)", href: "IncidenciasServlet?action=historial" },
+      { id: "mensajes", icon: "bell", label: "Mensajes y avisos", href: "BandejaServlet" },
+      { id: "perfil", icon: "user", label: "Perfil", href: "PerfilServlet" }
     ]
   }
 };
@@ -164,13 +177,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const headerToggle = document.getElementById("header-menu-toggle");
   const sidebarEl = document.getElementById("oceanlink-sidebar");
   if (headerToggle && sidebarEl) {
-    headerToggle.addEventListener("click", () => {
+    // En celular/tablet el menú es un panel que empieza cerrado. En pantalla grande empieza abierto,
+    // salvo que la persona haya marcado "Ocultar el menú lateral al entrar" en Configuración.
+    const esMovil = () => window.matchMedia("(max-width: 900px)").matches;
+    let ocultoPorPreferencia = false;
+    try { ocultoPorPreferencia = localStorage.getItem("ol_menu_oculto") === "1"; } catch (e) { /* sin almacenamiento: se ignora */ }
+    if (esMovil() || ocultoPorPreferencia) sidebarEl.classList.add("collapsed");
+
+    headerToggle.addEventListener("click", (ev) => {
+      ev.stopPropagation();
       sidebarEl.classList.toggle("collapsed");
+    });
+    // en celular, tocar fuera del panel lo cierra
+    document.addEventListener("click", (ev) => {
+      if (esMovil() && !sidebarEl.classList.contains("collapsed") && !sidebarEl.contains(ev.target)) {
+        sidebarEl.classList.add("collapsed");
+      }
     });
   }
 });
 
-// Supervisor (solo lectura): quitamos la columna ACCIONES, que queda vacía
+// Supervisor (solo lectura): en la columna ACCIONES solo deja el botón "Ver"; Editar, Borrar y demás se ocultan.
+// Si una fila no tiene "Ver" (ej. módulos sin detalle), se oculta la celda completa.
 document.addEventListener("DOMContentLoaded", () => {
   if (!document.body.classList.contains("solo-lectura")) return;
   document.querySelectorAll("table").forEach(t => {
@@ -179,7 +207,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (idx < 0) return;
     t.querySelectorAll("tr").forEach(tr => {
       const c = tr.children[idx];
-      if (c && tr.children.length === ths.length) c.style.display = "none";
+      if (!c || tr.children.length !== ths.length) return;
+      const ver = c.querySelector(".btn-ver");
+      if (!ver) { c.style.display = "none"; return; }
+      c.querySelectorAll(".acciones-fila > *").forEach(el => { if (!el.classList.contains("btn-ver")) el.style.display = "none"; });
     });
+    // si ninguna fila tiene "Ver", se oculta también el encabezado de la columna
+    if (!t.querySelector(".btn-ver")) ths[idx].style.display = "none";
   });
 });

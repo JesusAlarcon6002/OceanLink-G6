@@ -2,6 +2,7 @@
 <%@ page import="java.text.DecimalFormat" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.oceanlink.beans.Historial" %>
+<%@ page import="com.oceanlink.beans.Segmentos" %>
 <%@ page import="com.oceanlink.util.Html" %>
 <%
     // Lo manda HistorialServlet. Solo lectura: las filas las escribe el sistema al reservar, liberar o cambiar un servicio.
@@ -12,6 +13,11 @@
     String ctx = request.getContextPath();
     DecimalFormat gbps = new DecimalFormat("+#,##0.##;-#,##0.##");
     DecimalFormat num = new DecimalFormat("#,##0.##");
+    ArrayList<Segmentos> listaSegmentos = (ArrayList<Segmentos>) request.getAttribute("listaSegmentos");
+    int fSegmento = request.getAttribute("fSegmento") == null ? 0 : (Integer) request.getAttribute("fSegmento");
+    String fDesde = request.getAttribute("fDesde") == null ? "" : (String) request.getAttribute("fDesde");
+    String fHasta = request.getAttribute("fHasta") == null ? "" : (String) request.getAttribute("fHasta");
+    String errorFiltro = (String) request.getAttribute("errorFiltro");
 %>
 <jsp:include page="/WEB-INF/includes/inicio.jsp">
     <jsp:param name="titulo" value="Historial de utilización"/>
@@ -22,6 +28,19 @@
 </jsp:include>
 
         <div class="form-panel-dark" style="min-height:auto;">
+          <form method="get" action="<%=ctx%>/HistorialServlet" class="panel-toolbar" style="gap:10px;flex-wrap:wrap;">
+            <select class="filter-select" name="segmento" aria-label="Segmento">
+              <option value="0">Todos los segmentos</option>
+              <% if (listaSegmentos != null) for (Segmentos sg : listaSegmentos) { %>
+              <option value="<%=sg.getIdSegmento()%>" <%= sg.getIdSegmento() == fSegmento ? "selected" : "" %>><%=Html.esc(sg.getEtiquetaSegmento())%></option>
+              <% } %>
+            </select>
+            <label style="color:#cbd5e1;font-size:13px;">Desde <input class="search-input" type="date" name="desde" value="<%=Html.esc(fDesde)%>" style="width:auto;"></label>
+            <label style="color:#cbd5e1;font-size:13px;">Hasta <input class="search-input" type="date" name="hasta" value="<%=Html.esc(fHasta)%>" style="width:auto;"></label>
+            <button type="submit" class="btn-edit-white">Consultar</button>
+            <a class="btn-edit-white" href="<%=ctx%>/HistorialServlet" style="text-decoration:none;">Limpiar</a>
+          </form>
+          <% if (errorFiltro != null) { %><p class="msg msg-error"><%=Html.esc(errorFiltro)%></p><% } %>
           <div class="panel-toolbar">
             <input class="search-input" type="text" id="buscar" placeholder="Buscar segmento, solicitud o servicio...">
             <select class="filter-select" id="filtro">

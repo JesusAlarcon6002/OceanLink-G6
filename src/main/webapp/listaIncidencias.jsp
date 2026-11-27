@@ -9,32 +9,34 @@
         listaIncidencias = new ArrayList<>();
     }
     String ctx = request.getContextPath();
+    // action=historial (Network Operator): la misma lista, pero solo para consultar (sin registrar, editar ni borrar)
+    boolean historial = Boolean.TRUE.equals(request.getAttribute("modoHistorial"));
 
     String ok = request.getParameter("ok");
     String err = request.getParameter("err");
     String mensajeOk = null;
     if ("creado".equals(ok)) mensajeOk = "Incidencia registrada correctamente.";
     else if ("actualizado".equals(ok)) mensajeOk = "Incidencia actualizada correctamente.";
-    else if ("borrado".equals(ok)) mensajeOk = "Incidencia eliminada.";
+    else if ("borrado".equals(ok)) mensajeOk = "Incidencia desactivada.";
 %>
 <jsp:include page="/WEB-INF/includes/inicio.jsp">
-    <jsp:param name="titulo" value="Incidencias"/>
-    <jsp:param name="encabezado" value="INCIDENCIAS"/>
-    <jsp:param name="subtitulo" value="Incidencias de la red"/>
+    <jsp:param name="titulo" value='<%= historial ? "Historial de incidencias" : "Incidencias" %>'/>
+    <jsp:param name="encabezado" value='<%= historial ? "HISTORIAL DE INCIDENCIAS" : "INCIDENCIAS" %>'/>
+    <jsp:param name="subtitulo" value='<%= historial ? "Consulta de todas las incidencias (solo lectura)" : "Incidencias de la red" %>'/>
     <jsp:param name="rol" value="network-operator"/>
-    <jsp:param name="activo" value="incidencias"/>
+    <jsp:param name="activo" value='<%= historial ? "historial-incidencias" : "incidencias" %>'/>
 </jsp:include>
 
         <div class="form-panel-dark" style="min-height:auto;">
           <div class="infra-header">
-            <h2>INCIDENCIAS</h2>
+            <h2><%= historial ? "HISTORIAL DE INCIDENCIAS" : "INCIDENCIAS" %></h2>
           </div>
 
           <% if (mensajeOk != null) { %>
           <p class="msg msg-ok"><%=mensajeOk%></p>
           <% } %>
           <% if ("borrar".equals(err)) { %>
-          <p class="msg msg-error">No se pudo eliminar la incidencia.</p>
+          <p class="msg msg-error">No se pudo desactivar la incidencia.</p>
           <% } %>
 
           <div class="panel-toolbar">
@@ -56,7 +58,9 @@
                 <option value="estado:Cerrada">Cerrada</option>
               </optgroup>
             </select>
+            <% if (!historial) { %>
             <a class="btn-register-toolbar" href="<%=ctx%>/IncidenciasServlet?action=formCrear" style="text-decoration:none;">REGISTRAR INCIDENCIA</a>
+            <% } %>
           </div>
 
           <div class="dark-table-wrap">
@@ -82,12 +86,17 @@
                   <td><span class="badge <%=claseEstado%>"><%=Html.esc(Incidencias.textoVisible(inc.getEstado()))%></span></td>
                   <td>
                     <div class="acciones-fila">
+                      <a class="btn-edit-white btn-ver" href="<%=ctx%>/IncidenciasServlet?action=ver&id=<%=inc.getIdIncidencia()%>">Ver</a>
+                      <% if (!historial) { %>
                       <a class="btn-edit-white" href="<%=ctx%>/IncidenciasServlet?action=editar&id=<%=inc.getIdIncidencia()%>">Editar</a>
+                      <% } %>
+                      <% if (!historial && !"Cerrada".equals(inc.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/IncidenciasServlet?action=borrar"
-                            onsubmit="return confirm('¿Seguro que quieres eliminar esta incidencia?');">
+                            data-confirmar="¿Seguro que quieres desactivar esta incidencia?" data-confirmar-btn="Desactivar" data-confirmar-titulo="Desactivar incidencia">
                         <input type="hidden" name="id" value="<%=inc.getIdIncidencia()%>">
                         <button type="submit" class="btn-delete-red">Borrar</button>
                       </form>
+                      <% } %>
                     </div>
                   </td>
                 </tr>

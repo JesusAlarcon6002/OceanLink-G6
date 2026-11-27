@@ -13,8 +13,10 @@ import java.util.Properties;
  * DAO base (clase abstracta): único lugar donde se abre la conexión a MySQL.
  * Todos los demás DAO heredan de esta clase (extends DaoBase) y usan getConnection().
  * No se puede instanciar con new: solo sirve para que la hereden los DAO hijos.
- * La URL, el usuario y la contraseña se leen de src/main/resources/db.properties,
- * un archivo LOCAL que cada integrante crea en su PC (no se sube a Git).
+ * La URL, el usuario y la contraseña se leen, en este orden de prioridad, de:
+ *   1) las variables de entorno DB_URL, DB_USER y DB_PASSWORD (así se configura el servidor en AWS, sin
+ *      meter claves dentro del .war), o
+ *   2) src/main/resources/db.properties, un archivo LOCAL que cada integrante crea en su PC (no se sube a Git).
  * Plantilla: src/main/resources/db.properties.example
  */
 public abstract class DaoBase {
@@ -36,11 +38,22 @@ public abstract class DaoBase {
         return p;
     }
 
+    /** Valor de una variable de entorno si existe y no está vacía; si no, el valor por defecto. */
+    private static String entorno(String nombre, String porDefecto) {
+        String v = System.getenv(nombre);
+        return v == null || v.trim().isEmpty() ? porDefecto : v.trim();
+    }
+
     protected Connection getConnection() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        String url = CONFIG.getProperty("db.url", "jdbc:mysql://localhost:3306/proyecto_siete");
-        String user = CONFIG.getProperty("db.user", "root");
-        String pass = CONFIG.getProperty("db.password", "");
+        // la contraseña depende de dónde se ejecuta el proyecto: PC local (db.properties) o servidor (variables de entorno)
+        String url = entorno("DB_URL", CONFIG.getProperty("db.url", "jdbc:mysql://localhost:3306/proyecto_siete"));
+        String user = entorno("DB_USER", CONFIG.getProperty("db.user", "root"));
+        String pass = entorno("DB_PASSWORD", CONFIG.getProperty("db.password", ""));
+        // tildes y "ñ": la conexión siempre va en UTF-8, aunque la URL no lo diga
+        if (!url.contains("characterEncoding")) {
+            url += (url.contains("?") ? "&" : "?") + "characterEncoding=UTF-8";
+        }
         return DriverManager.getConnection(url, user, pass);
     }
 }

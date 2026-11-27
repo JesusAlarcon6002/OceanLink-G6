@@ -83,13 +83,10 @@ public class ClientesDao extends DaoBase {
         }
     }
 
-    /**
-     * @return true si se borró. Falla (false) si el cliente tiene servicios o
-     * solicitudes de capacidad, porque esas FK son ON DELETE RESTRICT.
-     */
+    /** Borrado lógico: el cliente pasa a "Inactivo" (no se elimina de la BD, conserva su historial). */
     public boolean borrarClientes(int idCliente) {
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement("DELETE FROM clientes WHERE id_clientes = ?")) {
+             PreparedStatement pstmt = conn.prepareStatement("UPDATE clientes SET estado = 'Inactivo' WHERE id_clientes = ?")) {
             pstmt.setInt(1, idCliente);
             return pstmt.executeUpdate() > 0;
         } catch (ClassNotFoundException | SQLException e) {

@@ -4,6 +4,7 @@ import com.oceanlink.beans.Incidencias;
 import com.oceanlink.daos.IncidenciasDao;
 import com.oceanlink.daos.Landing_StationsDao;
 import com.oceanlink.daos.SegmentosDao;
+import com.oceanlink.services.NotificadorCorreos;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -31,6 +32,14 @@ public class IncidenciasServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
+        // El Maintenance Coordinator solo consulta incidencias: la lista normal (con registrar/editar/borrar)
+        // se cambia por el historial de solo lectura, venga de la pantalla de inicio, del menú o de un enlace directo.
+        com.oceanlink.beans.UsuarioSesion sesion = request.getSession(false) == null ? null
+                : (com.oceanlink.beans.UsuarioSesion) request.getSession(false).getAttribute("usuario");
+        if (sesion != null && sesion.getRol() == com.oceanlink.util.Rol.MAINTENANCE_COORDINATOR && "lista".equals(action)) {
+            action = "historial";
+        }
+        request.setAttribute("soloLectura", "ver".equals(action)); // action=ver: el mismo formulario de editar, pero solo para mirar
         IncidenciasDao dao = new IncidenciasDao();
 
         switch (action) {
@@ -41,6 +50,7 @@ public class IncidenciasServlet extends HttpServlet {
                 nueva.setFechaDeteccion(LocalDateTime.now().withSecond(0).withNano(0));
                 mostrarFormulario(request, response, nueva, "crear");
                 break;
+            case "ver":
             case "editar":
                 int id = leerId(request.getParameter("id"));
                 Incidencias existente = id > 0 ? dao.obtenerIncidencias(id) : null;
@@ -49,6 +59,12 @@ public class IncidenciasServlet extends HttpServlet {
                 } else {
                     mostrarFormulario(request, response, existente, "editar");
                 }
+                break;
+            case "historial":
+                // Historial de incidencias: la misma lista, pero solo para consultar (sin registrar, editar ni borrar)
+                request.setAttribute("modoHistorial", Boolean.TRUE);
+                request.setAttribute("listaIncidencias", dao.obtenerListaIncidencias());
+                request.getRequestDispatcher("listaIncidencias.jsp").forward(request, response);
                 break;
             case "lista":
             default:
@@ -88,10 +104,17 @@ public class IncidenciasServlet extends HttpServlet {
         }
 
         boolean esNueva = inc.getIdIncidencia() == 0;
+        Incidencias antes = esNueva ? null : dao.obtenerIncidencias(inc.getIdIncidencia());
+        String estadoAnterior = antes == null ? null : antes.getEstado();
 
         if (errores.isEmpty()) {
             boolean ok = esNueva ? dao.crearIncidencias(inc) : dao.actualizarIncidencias(inc);
             if (ok) {
+                if (esNueva) {
+                    NotificadorCorreos.incidenciaRegistrada(inc); // correo: incidencia registrada
+                } else {
+                    NotificadorCorreos.incidenciaResuelta(inc, estadoAnterior); // correo a clientes: servicio restablecido
+                }
                 response.sendRedirect(request.getContextPath() + "/IncidenciasServlet?ok=" + (esNueva ? "creado" : "actualizado"));
                 return;
             }

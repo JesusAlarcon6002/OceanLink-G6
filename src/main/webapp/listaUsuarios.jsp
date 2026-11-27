@@ -36,7 +36,7 @@
               <option value="rol:<%=Html.esc(rol)%>"><%=Html.esc(rol)%></option>
               <% } %>
             </select>
-            <a class="btn-register-toolbar" href="<%=ctx%>/UsuariosServlet?action=formCrear" style="text-decoration:none;">REGISTRAR USUARIO</a>
+            <a class="btn-register-toolbar" href="<%=ctx%>/SolicitudesRegistroServlet" style="text-decoration:none;">SOLICITUDES DE REGISTRO</a>
           </div>
 
           <div class="dark-table-wrap">
@@ -60,12 +60,15 @@
                   <td><span class="badge <%=claseEstado%>"><%=Html.esc(usr.getEstado())%></span></td>
                   <td>
                     <div class="acciones-fila">
+                      <a class="btn-edit-white btn-ver" href="<%=ctx%>/UsuariosServlet?action=ver&id=<%=usr.getIdUsuario()%>">Ver</a>
                       <a class="btn-edit-white" href="<%=ctx%>/UsuariosServlet?action=editar&id=<%=usr.getIdUsuario()%>">Editar</a>
+                      <% if (!"Inactivo".equals(usr.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/UsuariosServlet?action=borrar"
-                            onsubmit="return confirm('¿Seguro que quieres eliminar este usuario?');">
+                            data-confirmar="¿Seguro que quieres desactivar este usuario?" data-confirmar-btn="Desactivar" data-confirmar-titulo="Desactivar usuario">
                         <input type="hidden" name="id" value="<%=usr.getIdUsuario()%>">
                         <button type="submit" class="btn-delete-red">Borrar</button>
                       </form>
+                      <% } %>
                     </div>
                   </td>
                 </tr>

@@ -57,13 +57,39 @@
 .acciones-fila .btn-edit-white { padding: 4px 16px; min-width: 0; }
 .acciones-fila .btn-delete-red { padding: 4px 12px; font-size: 13px; font-weight: 500; border-radius: 4px; }
 
+/* Botones de acción alineados: cada botón ocupa su propio casillero de ancho fijo
+   (Ver | Editar | Borrar), así quedan en columna aunque a una fila le falte "Borrar". */
+.acciones-fila { display: grid; grid-template-columns: 52px 68px 72px; gap: 8px; justify-content: center; align-items: center; }
+.acciones-fila:has(a[href*="ReservasServlet"]) { grid-template-columns: 52px 68px 92px 72px; }
+.acciones-fila > a, .acciones-fila > form { grid-row: 1; min-width: 0; }
+/* Si la fila solo tiene "Ver" (historiales de solo lectura), un solo casillero centrado bajo el encabezado */
+.acciones-fila:not(:has(a:not(.btn-ver))):not(:has(form)) { grid-template-columns: 52px; }
+/* Aprobar / Rechazar (Solicitudes de registro): campo a la izquierda y botón del mismo ancho en ambas filas */
+form.fila-inline { display: grid; grid-template-columns: minmax(130px, 1fr) 96px; gap: 8px; align-items: center; }
+form.fila-inline .btn-edit-white, form.fila-inline .btn-delete-red { display: block; width: 100%; box-sizing: border-box; text-align: center; padding: 6px 0; white-space: nowrap; }
+form.fila-inline select, form.fila-inline input[type="text"] { width: 100%; box-sizing: border-box; min-width: 0; }
+.acciones-fila .btn-edit-white, .acciones-fila .btn-delete-red {
+  display: block; width: 100%; box-sizing: border-box; text-align: center; padding: 4px 0; line-height: 1.5; white-space: nowrap;
+}
+
 /* Celdas un poco más angostas: así caben Editar + Borrar sin que la tabla haga scroll */
 .dark-table-wrap th,
 .dark-table-wrap td { padding-left: 8px; padding-right: 8px; }
 
 /* ---- Rutas: filas de segmentos y botones pequeños ---- */
 .fila-seg { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
-.fila-seg select { flex: 1; min-width: 0; }
+.fila-seg select {
+  flex: 1; min-width: 0; padding: 8px 32px 8px 12px; box-sizing: border-box;
+  background-color: rgba(30, 58, 95, 0.45); color: #e2e8f0;
+  border: 1px solid rgba(147, 197, 253, 0.45); border-radius: 4px;
+  font-size: 13px; font-family: inherit; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%2393c5fd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat; background-position: right 12px center;
+}
+.fila-seg select:hover { border-color: #38bdf8; }
+.fila-seg select:focus { outline: 2px solid #38bdf8; outline-offset: 0; }
+.fila-seg select option { background: #1b2a3a; color: #e2e8f0; }
 .btn-mini {
   background: #1e3a5f; color: #93c5fd; border: 1px solid rgba(59,130,246,0.6); border-radius: 6px;
   padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
@@ -104,3 +130,206 @@ body.pagina-login { background: linear-gradient(180deg, #0a1628 0%, #0d1f38 100%
 .sidebar .nav-list { overflow-y: auto; min-height: 0; scrollbar-width: thin; scrollbar-color: #1e3a5f transparent; }
 .sidebar .sidebar-bottom { flex: 0 0 auto; }
 .sidebar .brand-lockup { flex: 0 0 auto; }
+
+/* ===== Dashboard (KPIs y gráficos) ===== */
+.dash-col { flex: 1; min-width: 0; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px; margin-bottom: 14px; }
+.kpi-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 14px 16px; }
+.kpi-card.kpi-alerta { border-color: rgba(248, 113, 113, 0.6); }
+.kpi-num { margin: 0; font-size: 26px; font-weight: 700; color: #fff; }
+.kpi-num small { font-size: 13px; font-weight: 500; color: #94a3b8; }
+.kpi-lbl { margin: 2px 0 0; font-size: 13px; color: #c9d4e3; }
+.kpi-sub { margin: 4px 0 0; font-size: 12px; color: #94a3b8; }
+.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 14px; margin-bottom: 14px; }
+.chart-grid > .form-panel-dark { min-width: 0; }
+.chart-box { position: relative; height: 240px; }
+.chart-nota { margin: 8px 0 0; font-size: 12px; color: #94a3b8; }
+
+/* ===== Reportes ===== */
+.rep-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.rep-tab { padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.45); color: #93c5fd; text-decoration: none; font-size: 13px; }
+.rep-tab.activa { background: #1e3a5f; color: #fff; }
+.rep-filtros { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 12px; }
+.rep-filtros label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #c9d4e3; }
+.rep-filtros select, .rep-filtros input[type=date] { background: #0b1220; color: #fff; border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 6px; padding: 6px 8px; font-size: 13px; }
+.chart-grid > .chart-panel { min-height: auto; }
+
+/* ===== Ventana de confirmación (confirmar.js) ===== */
+.ol-modal-overlay { position: fixed; inset: 0; z-index: 9999; display: none; align-items: center; justify-content: center;
+  background: rgba(5, 12, 24, 0.72); backdrop-filter: blur(2px); padding: 16px; }
+.ol-modal-overlay.ol-abierto { display: flex; }
+.ol-modal { width: 100%; max-width: 420px; background: linear-gradient(180deg, #0f2038 0%, #0a1628 100%);
+  border: 1px solid rgba(147, 197, 253, 0.28); border-radius: 12px; padding: 26px 26px 22px; text-align: center;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55); font-family: inherit; }
+.ol-modal-icono { width: 44px; height: 44px; margin: 0 auto 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 700; color: #fca5a5; background: rgba(248, 113, 113, 0.12); border: 1px solid rgba(248, 113, 113, 0.5); }
+.ol-modal-titulo { margin: 0 0 8px; color: #fff; font-size: 16px; font-weight: 700; letter-spacing: 0.3px; }
+.ol-modal-texto { margin: 0 0 20px; color: #c9d4e3; font-size: 14px; line-height: 1.5; }
+.ol-modal-acciones { display: flex; gap: 12px; justify-content: center; }
+.ol-modal-acciones button { min-width: 120px; padding: 10px 20px; font-size: 12px; font-weight: 600; border-radius: 8px; cursor: pointer; font-family: inherit; }
+.ol-modal-ok { background: #3a1a1a; border: 1px solid rgba(248, 113, 113, 0.6); color: #fecaca; }
+.ol-modal-ok:hover { background: rgba(248, 113, 113, 0.25); }
+.ol-modal-cancelar:hover { background: rgba(147, 197, 253, 0.15); }
+.ol-modal-acciones button:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
+
+.ol-modal.ol-normal .ol-modal-icono { color: #93c5fd; background: rgba(59, 130, 246, 0.14); border-color: rgba(96, 165, 250, 0.55); }
+.ol-modal.ol-normal .ol-modal-ok { background: #172a1f; border-color: rgba(74, 222, 128, 0.45); color: #86efac; }
+.ol-modal.ol-normal .ol-modal-ok:hover { background: rgba(74, 222, 128, 0.18); }
+
+/* ---- Verificación de correo (assets/js/verificar-correo.js) ---- */
+.vc-caja { margin-top: 8px; }
+.vc-caja[hidden], .vc-codigo[hidden] { display: none; }
+.vc-fila { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.vc-codigo { display: inline-flex; gap: 8px; align-items: center; }
+.vc-input { width: 110px; letter-spacing: 4px; text-align: center; font-weight: 700; }
+.vc-btn { background: transparent; color: #7dd3fc; border: 1px solid rgba(125, 211, 252, 0.55); border-radius: 6px;
+          padding: 7px 12px; font-size: 12px; font-weight: 700; letter-spacing: .5px; cursor: pointer; }
+.vc-btn:hover:not(:disabled) { background: rgba(125, 211, 252, 0.12); }
+.vc-btn:disabled { opacity: .5; cursor: wait; }
+.vc-estado { margin-top: 6px; font-size: 12px; min-height: 16px; }
+.vc-estado.vc-ok { color: #6ee7b7; }
+.vc-estado.vc-error { color: #fca5a5; }
+.vc-estado.vc-info { color: #cbd5e1; }
+
+/* ---- Radios y casillas dentro de formularios (comunicados) ---- */
+.form-field label > input[type="radio"], .form-field label > input[type="checkbox"] { width: auto; margin-right: 8px; accent-color: #38bdf8; }
+.form-field label:has(> input[type="radio"]), .form-field label:has(> input[type="checkbox"]) { display: block; text-transform: none; letter-spacing: 0; font-weight: 500; margin: 8px 0 4px; }
+
+/* ---- Campana, bandeja y pantallas públicas (recuperar contraseña / registro) ---- */
+.campana-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.campana-num { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
+  background: #ef4444; color: #fff; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center; box-sizing: border-box; }
+.campana-num[hidden] { display: none; }
+.login-links { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; text-align: center; font-size: 13px; }
+.login-links a { color: #93c5fd; text-decoration: none; }
+.login-links a:hover { text-decoration: underline; }
+.login-card .login-btn-sec { background: transparent; }
+.login-card small { color: #94a3b8; font-size: 12px; }
+.aviso-no-leida td:first-child { border-left: 3px solid #3b82f6; }
+.aviso-no-leida { font-weight: 600; }
+.aviso-texto { white-space: pre-wrap; font-weight: 400; color: #cbd5e1; margin-top: 4px; }
+.fila-inline { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+
+/* ============================================
+   Roles y permisos: chips por módulo
+   ============================================ */
+.tabla-roles th, .tabla-roles td { text-align: left; white-space: normal; vertical-align: top; padding: 12px 10px; }
+.tabla-roles th { font-size: 13px; letter-spacing: .6px; color: #a0b8d8; }
+.tabla-roles td.rol-nombre { white-space: nowrap; font-size: 14px; }
+.tabla-roles td.rol-usuarios { width: 1%; white-space: nowrap; }
+.tabla-roles td.rol-chips { line-height: 2; min-width: 220px; }
+.rol-num { display: inline-block; min-width: 28px; padding: 2px 10px; text-align: center; border-radius: 999px;
+  background: #1e3a5f; border: 1px solid rgba(59,130,246,.6); color: #93c5fd; font-weight: 700; font-size: 13px; }
+.chip { display: inline-block; margin: 2px 4px 2px 0; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; line-height: 1.5; border: 1px solid; }
+.chip-completo { background: #172a1f; border-color: rgba(74,222,128,.4); color: #86efac; }
+.chip-lectura { background: rgba(30,58,95,.45); border-color: rgba(147,197,253,.4); color: #93c5fd; }
+
+/* ============================================
+   Perfil y Configuración
+   ============================================ */
+/* Perfil: 4 paneles en 2 columnas (1 en pantallas chicas) en vez de 4 apretados en una fila */
+.perfil-grid { flex: 1 1 100%; min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.perfil-grid > .form-panel-dark { min-width: 0; }
+.perfil-grid .form-grid-2 { gap: 16px; }
+.perfil-grid .form-grid-2.una-columna { grid-template-columns: 1fr; }
+.perfil-grid .campo-ancho { grid-column: 1 / -1; }
+.perfil-grid .form-field label { display: block; min-height: 16px; }
+.perfil-grid .form-field input[type="text"], .perfil-grid .form-field input[type="password"], .perfil-grid .form-field input[type="tel"] { width: 100%; box-sizing: border-box; text-overflow: ellipsis; }
+@media (max-width: 1100px) { .perfil-grid { grid-template-columns: 1fr; } }
+.perfil-cabecera { display: flex; align-items: center; gap: 14px; padding-bottom: 6px; }
+.perfil-avatar { width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #38bdf8, #0b1528); color: #fff; font-size: 24px; font-weight: 700; border: 1px solid rgba(255,255,255,.3); }
+.perfil-nombre { margin: 0 0 4px; color: #fff; font-size: 20px; }
+.perfil-rol { display: inline-block; padding: 2px 10px; border-radius: 999px; background: #1e3a5f; border: 1px solid rgba(59,130,246,.6); color: #93c5fd; font-size: 12px; font-weight: 700; }
+.seccion-titulo { margin: 0; color: #fff; font-size: 16px; font-weight: 700; }
+.form-field input:disabled { opacity: .6; cursor: not-allowed; }
+.pref-fila { display: flex; gap: 12px; align-items: flex-start; color: #e2e8f0; font-size: 14px; cursor: pointer; }
+.pref-fila input { width: 18px; height: 18px; margin-top: 2px; accent-color: #38bdf8; flex-shrink: 0; }
+.pref-fila small { color: #a0b8d8; font-size: 12px; }
+
+/* ============================================
+   MÓVIL Y TABLET (hasta 900px)
+   El menú lateral pasa a ser un panel que se abre con el botón de las tres rayas.
+   ============================================ */
+@media (max-width: 900px) {
+  .app-shell { height: 100vh; height: 100dvh; }
+  .dark-dashboard { height: 100%; }
+
+  #sidebar-mount { position: fixed; top: 0; right: 0; bottom: 0; z-index: 1000; overflow: visible; pointer-events: none; }
+  .sidebar { pointer-events: auto; height: 100%; width: 280px; min-width: 0; max-width: 86vw;
+    margin-right: 0 !important; transition: transform .25s ease; box-shadow: -10px 0 30px rgba(0,0,0,.55); }
+  .sidebar.collapsed { transform: translateX(110%); box-shadow: none; }
+  .nav-item { padding: 13px 14px; }
+
+  .dark-content { padding: 0 12px 10px; gap: 12px; }
+  .dark-scroll-area { padding-top: 14px; gap: 14px; }
+  .dark-header h1 { font-size: 20px; }
+  .dark-header p { font-size: 12px; }
+  .header-actions { gap: 4px; }
+  .header-icon-btn { width: 42px; height: 42px; }
+
+  .middle-row { flex-direction: column; gap: 12px; }
+  .quick-actions { width: 100%; }
+  .form-panel-dark { padding: 14px; min-height: auto; gap: 14px; }
+  .form-grid-2 { grid-template-columns: 1fr; gap: 14px; }
+  .form-field:empty { display: none; }
+  .form-body { flex-direction: column; }
+  .info-card-dark { width: 100%; }
+  .info-display-grid { grid-template-columns: 1fr; max-width: none; }
+  .form-field input, .form-field select, .form-field textarea { font-size: 16px; padding: 11px 12px; }
+  .form-actions { flex-wrap: wrap; }
+  .btn-form-save, .btn-form-cancel, .btn-approve, .btn-reject, .btn-pending { flex: 1 1 140px; text-align: center; padding: 12px 16px; }
+
+  .panel-toolbar { gap: 10px; }
+  .search-input, .filter-select { width: 100%; height: 38px; font-size: 14px; }
+  .btn-register-toolbar { width: 100%; text-align: center; }
+  .rep-filtros { align-items: stretch; }
+  .rep-filtros label, .rep-filtros select, .rep-filtros input[type=date] { width: 100%; }
+
+  .seg-grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-row-dark .stat-card-dark { min-width: 140px; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .chart-box { height: 220px; }
+
+  /* el resumen de abajo se compacta: 3 datos en una fila, sin iconos */
+  .summary-row { padding: 10px 12px; gap: 8px; }
+  .summary-divider, .summary-icon { display: none; }
+  .summary-item { flex-direction: column; align-items: flex-start; gap: 0; min-width: 0; }
+  .summary-text .num { font-size: 16px; }
+  .summary-text .lbl { font-size: 10px; }
+
+  /* tablas: más cómodas de deslizar; los botones de cada fila, más grandes para el dedo */
+  .dark-table-wrap { -webkit-overflow-scrolling: touch; }
+  .acciones-fila .btn-edit-white, .acciones-fila .btn-delete-red { padding: 8px 0; }
+
+  /* Roles y permisos: cada rol se vuelve una tarjeta */
+  .tabla-roles thead { display: none; }
+  .tabla-roles, .tabla-roles tbody, .tabla-roles tr, .tabla-roles td { display: block; width: 100%; }
+  .tabla-roles tr { border: 1px solid rgba(255,255,255,.15); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; background: rgba(255,255,255,.04); }
+  .tabla-roles tr:last-child td { border-bottom: none; }
+  .tabla-roles td { border: none !important; padding: 6px 0 !important; min-width: 0 !important; width: 100% !important; white-space: normal !important; }
+  .tabla-roles td.rol-nombre { font-size: 16px; }
+  .tabla-roles td[data-label]::before { content: attr(data-label); display: block; color: #a0b8d8; font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 2px; }
+  .tabla-roles td.rol-nombre::before { display: none; }
+
+  .ol-modal-acciones { flex-direction: column; }
+  .ol-modal-acciones button { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .dark-header h1 { font-size: 18px; }
+  .perfil-nombre { font-size: 18px; }
+}
+
+/* Pantallas bajas (laptops chicas) y celulares: el menú se compacta para que quepan todas las opciones
+   (con 13 opciones, "Mensajes y avisos" y "Perfil" quedaban escondidas abajo) */
+@media (max-height: 860px), (max-width: 900px) {
+  .sidebar { padding: 16px 14px; }
+  .brand-lockup { margin-bottom: 14px; }
+  .brand-logo { width: 44px; height: 44px; }
+  .nav-list { gap: 2px; }
+  .nav-item { padding: 8px 14px; }
+  .sidebar-bottom { gap: 10px; }
+}

@@ -5,6 +5,7 @@
     String error = (String) request.getAttribute("error");
     String correo = request.getAttribute("correo") == null ? "" : (String) request.getAttribute("correo");
     boolean salio = request.getParameter("salio") != null;
+    String okParam = request.getParameter("ok");
 %>
 <!DOCTYPE html>
 <html lang="es">
@@ -29,6 +30,10 @@
 
     <% if (error != null) { %>
       <div class="login-aviso login-error" role="alert"><%=Html.esc(error)%></div>
+    <% } else if ("clave".equals(okParam)) { %>
+      <div class="login-aviso login-ok">Contraseña actualizada. Ya puedes iniciar sesión.</div>
+    <% } else if ("solicitud".equals(okParam)) { %>
+      <div class="login-aviso login-ok">Solicitud enviada. Un administrador la revisará y te avisaremos por correo.</div>
     <% } else if (salio) { %>
       <div class="login-aviso login-ok">Cerraste sesión correctamente.</div>
     <% } %>
@@ -40,6 +45,10 @@
     <input type="password" id="clave" name="clave" required placeholder="••••••••">
 
     <button type="submit" class="login-btn">INGRESAR</button>
+    <div class="login-links">
+      <a href="<%=ctx%>/RecuperarServlet">¿Olvidaste tu contraseña?</a>
+      <a href="<%=ctx%>/RegistrarseServlet">Solicitar una cuenta</a>
+    </div>
   </form>
 </main>
 </body>

@@ -27,6 +27,7 @@ public class RutasServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
+        request.setAttribute("soloLectura", "ver".equals(action)); // action=ver: el mismo formulario de editar, pero solo para mirar
         RutasDao dao = new RutasDao();
 
         switch (action) {
@@ -46,6 +47,7 @@ public class RutasServlet extends HttpServlet {
                 mostrarFormulario(request, response, nueva, "crear", dao.cargarGrafo(), cap, null);
                 break;
             }
+            case "ver":
             case "editar": {
                 int id = leerId(request.getParameter("id"));
                 Rutas existente = id > 0 ? dao.obtenerRutas(id) : null;

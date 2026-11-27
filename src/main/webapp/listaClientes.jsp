@@ -15,7 +15,7 @@
     String mensajeOk = null;
     if ("creado".equals(ok)) mensajeOk = "Cliente registrado correctamente.";
     else if ("actualizado".equals(ok)) mensajeOk = "Cliente actualizado correctamente.";
-    else if ("borrado".equals(ok)) mensajeOk = "Cliente eliminado.";
+    else if ("borrado".equals(ok)) mensajeOk = "Cliente desactivado.";
 
     int activos = 0;
     for (Clientes c : listaClientes) {
@@ -40,7 +40,7 @@
           <p class="msg msg-ok"><%=mensajeOk%></p>
           <% } %>
           <% if ("borrar".equals(err)) { %>
-          <p class="msg msg-error">No se pudo eliminar el cliente. Si tiene servicios o solicitudes de capacidad asociados, no se puede borrar: márcalo como Inactivo.</p>
+          <p class="msg msg-error">No se pudo desactivar el cliente.</p>
           <% } %>
 
           <div class="panel-toolbar">
@@ -71,12 +71,15 @@
                   <td><span class="badge <%=claseEstado%>"><%=Html.esc(c.getEstado())%></span></td>
                   <td>
                     <div class="acciones-fila">
+                      <a class="btn-edit-white btn-ver" href="<%=ctx%>/ClientesServlet?action=ver&id=<%=c.getIdCliente()%>">Ver</a>
                       <a class="btn-edit-white" href="<%=ctx%>/ClientesServlet?action=editar&id=<%=c.getIdCliente()%>">Editar</a>
+                      <% if (!"Inactivo".equals(c.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/ClientesServlet?action=borrar"
-                            onsubmit="return confirm('¿Seguro que quieres eliminar este cliente?');">
+                            data-confirmar="¿Seguro que quieres desactivar este cliente?" data-confirmar-btn="Desactivar" data-confirmar-titulo="Desactivar cliente">
                         <input type="hidden" name="id" value="<%=c.getIdCliente()%>">
                         <button type="submit" class="btn-delete-red">Borrar</button>
                       </form>
+                      <% } %>
                     </div>
                   </td>
                 </tr>

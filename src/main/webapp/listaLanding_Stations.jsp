@@ -51,12 +51,15 @@
                   <td><span class="badge <%=claseEstado%>"><%=Html.esc(station.getEstado())%></span></td>
                   <td>
                     <div class="acciones-fila">
+                      <a class="btn-edit-white btn-ver" href="<%=ctx%>/EstacionesServlet?action=ver&id=<%=station.getId_landing_stations()%>">Ver</a>
                       <a class="btn-edit-white" href="<%=ctx%>/EstacionesServlet?action=editar&id=<%=station.getId_landing_stations()%>">Editar</a>
+                      <% if (!"Fuera de servicio".equals(station.getEstado())) { %>
                       <form method="post" action="<%=ctx%>/EstacionesServlet?action=borrar"
-                            onsubmit="return confirm('¿Seguro que quieres eliminar esta estación?');">
+                            data-confirmar="¿Seguro que quieres desactivar esta estación?" data-confirmar-btn="Desactivar" data-confirmar-titulo="Desactivar estación">
                         <input type="hidden" name="id" value="<%=station.getId_landing_stations()%>">
                         <button type="submit" class="btn-delete-red">Borrar</button>
                       </form>
+                      <% } %>
                     </div>
                   </td>
                 </tr>

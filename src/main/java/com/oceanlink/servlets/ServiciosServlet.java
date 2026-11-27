@@ -3,6 +3,7 @@ package com.oceanlink.servlets;
 import com.oceanlink.beans.Clientes;
 import com.oceanlink.beans.Rutas;
 import com.oceanlink.beans.Servicios;
+import com.oceanlink.services.NotificadorCorreos;
 import com.oceanlink.beans.Solicitudes;
 import com.oceanlink.daos.ReservasDao;
 import com.oceanlink.daos.ServiciosDao;
@@ -29,6 +30,7 @@ public class ServiciosServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
+        request.setAttribute("soloLectura", "ver".equals(action)); // action=ver: el mismo formulario de editar, pero solo para mirar
         ServiciosDao dao = new ServiciosDao();
 
         switch (action) {
@@ -50,6 +52,7 @@ public class ServiciosServlet extends HttpServlet {
                 mostrarFormulario(request, response, nuevo, "crear", sol);
                 break;
             }
+            case "ver":
             case "editar": {
                 int id = leerId(request.getParameter("id"));
                 Servicios existente = id > 0 ? dao.obtenerServicios(id) : null;
@@ -156,6 +159,11 @@ public class ServiciosServlet extends HttpServlet {
         if (errores.isEmpty()) {
             String error = esNuevo ? dao.crearServicios(s, idSolicitud, estado) : dao.actualizarServicios(s);
             if (error == null) {
+                if (!esNuevo) {
+                    NotificadorCorreos.servicioCambioEstado(s, original.getEstado()); // correo al cliente si cambió el estado
+                } else {
+                    NotificadorCorreos.servicioRegistrado(s, sol); // correo al cliente: servicio creado a partir de su solicitud
+                }
                 response.sendRedirect(request.getContextPath() + "/ServiciosServlet?ok=" + (esNuevo ? "creado" : "actualizado"));
                 return;
             }

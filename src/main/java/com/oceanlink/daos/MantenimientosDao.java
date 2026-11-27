@@ -126,27 +126,90 @@ public class MantenimientosDao extends DaoBase {
         }
     }
 
+    /** Borrado lógico: el mantenimiento pasa a "Finalizado" (con fecha de finalización si no tenía). */
     public boolean borrarMantenimientos(int idMantenimiento) {
-        try (Connection conn = getConnection()) {
-            conn.setAutoCommit(false);
-            try {
-                // primero la tabla hija (la FK es ON DELETE RESTRICT), luego el mantenimiento
-                borrarInfraestructura(conn, idMantenimiento);
-                try (PreparedStatement pstmt = conn.prepareStatement(
-                        "DELETE FROM mantenimientos WHERE id_mantenimientos = ?")) {
-                    pstmt.setInt(1, idMantenimiento);
-                    pstmt.executeUpdate();
-                }
-                conn.commit();
-                return true;
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            }
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(
+                     "UPDATE mantenimientos SET estado = 'Finalizado', "
+                     + "fecha_finalizacion = COALESCE(fecha_finalizacion, NOW()) WHERE id_mantenimientos = ?")) {
+            pstmt.setInt(1, idMantenimiento);
+            return pstmt.executeUpdate() > 0;
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    // ---------- sincronización con el estado de la infraestructura ----------
+    // Regla: un mantenimiento "En curso" deja su segmento o estación "En mantenimiento"; al finalizarlo,
+    // vuelven a "Operativo" (salvo que tengan otro mantenimiento en curso).
+
+    /** Las fechas programadas se escriben en hora de Lima: "ahora" se mide en esa misma hora. */
+    private static Timestamp ahoraLima() {
+        return Timestamp.valueOf(java.time.LocalDateTime.now(java.time.ZoneId.of("America/Lima")));
+    }
+
+    /** Pasa a "En curso" los mantenimientos Programados cuya fecha y hora ya llegaron. @return cuántos cambió */
+    public int iniciarVencidos() {
+        String sql = "UPDATE mantenimientos SET estado = 'En curso' WHERE estado = 'Programado' AND fecha_programada <= ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setTimestamp(1, ahoraLima());
+            return ps.executeUpdate();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /** Deja "En mantenimiento" a toda la infraestructura que tenga un mantenimiento "En curso". @return filas cambiadas */
+    public int marcarInfraEnMantenimiento() {
+        String segmentos = "UPDATE segmentos sg "
+                + "JOIN mantenimiento_infraestructura mi ON mi.id_segmento = sg.id_segmentos "
+                + "JOIN mantenimientos m ON m.id_mantenimientos = mi.id_mantenimiento "
+                + "SET sg.estado = 'En mantenimiento' WHERE m.estado = 'En curso' AND sg.estado <> 'En mantenimiento'";
+        String estaciones = "UPDATE landing_stations ls "
+                + "JOIN mantenimiento_infraestructura mi ON mi.id_estacion = ls.id_landing_stations "
+                + "JOIN mantenimientos m ON m.id_mantenimientos = mi.id_mantenimiento "
+                + "SET ls.estado = 'En mantenimiento' WHERE m.estado = 'En curso' AND ls.estado <> 'En mantenimiento'";
+        int total = 0;
+        try (Connection conn = getConnection(); Statement st = conn.createStatement()) {
+            total += st.executeUpdate(segmentos);
+            total += st.executeUpdate(estaciones);
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+
+    /**
+     * Al finalizar un mantenimiento: su segmento o estación pasa de "En mantenimiento" a "Operativo",
+     * a menos que tenga otro mantenimiento "En curso". @return filas cambiadas
+     */
+    public int restaurarInfraDe(int idMantenimiento) {
+        String segmentos = "UPDATE segmentos sg "
+                + "JOIN mantenimiento_infraestructura mi ON mi.id_segmento = sg.id_segmentos "
+                + "SET sg.estado = 'Operativo' WHERE mi.id_mantenimiento = ? AND sg.estado = 'En mantenimiento' "
+                + "AND NOT EXISTS (SELECT 1 FROM mantenimiento_infraestructura mi2 "
+                + "JOIN mantenimientos m2 ON m2.id_mantenimientos = mi2.id_mantenimiento "
+                + "WHERE mi2.id_segmento = sg.id_segmentos AND m2.estado = 'En curso')";
+        String estaciones = "UPDATE landing_stations ls "
+                + "JOIN mantenimiento_infraestructura mi ON mi.id_estacion = ls.id_landing_stations "
+                + "SET ls.estado = 'Operativo' WHERE mi.id_mantenimiento = ? AND ls.estado = 'En mantenimiento' "
+                + "AND NOT EXISTS (SELECT 1 FROM mantenimiento_infraestructura mi2 "
+                + "JOIN mantenimientos m2 ON m2.id_mantenimientos = mi2.id_mantenimiento "
+                + "WHERE mi2.id_estacion = ls.id_landing_stations AND m2.estado = 'En curso')";
+        int total = 0;
+        try (Connection conn = getConnection()) {
+            for (String sql : new String[]{segmentos, estaciones}) {
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setInt(1, idMantenimiento);
+                    total += ps.executeUpdate();
+                }
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
     }
 
     // ---------- auxiliares ----------

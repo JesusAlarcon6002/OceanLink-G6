@@ -138,4 +138,5 @@
 <% } %>
 
 <jsp:include page="/WEB-INF/includes/acciones-clientes.jsp"/>
+<jsp:include page="/WEB-INF/includes/modo-ver.jsp"/>
 <jsp:include page="/WEB-INF/includes/fin.jsp"/>

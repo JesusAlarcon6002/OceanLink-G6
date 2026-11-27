@@ -234,22 +234,12 @@ public class RutasDao extends DaoBase {
         }
     }
 
-    /** Borra la ruta y sus segmentos. Falla (false) si la ruta tiene servicios (FK RESTRICT). */
+    /** Borrado lógico: la ruta pasa a "Inactiva" y conserva sus segmentos. Se valida antes que no tenga servicios. */
     public boolean borrarRutas(int idRuta) {
-        try (Connection conn = getConnection()) {
-            conn.setAutoCommit(false);
-            try {
-                borrarSegmentos(conn, idRuta);
-                try (PreparedStatement pstmt = conn.prepareStatement("DELETE FROM rutas WHERE idrutas = ?")) {
-                    pstmt.setInt(1, idRuta);
-                    pstmt.executeUpdate();
-                }
-                conn.commit();
-                return true;
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            }
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("UPDATE rutas SET estado = 'Inactiva' WHERE idrutas = ?")) {
+            pstmt.setInt(1, idRuta);
+            return pstmt.executeUpdate() > 0;
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             return false;

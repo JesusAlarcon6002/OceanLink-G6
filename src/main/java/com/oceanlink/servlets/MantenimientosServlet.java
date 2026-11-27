@@ -4,6 +4,7 @@ import com.oceanlink.beans.Mantenimientos;
 import com.oceanlink.daos.Landing_StationsDao;
 import com.oceanlink.daos.MantenimientosDao;
 import com.oceanlink.daos.SegmentosDao;
+import com.oceanlink.services.NotificadorCorreos;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -30,6 +31,8 @@ public class MantenimientosServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
+
+        request.setAttribute("soloLectura", "ver".equals(action)); // action=ver: el mismo formulario de editar, pero solo para mirar
         MantenimientosDao mantenimientosDao = new MantenimientosDao();
         RequestDispatcher view;
 
@@ -40,6 +43,7 @@ public class MantenimientosServlet extends HttpServlet {
                 nuevo.setEstado("Programado");
                 mostrarFormulario(request, response, nuevo, "crear");
                 break;
+            case "ver":
             case "editar":
                 int id = leerId(request.getParameter("id"));
                 Mantenimientos existente = id > 0 ? mantenimientosDao.obtenerMantenimientos(id) : null;
@@ -48,6 +52,16 @@ public class MantenimientosServlet extends HttpServlet {
                 } else {
                     mostrarFormulario(request, response, existente, "editar");
                 }
+                break;
+            case "historial":
+                // Historial: solo los mantenimientos finalizados y solo para consultar (sin registrar, editar ni borrar)
+                ArrayList<Mantenimientos> finalizados = new ArrayList<>();
+                for (Mantenimientos m : mantenimientosDao.obtenerListaMantenimientos()) {
+                    if ("Finalizado".equals(m.getEstado())) finalizados.add(m);
+                }
+                request.setAttribute("modoHistorial", Boolean.TRUE);
+                request.setAttribute("listaMantenimientos", finalizados);
+                request.getRequestDispatcher("listaMantenimientos.jsp").forward(request, response);
                 break;
             case "lista":
             default:
@@ -72,6 +86,7 @@ public class MantenimientosServlet extends HttpServlet {
             case "borrar":
                 int id = leerId(request.getParameter("id"));
                 boolean borrado = id > 0 && mantenimientosDao.borrarMantenimientos(id);
+                if (borrado) mantenimientosDao.restaurarInfraDe(id); // queda Finalizado: su infraestructura vuelve a Operativo
                 // Post/Redirect/Get: redirigimos para que F5 no repita la acción
                 response.sendRedirect(request.getContextPath() + "/MantenimientosServlet?" + (borrado ? "ok=borrado" : "err=borrar"));
                 break;
@@ -97,6 +112,12 @@ public class MantenimientosServlet extends HttpServlet {
         if (errores.isEmpty()) {
             boolean ok = esNuevo ? dao.crearMantenimientos(m) : dao.actualizarMantenimientos(m);
             if (ok) {
+                // el estado de la infraestructura sigue al del mantenimiento (En curso -> En mantenimiento; Finalizado -> Operativo)
+                if ("Finalizado".equals(m.getEstado()) && !esNuevo) dao.restaurarInfraDe(m.getIdMantenimiento());
+                dao.marcarInfraEnMantenimiento();
+                if (esNuevo && "Programado".equals(m.getEstado())) {
+                    NotificadorCorreos.mantenimientoProgramado(m); // correo: mantenimiento programado
+                }
                 response.sendRedirect(request.getContextPath() + "/MantenimientosServlet?ok=" + (esNuevo ? "creado" : "actualizado"));
                 return;
             }
