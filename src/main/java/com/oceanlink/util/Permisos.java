@@ -56,6 +56,8 @@ public final class Permisos {
         add("/ComunicadosServlet", "Enviar comunicado", Rol.ADMIN, false);
         // Solicitudes de registro de cuentas nuevas: solo Network Admin (única forma de crear usuarios)
         add("/SolicitudesRegistroServlet", "Solicitudes de registro", Rol.ADMIN, false);
+        // Roles y permisos (solo consulta): qué puede hacer cada rol y cuántos usuarios tiene
+        add("/RolesServlet", "Roles y permisos", Rol.ADMIN, false);
         // Verificación de correo (código de 6 dígitos) al registrar usuarios y clientes: no es una tarjeta del inicio
         MODULOS.put("/VerificarCorreoServlet", new Modulo("/VerificarCorreoServlet", "Verificación de correo",
                 EnumSet.of(Rol.ADMIN, Rol.CAPACITY_PLANNER), false, false));

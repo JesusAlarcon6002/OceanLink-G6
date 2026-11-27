@@ -9,6 +9,14 @@ import java.util.ArrayList;
 public class HistorialDao extends DaoBase {
 
     public ArrayList<Historial> obtenerListaHistorial() {
+        return obtenerListaHistorial(0, null, null);
+    }
+
+    /**
+     * Historial con filtros opcionales (todo con parámetros, nada de texto pegado al SQL):
+     * idSegmento 0 = todos; desde/hasta (inclusive) null = sin límite.
+     */
+    public ArrayList<Historial> obtenerListaHistorial(int idSegmento, java.time.LocalDate desde, java.time.LocalDate hasta) {
         ArrayList<Historial> lista = new ArrayList<>();
         String sql = "SELECT h.id_historial_utilizacion, h.fecha_movimiento, s.etiqueta_segmentos, h.tipo_movimiento, " +
                 "h.capacidad_cambio_gbps, h.porcentaje_utilizacion, h.capacidad_resultante_gbps, " +
@@ -17,10 +25,21 @@ public class HistorialDao extends DaoBase {
                 "JOIN segmentos s ON s.id_segmentos = h.id_segmento " +
                 "LEFT JOIN solicitudes_capacidad sc ON sc.idsolicitudes_capacidad = h.id_solicitud " +
                 "LEFT JOIN servicios sv ON sv.id_servicios = h.id_servicio " +
+                "WHERE (? = 0 OR h.id_segmento = ?) " +
+                "AND (? IS NULL OR h.fecha_movimiento >= ?) " +
+                "AND (? IS NULL OR h.fecha_movimiento < ?) " +
                 "ORDER BY h.fecha_movimiento DESC, h.id_historial_utilizacion DESC";
+        Timestamp tDesde = desde == null ? null : Timestamp.valueOf(desde.atStartOfDay());
+        Timestamp tHasta = hasta == null ? null : Timestamp.valueOf(hasta.plusDays(1).atStartOfDay());
         try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idSegmento);
+            stmt.setInt(2, idSegmento);
+            stmt.setTimestamp(3, tDesde);
+            stmt.setTimestamp(4, tDesde);
+            stmt.setTimestamp(5, tHasta);
+            stmt.setTimestamp(6, tHasta);
+            try (ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Historial h = new Historial();
                 h.setIdHistorial(rs.getInt(1));
@@ -34,6 +53,7 @@ public class HistorialDao extends DaoBase {
                 h.setEtiquetaSolicitud(rs.getString(8));
                 h.setEtiquetaServicio(rs.getString(9));
                 lista.add(h);
+            }
             }
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();

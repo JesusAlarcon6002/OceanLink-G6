@@ -29,7 +29,7 @@ const ROLE_MENUS = {
       { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
       { id: "usuarios", icon: "users", label: "Usuarios", href: "UsuariosServlet" },
       { id: "solicitudes-registro", icon: "users", label: "Solicitudes de registro", href: "SolicitudesRegistroServlet" },
-      { id: "roles", icon: "shield-check", label: "Roles", href: "#" },
+      { id: "roles", icon: "shield-check", label: "Roles y permisos", href: "RolesServlet" },
       { id: "stations", icon: "globe", label: "Stations", href: "EstacionesServlet" },
       { id: "segmentos", icon: "git-branch", label: "Segmentos", href: "SegmentosServlet" },
       { id: "dashboard", icon: "globe", label: "Dashboard", href: "DashboardServlet" },
@@ -45,7 +45,6 @@ const ROLE_MENUS = {
     roleLabel: "Capacity Planner",
     items: [
       { id: "inicio", icon: "home", label: "Inicio", href: "InicioServlet" },
-      { id: "capacidad", icon: "users", label: "Capacidad", href: "#" },
       { id: "solicitudes", icon: "shield-check", label: "Solicitudes", href: "SolicitudesServlet" },
       { id: "clientes", icon: "globe", label: "Clientes", href: "ClientesServlet" },
       { id: "servicios", icon: "git-branch", label: "Servicios", href: "ServiciosServlet" },
